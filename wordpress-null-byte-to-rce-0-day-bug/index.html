@@ -1,20 +1,9 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en-US"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>core – WP deeply</title><link rel="dns-prefetch" href="//s.w.org"><link rel="stylesheet" id="wp-block-library-css" href="https://wpdeeply.com/wp-includes/css/dist/block-library/style.min.css" media="all"><link rel="stylesheet" id="coblocks-frontend-css" href="https://wpdeeply.com/wp-content/plugins/coblocks/dist/coblocks-style.css" media="all"><link rel="stylesheet" id="twentytwenty-style-css" href="https://wpdeeply.com/wp-content/themes/twentytwenty/style.css" media="all"><style id="twentytwenty-style-inline-css">
+<html class="no-js" lang="en-US"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>WordPress null byte to RCE – 0 day bug – WP deeply</title><link rel="dns-prefetch" href="//s.w.org"><link rel="stylesheet" id="wp-block-library-css" href="https://wpdeeply.com/wp-includes/css/dist/block-library/style.min.css" media="all"><link rel="stylesheet" id="coblocks-frontend-css" href="https://wpdeeply.com/wp-content/plugins/coblocks/dist/coblocks-style.css" media="all"><link rel="stylesheet" id="mkaz-code-syntax-css-css" href="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/blocks.style.css" media="all"><link rel="stylesheet" id="mkaz-code-syntax-prism-css-css" href="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/prism/prism.css" media="all"><link rel="stylesheet" id="twentytwenty-style-css" href="https://wpdeeply.com/wp-content/themes/twentytwenty/style.css" media="all"><style id="twentytwenty-style-inline-css">
 .color-accent,.color-accent-hover:hover,.color-accent-hover:focus,:root .has-accent-color,.has-drop-cap:not(:focus):first-letter,.wp-block-button.is-style-outline,a { color: #e22658; }blockquote,.border-color-accent,.border-color-accent-hover:hover,.border-color-accent-hover:focus { border-color: #e22658; }button:not(.toggle),.button,.faux-button,.wp-block-button__link,.wp-block-file .wp-block-file__button,input[type="button"],input[type="reset"],input[type="submit"],.bg-accent,.bg-accent-hover:hover,.bg-accent-hover:focus,:root .has-accent-background-color,.comment-reply-link { background-color: #e22658; }.fill-children-accent,.fill-children-accent * { fill: #e22658; }:root .has-background-color,button,.button,.faux-button,.wp-block-button__link,.wp-block-file__button,input[type="button"],input[type="reset"],input[type="submit"],.wp-block-button,.comment-reply-link,.has-background.has-primary-background-color:not(.has-text-color),.has-background.has-primary-background-color *:not(.has-text-color),.has-background.has-accent-background-color:not(.has-text-color),.has-background.has-accent-background-color *:not(.has-text-color) { color: #ffffff; }:root .has-background-background-color { background-color: #ffffff; }body,.entry-title a,:root .has-primary-color { color: #000000; }:root .has-primary-background-color { background-color: #000000; }cite,figcaption,.wp-caption-text,.post-meta,.entry-content .wp-block-archives li,.entry-content .wp-block-categories li,.entry-content .wp-block-latest-posts li,.wp-block-latest-comments__comment-date,.wp-block-latest-posts__post-date,.wp-block-embed figcaption,.wp-block-image figcaption,.wp-block-pullquote cite,.comment-metadata,.comment-respond .comment-notes,.comment-respond .logged-in-as,.pagination .dots,.entry-content hr:not(.has-background),hr.styled-separator,:root .has-secondary-color { color: #6d6d6d; }:root .has-secondary-background-color { background-color: #6d6d6d; }pre,fieldset,input,textarea,table,table *,hr { border-color: #dbdbdb; }caption,code,code,kbd,samp,.wp-block-table.is-style-stripes tbody tr:nth-child(odd),:root .has-subtle-background-background-color { background-color: #dbdbdb; }.wp-block-table.is-style-stripes { border-bottom-color: #dbdbdb; }.wp-block-latest-posts.is-grid li { border-top-color: #dbdbdb; }:root .has-subtle-background-color { color: #dbdbdb; }body:not(.overlay-header) .primary-menu > li > a,body:not(.overlay-header) .primary-menu > li > .icon,.modal-menu a,.footer-menu a, .footer-widgets a,#site-footer .wp-block-button.is-style-outline,.wp-block-pullquote:before,.singular:not(.overlay-header) .entry-header a,.archive-header a,.header-footer-group .color-accent,.header-footer-group .color-accent-hover:hover { color: #cd2653; }.social-icons a,#site-footer button:not(.toggle),#site-footer .button,#site-footer .faux-button,#site-footer .wp-block-button__link,#site-footer .wp-block-file__button,#site-footer input[type="button"],#site-footer input[type="reset"],#site-footer input[type="submit"] { background-color: #cd2653; }.header-footer-group,body:not(.overlay-header) #site-header .toggle,.menu-modal .toggle { color: #000000; }body:not(.overlay-header) .primary-menu ul { background-color: #000000; }body:not(.overlay-header) .primary-menu > li > ul:after { border-bottom-color: #000000; }body:not(.overlay-header) .primary-menu ul ul:after { border-left-color: #000000; }.site-description,body:not(.overlay-header) .toggle-inner .toggle-text,.widget .post-date,.widget .rss-date,.widget_archive li,.widget_categories li,.widget cite,.widget_pages li,.widget_meta li,.widget_nav_menu li,.powered-by-wordpress,.to-the-top,.singular .entry-header .post-meta,.singular:not(.overlay-header) .entry-header .post-meta a { color: #6d6d6d; }.header-footer-group pre,.header-footer-group fieldset,.header-footer-group input,.header-footer-group textarea,.header-footer-group table,.header-footer-group table *,.footer-nav-widgets-wrapper,#site-footer,.menu-modal nav *,.footer-widgets-outer-wrapper,.footer-top { border-color: #dcd7ca; }.header-footer-group table caption,body:not(.overlay-header) .header-inner .toggle-wrapper::before { background-color: #dcd7ca; }
-</style><link rel="stylesheet" id="twentytwenty-print-style-css" href="https://wpdeeply.com/wp-content/themes/twentytwenty/print.css" media="print"><script src="https://wpdeeply.com/wp-includes/js/jquery/jquery.js"></script><script src="https://wpdeeply.com/wp-includes/js/jquery/jquery-migrate.min.js"></script><script src="https://wpdeeply.com/wp-content/themes/twentytwenty/assets/js/index.js" async></script><script>document.documentElement.className = document.documentElement.className.replace( 'no-js', 'js' );</script><style id="custom-background-css">
+</style><link rel="stylesheet" id="twentytwenty-print-style-css" href="https://wpdeeply.com/wp-content/themes/twentytwenty/print.css" media="print"><script src="https://wpdeeply.com/wp-content/themes/twentytwenty/assets/js/index.js" async></script><script>document.documentElement.className = document.documentElement.className.replace( 'no-js', 'js' );</script><style id="custom-background-css">
 body.custom-background { background-color: #ffffff; }
-</style><script type="text/javascript">
-	jQuery(document).ready(function($){
-
-		if( $('.entry-title').length != 0 ) {
-			$('.entry-title span.dojodigital_toggle_title').parents('.entry-title:first').hide();
-		} else {
-			$('h1 span.dojodigital_toggle_title').parents('h1:first').hide();
-			$('h2 span.dojodigital_toggle_title').parents('h2:first').hide();
-		}
-
-	});
-</script><noscript><style type="text/css"> .entry-title { display:none !important; }</style></noscript><style type="text/css"> body.dojo-hide-title .entry-title { display:none !important; }</style></head><body class="page-template-default page page-id-120 custom-background wp-embed-responsive is-twentytwenty singular missing-post-thumbnail has-no-pagination not-showing-comments show-avatars footer-top-hidden reduced-spacing dojo-hide-title">
+</style></head><body class="post-template-default single single-post postid-124 single-format-standard custom-background wp-embed-responsive is-twentytwenty singular missing-post-thumbnail has-single-pagination showing-comments show-avatars footer-top-hidden reduced-spacing">
 
 		<a class="skip-link screen-reader-text" href="#site-content">Skip to the content</a>
 		<header id="site-header" class="header-footer-group" role="banner"><div class="header-inner section-inner">
@@ -41,7 +30,7 @@ body.custom-background { background-color: #ffffff; }
 
 					
 							<nav class="primary-menu-wrapper" aria-label="Horizontal" role="navigation"><ul class="primary-menu reset-list-style"><li id="menu-item-29" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-29"><a href="https://wpdeeply.com/">home</a></li>
-<li id="menu-item-122" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-120 current_page_item menu-item-122"><a href="https://wpdeeply.com/core/" aria-current="page"><span class="dojodigital_toggle_title">core</span></a></li>
+<li id="menu-item-122" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-122"><a href="https://wpdeeply.com/core/">core</a></li>
 
 								</ul></nav><div class="header-toggles hide-no-js">
 
@@ -80,9 +69,9 @@ body.custom-background { background-color: #ffffff; }
 
 				
 					<nav class="expanded-menu" aria-label="Expanded" role="navigation"><ul class="modal-menu reset-list-style"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-29"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/">home</a></div></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-120 current_page_item menu-item-122"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/core/" aria-current="page"><span class="dojodigital_toggle_title">core</span></a></div></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-122"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/core/">core</a></div></li>
 						</ul></nav><nav class="mobile-menu" aria-label="Mobile" role="navigation"><ul class="modal-menu reset-list-style"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-29"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/">home</a></div></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-120 current_page_item menu-item-122"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/core/" aria-current="page"><span class="dojodigital_toggle_title">core</span></a></div></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-122"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/core/">core</a></div></li>
 
 						</ul></nav></div>
 
@@ -97,9 +86,37 @@ body.custom-background { background-color: #ffffff; }
 
 </div>
 
-<main id="site-content" role="main"><article class="post-120 page type-page status-publish hentry" id="post-120"><header class="entry-header has-text-align-center header-footer-group"><div class="entry-header-inner section-inner medium">
+<main id="site-content" role="main"><article class="post-124 post type-post status-publish format-standard hentry category-core" id="post-124"><header class="entry-header has-text-align-center header-footer-group"><div class="entry-header-inner section-inner medium">
 
-		<h1 class="entry-title"><span class="dojodigital_toggle_title">core</span></h1>
+		
+			<div class="entry-categories">
+				<span class="screen-reader-text">Categories</span>
+				<div class="entry-categories-inner">
+					<a href="https://wpdeeply.com/category/core/" rel="category tag">core</a>				</div>
+			</div>
+
+			<h1 class="entry-title">WordPress null byte to RCE – 0 day bug</h1>
+		<div class="post-meta-wrapper post-meta-single post-meta-single-top">
+
+			<ul class="post-meta"><li class="post-author meta-wrapper">
+						<span class="meta-icon">
+							<span class="screen-reader-text">Post author</span>
+							<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewbox="0 0 18 20"><path fill="" d="M18,19 C18,19.5522847 17.5522847,20 17,20 C16.4477153,20 16,19.5522847 16,19 L16,17 C16,15.3431458 14.6568542,14 13,14 L5,14 C3.34314575,14 2,15.3431458 2,17 L2,19 C2,19.5522847 1.55228475,20 1,20 C0.44771525,20 0,19.5522847 0,19 L0,17 C0,14.2385763 2.23857625,12 5,12 L13,12 C15.7614237,12 18,14.2385763 18,17 L18,19 Z M9,10 C6.23857625,10 4,7.76142375 4,5 C4,2.23857625 6.23857625,0 9,0 C11.7614237,0 14,2.23857625 14,5 C14,7.76142375 11.7614237,10 9,10 Z M9,8 C10.6568542,8 12,6.65685425 12,5 C12,3.34314575 10.6568542,2 9,2 C7.34314575,2 6,3.34314575 6,5 C6,6.65685425 7.34314575,8 9,8 Z"></path></svg></span>
+						<span class="meta-text">
+							By <a href="https://wpdeeply.com/author/root/">root</a>						</span>
+					</li>
+										<li class="post-date meta-wrapper">
+						<span class="meta-icon">
+							<span class="screen-reader-text">Post date</span>
+							<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewbox="0 0 18 19"><path fill="" d="M4.60069444,4.09375 L3.25,4.09375 C2.47334957,4.09375 1.84375,4.72334957 1.84375,5.5 L1.84375,7.26736111 L16.15625,7.26736111 L16.15625,5.5 C16.15625,4.72334957 15.5266504,4.09375 14.75,4.09375 L13.3993056,4.09375 L13.3993056,4.55555556 C13.3993056,5.02154581 13.0215458,5.39930556 12.5555556,5.39930556 C12.0895653,5.39930556 11.7118056,5.02154581 11.7118056,4.55555556 L11.7118056,4.09375 L6.28819444,4.09375 L6.28819444,4.55555556 C6.28819444,5.02154581 5.9104347,5.39930556 5.44444444,5.39930556 C4.97845419,5.39930556 4.60069444,5.02154581 4.60069444,4.55555556 L4.60069444,4.09375 Z M6.28819444,2.40625 L11.7118056,2.40625 L11.7118056,1 C11.7118056,0.534009742 12.0895653,0.15625 12.5555556,0.15625 C13.0215458,0.15625 13.3993056,0.534009742 13.3993056,1 L13.3993056,2.40625 L14.75,2.40625 C16.4586309,2.40625 17.84375,3.79136906 17.84375,5.5 L17.84375,15.875 C17.84375,17.5836309 16.4586309,18.96875 14.75,18.96875 L3.25,18.96875 C1.54136906,18.96875 0.15625,17.5836309 0.15625,15.875 L0.15625,5.5 C0.15625,3.79136906 1.54136906,2.40625 3.25,2.40625 L4.60069444,2.40625 L4.60069444,1 C4.60069444,0.534009742 4.97845419,0.15625 5.44444444,0.15625 C5.9104347,0.15625 6.28819444,0.534009742 6.28819444,1 L6.28819444,2.40625 Z M1.84375,8.95486111 L1.84375,15.875 C1.84375,16.6516504 2.47334957,17.28125 3.25,17.28125 L14.75,17.28125 C15.5266504,17.28125 16.15625,16.6516504 16.15625,15.875 L16.15625,8.95486111 L1.84375,8.95486111 Z"></path></svg></span>
+						<span class="meta-text">
+							<a href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/">July 12, 2020</a>
+						</span>
+					</li>
+					
+			</ul></div>
+
+		
 	</div>
 
 </header><div class="post-inner thin ">
@@ -107,16 +124,41 @@ body.custom-background { background-color: #ffffff; }
 		<div class="entry-content">
 
 			
-<h2 class="has-text-align-center">// Core security</h2>
+<hr class="wp-block-separator"><p>It is common knowledge that non binary safe functions in PHP should be avoided e.g. to be replaced from legacy code with binary safe alternatives.</p>
 
 
 
-<p class="has-text-align-center"><strong><em>because it is foundation!</em></strong></p>
+<p>What we have in the WP core <code>class-wp-image-editor-imagick</code></p>
 
 
 
-<hr class="wp-block-separator"><div class="wp-block-coblocks-posts is-style-stacked"><div class="wp-block-coblocks-posts__inner has-columns has-1-columns has-responsive-columns has-medium-gutter has-square-image"><div class="wp-block-coblocks-posts__item"><div class="wp-block-coblocks-posts__content flex-start"><time datetime="" class="wp-block-coblocks-posts__date">July 12, 2020</time><a href="https://wpdeeply.com/wordpress-arbitrary-file-delete/" alt="WordPress arbitrary file delete">WordPress arbitrary file delete</a></div></div><div class="wp-block-coblocks-posts__item"><div class="wp-block-coblocks-posts__content flex-start"><time datetime="" class="wp-block-coblocks-posts__date">July 12, 2020</time><a href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" alt="WordPress write image to any directory RCE">WordPress write image to any directory RCE</a></div></div><div class="wp-block-coblocks-posts__item"><div class="wp-block-coblocks-posts__content flex-start"><time datetime="" class="wp-block-coblocks-posts__date">July 12, 2020</time><a href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" alt="WordPress null byte to RCE – 0 day bug">WordPress null byte to RCE – 0 day bug</a></div></div></div></div>
-		</div>
+<pre class="wp-block-code"><code lang="php" class="language-php">$this->make_image( $filename, array( $image, 'writeImage' ), array( $filename ) );
+</code></pre>
+
+
+
+<p>and we all know that PHP imagick prefers <code>writeImageFile</code> before <code>writeImage</code> because it is binary safe. What does this mean? This means if WP uses <code>class-wp-image-editor-imagick</code> as default image editing engine we can salute our RCE because we are null byte away from it when <code>save</code> e.g. <code>_save</code> method is called.</p>
+
+
+
+<h2 id="eli5-poc">Eli5 PoC</h2>
+
+
+
+<ul><li>upload media file to your local WP called “nullbyte.jpg”</li><li>get its post id ( mine is 91 )</li><li>open mysql administration tool and issue following query:</li></ul><pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value` = concat('2020/07/nullbyte.jpg#','/go.php',char(0),'.gif' ) WHERE `wp_postmeta`.`post_id` = 91 and `wp_postmeta`.`meta_key` = '_wp_attached_file'
+</code></pre>
+
+
+
+<ul><li>go to media library, crop image + save</li><li>navigate to https://wp.local/wp-content/uploads/2020/07/nullbyte.jpg%23/go.php</li></ul><h2 id="few-facts">Few facts</h2>
+
+
+
+<ul><li>Images manipulated with PHP Imagick will hold their old meta data (php shells / code will remain intact)</li><li>WP core had put a lot of efforts to protect <code>_wp_attached_file</code> meta value, but it is bypassable (next days disclosure)</li><li>WP in 5.5 via its site-health will warn users that they need to use ImageMagic on their servers :/</li><li>WP core via its site-health push users to install/configure WP in that way so core files are writable by web server</li><li>have you ever heard about <a href="https://github.com/Slavco/wp-weaver">https://github.com/Slavco/wp-weaver</a> 🙂</li><li>there are few another attack vectors than described above</li></ul><h2 id="remediation">Remediation</h2>
+
+
+
+<ul><li>uploads dir shouldn’t be able to run PHP code</li><li>core files shouldn’t be writable by www-data user</li></ul></div>
 
 	</div>
 
@@ -125,7 +167,17 @@ body.custom-background { background-color: #ffffff; }
 	</div>
 
 	
-</article></main><footer id="site-footer" role="contentinfo" class="header-footer-group"><div class="section-inner">
+	<nav class="pagination-single section-inner only-one only-next" aria-label="Post" role="navigation"><hr class="styled-separator is-style-wide" aria-hidden="true"><div class="pagination-single-inner">
+
+			
+				<a class="next-post" href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/">
+					<span class="arrow" aria-hidden="true">→</span>
+						<span class="title"><span class="title-inner">WordPress write image to any directory RCE</span></span>
+				</a>
+				
+		</div>
+
+		<hr class="styled-separator is-style-wide" aria-hidden="true"></nav></article></main><footer id="site-footer" role="contentinfo" class="header-footer-group"><div class="section-inner">
 
 					<div class="footer-credits">
 
@@ -147,5 +199,7 @@ body.custom-background { background-color: #ffffff; }
 				</div>
 
 			</footer><script>
+var prism_settings = {"pluginUrl":"https:\/\/wpdeeply.com\/wp-content\/plugins\/code-syntax-block\/"};
+</script><script src="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/prism/prism.js"></script><script>
 	/(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())},!1);
 	</script></body></html>
