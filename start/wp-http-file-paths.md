@@ -6,6 +6,7 @@ Image cropping in WordPress is sort of unlucky, specially derivation of final im
 - Upload image to your local WP and name it wpdeeply.png (in order to be able to use copy paste from here in next steps)
 - Get attachment_id (post_id of the image)
 - Enable hello.php plugin and add this code at the end of the file
+
 ```
 function wprcedemo(){
     
