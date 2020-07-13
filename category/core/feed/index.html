@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/core/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Sun, 12 Jul 2020 23:34:11 +0000</lastBuildDate>
+	<lastBuildDate>Mon, 13 Jul 2020 23:54:30 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,56 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WordPress upload any file with image extension</title>
+		<link>https://wpdeeply.com/wordpress-upload-any-file-with-image-extension/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Mon, 13 Jul 2020 23:54:29 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=140</guid>
+
+					<description><![CDATA[Big efforts were put into validation and verification of image uploads in WP as a project. Yet, that isn&#8217;t completed task. In the WP core there is function wp_upload_bits which allows to be &#8220;uploaded&#8221; file with any content with any of the allowed extensions. Beside its widespread usage around eco system  there are two places in the core [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<hr class="wp-block-separator"/>
+
+
+
+<p>Big efforts were put into validation and verification of image uploads in WP as a project. Yet, that isn&#8217;t completed task. In the WP core there is function <code>wp_upload_bits</code> which allows to be &#8220;uploaded&#8221; file with any content with any of the allowed extensions. Beside its widespread usage around <a href="https://wpdirectory.net/search/01ED57DFTZ2VWRZCD4W7N80R9A">eco system</a>  there are two places in the core where it is used e.g. in <code>xmlrpc</code> service <code>mw_newMediaObject</code> and in <code>wp_generate_attachment_metadata</code>. Via xmlrpc there straight forward upload and via attachment metadata &#8220;image&#8221; creation is possible via faked cover of any allowed audio / video vile. Try it yourself with mp3 and <a href="https://eyed3.readthedocs.io/en/latest/">eyeD3</a>.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-upload-any-file.md#eli5-poc"></a>Eli5 PoC</h2>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">function upload_any_image(){
+    wp_upload_bits("wpdeeply.jpg", "", "Learn wp deeply");    
+}
+
+add_action(init, "upload_any_image");
+</code></pre>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-upload-any-file.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li><code>wp_check_filetype</code>&nbsp;checks filetype based on extension only</li><li>As default and pushed/advertised&nbsp;<code>ImageMagic</code>&nbsp;via&nbsp;<code>site-health</code>&nbsp;in the core, this is basically turning WP into webgoat for setups where file uploads are enabled</li><li>XSS attacks on many web setups</li><li>backdoors for max allowed upload file size</li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-upload-any-file.md#remediation"></a>Remediation</h2>
+
+
+
+<ul><li><code>add_filter('wp_upload_bits', ...</code>&nbsp;where bits will be placed in tmp image with specified extension and will be validated against&nbsp;<code>wp_check_filetype_and_ext</code></li><li>check how Woo fixed this in the past <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress arbitrary file delete</title>
 		<link>https://wpdeeply.com/wordpress-arbitrary-file-delete/</link>
 		
