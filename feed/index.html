@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Mon, 13 Jul 2020 23:54:30 +0000</lastBuildDate>
+	<lastBuildDate>Tue, 14 Jul 2020 23:53:36 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,74 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WordPress attached file meta</title>
+		<link>https://wpdeeply.com/wordpress-attached-file-meta/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Tue, 14 Jul 2020 23:53:34 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=143</guid>
+
+					<description><![CDATA[WordPress attachment / media protected meta&#160;_wp_attached_file&#160;is single point of failure for WP. Having access to its value results in RCE as we already show in previous writings non binary safe imagick function, theme directory writing and arbitrary file delete. There are different paths towards&#160;_wp_attached_file, because at the end of the day is meta value, but [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<hr class="wp-block-separator"/>
+
+
+
+<p>WordPress attachment / media protected meta&nbsp;<code>_wp_attached_file</code>&nbsp;is single point of failure for WP. Having access to its value results in RCE as we already show in previous writings non binary safe imagick function, theme directory writing and arbitrary file delete. There are different paths towards&nbsp;<code>_wp_attached_file</code>, because at the end of the day is meta value, but also huge effort was put in the past to fix all of the paths towards it &#8211; ofc. not even close enough.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attached-file-meta.md#eli5-poc"></a>Eli5 PoC</h2>
+
+
+
+<p>Let we check the&nbsp;<code>wp_restore_image</code>&nbsp;WP function. There we have:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$meta             = wp_get_attachment_metadata( $post_id );
+$file             = get_attached_file( $post_id );
+$backup_sizes     = get_post_meta( $post_id, '_wp_attachment_backup_sizes', true );
+</code></pre>
+
+
+
+<p>e.g. <code>_wp_attachment_metadata</code> and <code>_wp_attached_file</code>  are not handled as regular meta values, but <code>_wp_attachment_backup_sizes</code> is. Later in the code:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$data = $backup_sizes['full-orig'];
+...
+$restored_file = path_join( $parts['dirname'], $data['file'] );
+$restored      = update_attached_file( $post_id, $restored_file );
+</code></pre>
+
+
+
+<p>And this show us that anyone with control over the&nbsp;<code>_wp_attachment_backup_sizes</code>&nbsp;have access towards&nbsp;<code>_wp_attached_file</code>. Hint: wordpress-importer and will be used as one of the show cases for full exploitation demo <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attached-file-meta.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li>preventing access towards protected meta with <code>current_user_can( 'edit_post_meta',...</code> or just <code>is_protected_meta</code> checks before <code>update_metadata</code> and <code>update_post_meta</code> is impossible with current code base and depends of MySQL configuration</li><li>there are a lot of sinks towards <code>update_attached_file</code> around WP eco system</li><li>take care when using <code>wp_insert_post</code></li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attached-file-meta.md#remediation"></a>Remediation</h2>
+
+
+
+<ul><li>Why would anyone put remediation to meta value ?!?!?!</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress upload any file with image extension</title>
 		<link>https://wpdeeply.com/wordpress-upload-any-file-with-image-extension/</link>
 		
