@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/core/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Tue, 14 Jul 2020 23:53:36 +0000</lastBuildDate>
+	<lastBuildDate>Wed, 15 Jul 2020 00:09:08 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -28,13 +28,13 @@
 				<category><![CDATA[core]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=143</guid>
 
-					<description><![CDATA[WordPress attachment / media protected meta&#160;_wp_attached_file&#160;is single point of failure for WP. Having access to its value results in RCE as we already show in previous writings non binary safe imagick function, theme directory writing and arbitrary file delete. There are different paths towards&#160;_wp_attached_file, because at the end of the day is meta value, but [&#8230;]]]></description>
+					<description><![CDATA[WordPress attachment / media protected meta _wp_attached_file is single point of failure for WP. Having access to its value results in RCE as we already show in previous writings: non binary safe imagick function, theme directory writing and arbitrary file delete. There are different paths towards _wp_attached_file, because at the end of the day is meta value, but [&#8230;]]]></description>
 										<content:encoded><![CDATA[
 <hr class="wp-block-separator"/>
 
 
 
-<p>WordPress attachment / media protected meta&nbsp;<code>_wp_attached_file</code>&nbsp;is single point of failure for WP. Having access to its value results in RCE as we already show in previous writings non binary safe imagick function, theme directory writing and arbitrary file delete. There are different paths towards&nbsp;<code>_wp_attached_file</code>, because at the end of the day is meta value, but also huge effort was put in the past to fix all of the paths towards it &#8211; ofc. not even close enough.</p>
+<p>WordPress attachment / media protected meta <code>_wp_attached_file</code> is single point of failure for WP. Having access to its value results in RCE as we already show in previous writings: <a href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" target="_blank" rel="noreferrer noopener">non binary safe imagick function</a>, <a href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank" rel="noreferrer noopener">theme directory writing</a> and <a href="https://wpdeeply.com/wordpress-arbitrary-file-delete/" target="_blank" rel="noreferrer noopener">arbitrary file delete</a>. There are different paths towards <code>_wp_attached_file</code>, because at the end of the day is meta value, but also huge effort was put in the past to fix all of the paths towards it &#8211; ofc. not even close enough.</p>
 
 
 
@@ -53,7 +53,7 @@ $backup_sizes     = get_post_meta( $post_id, '_wp_attachment_backup_sizes', true
 
 
 
-<p>e.g. <code>_wp_attachment_metadata</code> and <code>_wp_attached_file</code>  are not handled as regular meta values, but <code>_wp_attachment_backup_sizes</code> is. Later in the code:</p>
+<p>e.g.&nbsp;<code>_wp_attachment_metadata</code>&nbsp;and&nbsp;<code>_wp_attached_file</code>&nbsp; are not handled as regular meta values, but&nbsp;<code>_wp_attachment_backup_sizes</code>&nbsp;is. Later in the code:</p>
 
 
 
@@ -73,7 +73,7 @@ $restored      = update_attached_file( $post_id, $restored_file );
 
 
 
-<ul><li>preventing access towards protected meta with <code>current_user_can( 'edit_post_meta',...</code> or just <code>is_protected_meta</code> checks before <code>update_metadata</code> and <code>update_post_meta</code> is impossible with current code base and depends of MySQL configuration</li><li>there are a lot of sinks towards <code>update_attached_file</code> around WP eco system</li><li>take care when using <code>wp_insert_post</code></li></ul>
+<ul><li>preventing access towards protected meta with&nbsp;<code>current_user_can( 'edit_post_meta',...</code>&nbsp;or just&nbsp;<code>is_protected_meta</code>&nbsp;checks before&nbsp;<code>update_metadata</code>&nbsp;and&nbsp;<code>update_post_meta</code>&nbsp;is impossible with current code base and depends of MySQL configuration</li><li>there are a lot of sinks towards&nbsp;<code>update_attached_file</code>&nbsp;around WP eco system</li><li>take care when using&nbsp;<code>wp_insert_post</code></li></ul>
 
 
 

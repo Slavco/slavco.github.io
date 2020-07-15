@@ -133,7 +133,7 @@ body.custom-background { background-color: #ffffff; }
 		<div class="entry-content">
 
 			
-<hr class="wp-block-separator"><p>WordPress attachment / media protected meta <code>_wp_attached_file</code> is single point of failure for WP. Having access to its value results in RCE as we already show in previous writings non binary safe imagick function, theme directory writing and arbitrary file delete. There are different paths towards <code>_wp_attached_file</code>, because at the end of the day is meta value, but also huge effort was put in the past to fix all of the paths towards it – ofc. not even close enough.</p>
+<hr class="wp-block-separator"><p>WordPress attachment / media protected meta <code>_wp_attached_file</code> is single point of failure for WP. Having access to its value results in RCE as we already show in previous writings: <a href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" target="_blank" rel="noreferrer noopener">non binary safe imagick function</a>, <a href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank" rel="noreferrer noopener">theme directory writing</a> and <a href="https://wpdeeply.com/wordpress-arbitrary-file-delete/" target="_blank" rel="noreferrer noopener">arbitrary file delete</a>. There are different paths towards <code>_wp_attached_file</code>, because at the end of the day is meta value, but also huge effort was put in the past to fix all of the paths towards it – ofc. not even close enough.</p>
 
 
 
