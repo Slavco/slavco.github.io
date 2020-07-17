@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Fri, 17 Jul 2020 19:38:27 +0000</lastBuildDate>
+	<lastBuildDate>Fri, 17 Jul 2020 20:39:33 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -28,13 +28,13 @@
 				<category><![CDATA[core]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=146</guid>
 
-					<description><![CDATA[WordPress project have put a lot of effort to prevent meddling with _wp_attached_file meta value. Part of this effort was put into wordpress-importer plugin as part of the core, but&#8230; Few versions back there was possibility to bypass those restrictions with \ WP &#8220;magic&#8221;, but there are few more techniques. Eli5 PoC class-wp-import.php&#160;method&#160;is_valid_meta_key&#160;we have the following: and Do you [&#8230;]]]></description>
+					<description><![CDATA[WordPress project have put a lot of effort to prevent meddling with&#160;_wp_attached_file&#160;meta value. Part of this effort was put into wordpress-importer plugin as part of the core, but&#8230; Few versions back there was possibility to bypass those restrictions with&#160;\&#160;WP &#8220;magic&#8221;, but there are few more techniques. Eli5 PoC class-wp-import.php&#160;method&#160;is_valid_meta_key&#160;we have the following: and Do you [&#8230;]]]></description>
 										<content:encoded><![CDATA[
 <hr class="wp-block-separator"/>
 
 
 
-<p>WordPress project have put a lot of effort to prevent meddling with <code>_wp_attached_file</code> meta value. Part of this effort was put into wordpress-importer plugin as part of the core, but&#8230; Few versions back there was possibility to bypass those restrictions with <code>\</code> WP &#8220;magic&#8221;, but there are few more techniques.</p>
+<p>WordPress project have put a lot of effort to prevent meddling with&nbsp;<code>_wp_attached_file</code>&nbsp;meta value. Part of this effort was put into wordpress-importer plugin as part of the core, but&#8230; Few versions back there was possibility to bypass those restrictions with&nbsp;<code>\</code>&nbsp;WP &#8220;magic&#8221;, but there are few more techniques.</p>
 
 
 
@@ -66,7 +66,7 @@
 
 
 
-<p>Do you see <code>_wp_attachment_backup_sizes</code> blocked in the code? <a href="https://wpdeeply.com/wordpress-attached-file-meta/" target="_blank" rel="noreferrer noopener">Why is that important?</a></p>
+<p>Do you see&nbsp;<code>_wp_attachment_backup_sizes</code>&nbsp;blocked in the code? <a href="https://wpdeeply.com/wordpress-attached-file-meta/" target="_blank" rel="noreferrer noopener">Why is that important?</a></p>
 
 
 
@@ -82,7 +82,7 @@
 
 
 
-<ul><li>Don&#8217;t allow wordpress-importer to fall back on the <code>class WXR_Parser_Regex</code></li><li>Do not assign <strong>import</strong> user capabilities on WP related projects </li></ul>
+<ul><li>Don&#8217;t allow wordpress-importer to fall back on the <code>class WXR_Parser_Regex</code></li><li>Do not assign <strong>import</strong> user capabilities on WP related projects </li><li>Add  <code>_wp_attachment_backup_sizes</code> in the blocked list in the wordpress-importer code</li></ul>
 
 
 
