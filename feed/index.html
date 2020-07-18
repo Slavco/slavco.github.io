@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Sat, 18 Jul 2020 23:22:49 +0000</lastBuildDate>
+	<lastBuildDate>Sat, 18 Jul 2020 23:41:59 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -26,6 +26,7 @@
 		<dc:creator><![CDATA[root]]></dc:creator>
 		<pubDate>Sat, 18 Jul 2020 23:05:51 +0000</pubDate>
 				<category><![CDATA[plugins]]></category>
+		<category><![CDATA[0day]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=156</guid>
 
 					<description><![CDATA[This bug is 0day, but same as this bug was reported in the past. Try to fix here&#160;and fix here. Anyway, in the Woo code there is another DB query that modifies serialized PHP content outside from serialize / unserialize PHP functions and that results into user object injection. Beside numerous tries to harden WP, [&#8230;]]]></description>
@@ -204,6 +205,7 @@ exit();
 		<dc:creator><![CDATA[root]]></dc:creator>
 		<pubDate>Fri, 17 Jul 2020 22:26:32 +0000</pubDate>
 				<category><![CDATA[core]]></category>
+		<category><![CDATA[0day]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=149</guid>
 
 					<description><![CDATA[WordPress is on the auto-updates train for everything lately and they do it for &#8220;security&#8221;. Auto-updates from core is approach and it is same for everything, so let we see what is doing under the hood. There is function&#160;update_core&#160;and that is the place where magic is happening. WP core is deciding via&#160;get_core_checksums&#160;what files need to [&#8230;]]]></description>
@@ -304,6 +306,7 @@ if ( isset($_REQUEST["wppply"])){
 		<dc:creator><![CDATA[root]]></dc:creator>
 		<pubDate>Fri, 17 Jul 2020 19:38:25 +0000</pubDate>
 				<category><![CDATA[core]]></category>
+		<category><![CDATA[0day]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=146</guid>
 
 					<description><![CDATA[WordPress project have put a lot of effort to prevent meddling with&#160;_wp_attached_file&#160;meta value. Part of this effort was put into wordpress-importer plugin as part of the core, but&#8230; Few versions back there was possibility to bypass those restrictions with&#160;\&#160;WP &#8220;magic&#8221;, but there are few more techniques. Eli5 PoC class-wp-import.php&#160;method&#160;is_valid_meta_key&#160;we have the following: and Do you [&#8230;]]]></description>
@@ -377,6 +380,7 @@ if ( isset($_REQUEST["wppply"])){
 		<dc:creator><![CDATA[root]]></dc:creator>
 		<pubDate>Tue, 14 Jul 2020 23:53:34 +0000</pubDate>
 				<category><![CDATA[core]]></category>
+		<category><![CDATA[0day]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=143</guid>
 
 					<description><![CDATA[WordPress attachment / media protected meta _wp_attached_file is single point of failure for WP. Having access to its value results in RCE as we already show in previous writings: non binary safe imagick function, theme directory writing and arbitrary file delete. There are different paths towards _wp_attached_file, because at the end of the day is meta value, but [&#8230;]]]></description>
@@ -445,6 +449,7 @@ $restored      = update_attached_file( $post_id, $restored_file );
 		<dc:creator><![CDATA[root]]></dc:creator>
 		<pubDate>Mon, 13 Jul 2020 23:54:29 +0000</pubDate>
 				<category><![CDATA[core]]></category>
+		<category><![CDATA[0day]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=140</guid>
 
 					<description><![CDATA[Big efforts were put into validation and verification of image uploads in WP as a project. Yet, that isn&#8217;t completed task. In the WP core there is function wp_upload_bits which allows to be &#8220;uploaded&#8221; file with any content with any of the allowed extensions. Beside its widespread usage around eco system  there are two places in the core [&#8230;]]]></description>
@@ -495,6 +500,7 @@ add_action(init, "upload_any_image");
 		<dc:creator><![CDATA[root]]></dc:creator>
 		<pubDate>Sun, 12 Jul 2020 23:00:08 +0000</pubDate>
 				<category><![CDATA[core]]></category>
+		<category><![CDATA[0day]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=136</guid>
 
 					<description><![CDATA[WordPress have a lot of serious issues with paths. There were several tries in the past for security and core team to fix arbitrary file delete issues in the core, but bugs (plural) still remain. Why this bug presented here exist? (there are many another use cases in the core) Because core is solving arbitrary [&#8230;]]]></description>
@@ -566,6 +572,7 @@ add_action("init", "afd");
 		<dc:creator><![CDATA[root]]></dc:creator>
 		<pubDate>Sun, 12 Jul 2020 20:27:43 +0000</pubDate>
 				<category><![CDATA[core]]></category>
+		<category><![CDATA[0day]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=131</guid>
 
 					<description><![CDATA[Image cropping in WordPress is sort of unlucky, specially derivation of final image path ( file system or http/s location ), where image will be loaded from the path, but decisions for additional directories creation and final path (no traversal prevention here) are taken from&#160;_wp_attached_file. Those issues are subject for deeper observation and debugging which [&#8230;]]]></description>
@@ -653,6 +660,7 @@ add_action("init", "wprcedemo");
 		<dc:creator><![CDATA[root]]></dc:creator>
 		<pubDate>Sun, 12 Jul 2020 20:21:46 +0000</pubDate>
 				<category><![CDATA[core]]></category>
+		<category><![CDATA[0day]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=124</guid>
 
 					<description><![CDATA[It is common knowledge that non binary safe functions in PHP should be avoided e.g. to be replaced from legacy code with binary safe alternatives. What we have in the WP core&#160;class-wp-image-editor-imagick and we all know that PHP imagick prefers writeImageFile before writeImage because it is binary safe. What does this mean? This means if WP uses class-wp-image-editor-imagick as default image [&#8230;]]]></description>
