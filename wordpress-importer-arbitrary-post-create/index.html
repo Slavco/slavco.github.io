@@ -150,7 +150,7 @@ body.custom-background { background-color: #ffffff; }
 
 
 
-<p>and this means that somewhere in the user input if there is <br><code>< / item ></code> we talk about end of the post. We all know that meta / custom fields can hold anything, so we have our entry point. Fallback towards <code>WXR_Parser_Regex</code> checked and entry point checked, time for demo.</p>
+<p>and this means that somewhere in the user input if there is <br><code>&lt;/item ></code> we talk about end of the post. We all know that meta / custom fields can hold anything, so we have our entry point. Fallback towards <code>WXR_Parser_Regex</code> checked and entry point checked, time for demo.</p>
 
 
 
@@ -162,35 +162,35 @@ body.custom-background { background-color: #ffffff; }
 
 
 
-<pre class="wp-block-code"><code lang="xml" class="language-xml"></wp:meta_value></wp:postmeta></item>
+<pre class="wp-block-code"><code lang="xml" class="language-xml">&lt;/wp:meta_value>&lt;/wp:postmeta>&lt;/item>
 [asciicontrol]
-<item>
-<title>Attack-Post-1337</title>
-<link>http://attack.post/2020/07/19/attack-post/</link>
-<pubDate>Sun, 19 Jul 2020 20:57:17 +0000</pubDate>
-<dc:creator>attacker</dc:creator>
-<guid isPermaLink="false">http://attack.post?p=1337</guid>
-<description></description>
-<content:encoded><!-- wp:paragraph -->
-<p>boom jee</p>
-<!-- /wp:paragraph --></content:encoded>
-<excerpt:encoded></excerpt:encoded>
-<wp:post_id>1337</wp:post_id>
-<wp:post_date>2020-07-19 20:57:17</wp:post_date>
-<wp:post_date_gmt>2020-07-19 20:57:17</wp:post_date_gmt>
-<wp:comment_status>open</wp:comment_status>
-<wp:ping_status>open</wp:ping_status>
-<wp:post_name>attack-post</wp:post_name>
-<wp:status>publish</wp:status>
-<wp:post_parent>0</wp:post_parent>
-<wp:menu_order>0</wp:menu_order>
-<wp:post_type>post</wp:post_type>
-<wp:post_password></wp:post_password>
-<wp:is_sticky>0</wp:is_sticky>
-<category domain="category" nicename="uncategorized">Uncategorized</category>
-<wp:postmeta>
-<wp:meta_key>_test</wp:meta_key>
-<wp:meta_value></code></pre>
+&lt;item>
+&lt;title>Attack-Post-1337&lt;/title>
+&lt;link>http://attack.post/2020/07/19/attack-post/&lt;/link>
+&lt;pubDate>Sun, 19 Jul 2020 20:57:17 +0000&lt;/pubDate>
+&lt;dc:creator>attacker&lt;/dc:creator>
+&lt;guid isPermaLink="false">http://attack.post?p=1337&lt;/guid>
+&lt;description>&lt;/description>
+&lt;content:encoded>&lt;!-- wp:paragraph -->
+&lt;p>boom jee&lt;/p>
+&lt;!-- /wp:paragraph -->&lt;/content:encoded>
+&lt;excerpt:encoded>&lt;/excerpt:encoded>
+&lt;wp:post_id>1337&lt;/wp:post_id>
+&lt;wp:post_date>2020-07-19 20:57:17&lt;/wp:post_date>
+&lt;wp:post_date_gmt>2020-07-19 20:57:17&lt;/wp:post_date_gmt>
+&lt;wp:comment_status>open&lt;/wp:comment_status>
+&lt;wp:ping_status>open&lt;/wp:ping_status>
+&lt;wp:post_name>attack-post&lt;/wp:post_name>
+&lt;wp:status>publish&lt;/wp:status>
+&lt;wp:post_parent>0&lt;/wp:post_parent>
+&lt;wp:menu_order>0&lt;/wp:menu_order>
+&lt;wp:post_type>post&lt;/wp:post_type>
+&lt;wp:post_password>&lt;/wp:post_password>
+&lt;wp:is_sticky>0&lt;/wp:is_sticky>
+&lt;category domain="category" nicename="uncategorized">Uncategorized&lt;/category>
+&lt;wp:postmeta>
+&lt;wp:meta_key>_test&lt;/wp:meta_key>
+&lt;wp:meta_value></code></pre>
 
 
 
