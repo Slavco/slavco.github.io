@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/plugins/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Fri, 07 Aug 2020 21:59:33 +0000</lastBuildDate>
+	<lastBuildDate>Sun, 09 Aug 2020 14:40:02 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,110 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WordPress attachment api functions and any post type</title>
+		<link>https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Sun, 09 Aug 2020 14:39:59 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<category><![CDATA[plugins]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=197</guid>
+
+					<description><![CDATA[Core had put some efforts in order to prevent accessing&#160;attachment&#160;post type functions from another post types. Usually checks are done by calling&#160;get_post&#160;and comparing the post type with&#160;attachment, but that is selective and only in hand picked places. It is that way because performances mainly, so many functions are lacking this checks. Eli5 PoC One of [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>Core had put some efforts in order to prevent accessing&nbsp;<code>attachment</code>&nbsp;post type functions from another post types. Usually checks are done by calling&nbsp;<code>get_post</code>&nbsp;and comparing the post type with&nbsp;<code>attachment</code>, but that is selective and only in hand picked places. It is that way because performances mainly, so many functions are lacking this checks.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attachment-api-any.md#eli5-poc"></a>Eli5 PoC</h2>
+
+
+
+<p>One of them, that calls another attachment related is <code>wp_update_image_subsizes</code> and there we have the following calls up to <code>path_join</code>where we have <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-and-phar-unserialize/" target="_blank">phar unserialize</a> or <code>wp_create_image_subsizes</code> where <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" target="_blank">image editor RCE ?!</a> is in game, but also <code>getimagesize</code> as phar unserialize appears too.</p>
+
+
+
+<ul><li><code>wp_update_image_subsizes</code><ul><li><code>wp_get_attachment_metadata</code></li><li><code>wp_get_original_image_path</code><ul><li><code>wp_attachment_is_image</code></li><li><code>wp_get_attachment_metadata</code></li><li><code>get_attached_file</code></li><li><code>path_join</code></li></ul></li></ul></li></ul>
+
+
+
+<p>this function is called in&nbsp;<code>wp_ajax_media_create_image_subsizes</code></p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">function wp_ajax_media_create_image_subsizes() {
+	check_ajax_referer( 'media-form' );
+
+	if ( ! current_user_can( 'upload_files' ) ) {
+		wp_send_json_error( array( 'message' => __( 'Sorry, you are not allowed to upload files.' ) ) );
+	}
+
+	if ( empty( $_POST['attachment_id'] ) ) {
+		wp_send_json_error( array( 'message' => __( 'Upload failed. Please reload and try again.' ) ) );
+	}
+
+	$attachment_id = (int) $_POST['attachment_id'];
+
+	if ( ! empty( $_POST['_wp_upload_failed_cleanup'] ) ) {
+		// Upload failed. Cleanup.
+		if ( wp_attachment_is_image( $attachment_id ) &amp;&amp; current_user_can( 'delete_post', $attachment_id ) ) {
+			$attachment = get_post( $attachment_id );
+
+			// Created at most 10 min ago.
+			if ( $attachment &amp;&amp; ( time() - strtotime( $attachment->post_date_gmt ) &lt; 600 ) ) {
+				wp_delete_attachment( $attachment_id, true );
+				wp_send_json_success();
+			}
+		}
+	}
+
+	// Set a custom header with the attachment_id.
+	// Used by the browser/client to resume creating image sub-sizes after a PHP fatal error.
+	if ( ! headers_sent() ) {
+		header( 'X-WP-Upload-Attachment-ID: ' . $attachment_id );
+	}
+
+	// This can still be pretty slow and cause timeout or out of memory errors.
+	// The js that handles the response would need to also handle HTTP 500 errors.
+	wp_update_image_subsizes( $attachment_id );
+...
+</code></pre>
+
+
+
+<p>where&nbsp;<code>attachment_id</code>&nbsp;could be any post&nbsp;<code>ID</code>&nbsp;from any&nbsp;<code>post_type</code>. So if&nbsp;<code>author</code>&nbsp;user role grabs the&nbsp;<code>_wpnonce</code>&nbsp;from&nbsp;<code>wp-admin/media-new.php</code>&nbsp;could perform the request below with &#8220;attacking&#8221; post ID.</p>
+
+
+
+<pre class="wp-block-code"><code lang="bash" class="language-bash">curl 'http://local.target/wp-admin/admin-ajax.php' -H 'Cookie: ...' --data 'action=media-create-image-subsizes&amp;_ajax_nonce=[media-form-nonce]&amp;attachment_id=[any-post-id-with-protected-atachment-meta]' --compressed
+</code></pre>
+
+
+
+<p>How to add protected meta into posts?! Check the facts below. <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attachment-api-any.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li>Yoast Duplicate posts is <a href="https://plugins.trac.wordpress.org/browser/duplicate-post/trunk/duplicate-post-admin.php#L637" target="_blank" rel="noreferrer noopener">adding protected</a> meta when cloning if meta / custom field key starts with <code>\_</code></li><li>We had already seen the <a href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank" rel="noreferrer noopener">wordpress-importer in action</a></li><li>WooCommerce had fixed something similar <a rel="noreferrer noopener" href="https://raw.githubusercontent.com/woocommerce/woocommerce/master/CHANGELOG.txt" target="_blank">few months</a> ago in 4.1.0 version</li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attachment-api-any.md#remediation"></a>Remediation</h2>
+
+
+
+<ul><li>make sure that <code>attachment</code> routines are performed only over attachments</li><li>do not allow users to create protected meta</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress and multiple maybe_unserialize</title>
 		<link>https://wpdeeply.com/wordpress-and-multiple-maybe_unserialize/</link>
 		
