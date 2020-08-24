@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/tag/0day/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Mon, 24 Aug 2020 03:33:18 +0000</lastBuildDate>
+	<lastBuildDate>Mon, 24 Aug 2020 03:41:26 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -215,7 +215,7 @@ exit();</code></pre>
 
 
 
-<ul><li>You will need to be logged in as user with upload permissions on the WP (it is this way in order to be stopped abuse of the scripts and that is why in the payload is used <span class="has-inline-color has-primary-color"><strong>wp_upload_bits</strong></span> function)</li><li>In the malware script set up your own value for <span class="has-inline-color has-primary-color"><strong>C2_URL</strong></span> constant and that is the url of your C2 script</li><li>In order to work C2 script you will need <strong>sodium_compat</strong> next to it and it could be found into any WP 5+ distribution under wp-includes folder</li><li>cat malware.txt &gt; /path_to_your_code/wp-includes/pluggable.php</li><li>Logged in with user with upload permissions hit refresh on your WP homepage with <strong>?wpdeeply=ok</strong> parameters and check in the upload directory <strong>wpdeeply?-x.jpg</strong> with encrypted <strong>wp-config.php</strong> content </li></ul>
+<ul><li>You will need to be logged in as user with upload permissions on the WP (it is this way in order to be stopped abuse of the scripts and that is why in the payload is used <span class="has-inline-color has-primary-color"><strong>wp_upload_bits</strong></span> function)</li><li>In the malware script set up your own value for <span class="has-inline-color has-primary-color"><strong>C2_URL</strong></span> constant and that is the url of your C2 script</li><li>In order to work C2 script you will need <strong>sodium_compat</strong> next to it and it could be found into any WP 5+ distribution under wp-includes folder</li><li>cat malware.txt >> /path_to_your_code/wp-includes/pluggable.php</li><li>Logged in with user with upload permissions hit refresh on your WP homepage with <strong>?wpdeeply=ok</strong> parameters and check in the upload directory <strong>wpdeeply?-x.jpg</strong> with encrypted <strong>wp-config.php</strong> content </li></ul>
 
 
 
