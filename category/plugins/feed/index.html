@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/plugins/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Tue, 11 Aug 2020 10:52:16 +0000</lastBuildDate>
+	<lastBuildDate>Tue, 25 Aug 2020 12:21:48 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,108 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>WooCommerce &lt; 4.1.0 Remote Code Execution</title>
+		<link>https://wpdeeply.com/woocommerce-4-1-0-remote-code-execution/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Tue, 25 Aug 2020 12:15:55 +0000</pubDate>
+				<category><![CDATA[plugins]]></category>
+		<category><![CDATA[fixed]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=217</guid>
+
+					<description><![CDATA[WooCommerce plugin is raw model how good WordPress plugin should look like and very often we can see how many another plugins around eco system very often borrow knowledge/source from it and that is probably ok. What is important to be mentioned here is the fact that there isn&#8217;t any log that will show us [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>WooCommerce plugin is raw model how good WordPress plugin should look like and very often we can see how many another plugins around eco system very often borrow knowledge/source from it and that is probably ok. What is important to be mentioned here is the fact that there isn&#8217;t any log that will show us all of those usages, but changelogs should be enough for developers to get the idea being Security fixes or not? From the 4.1.0 changelog we have the following:</p>
+
+
+
+<pre class="wp-block-code"><code class="">* Security - Fixed unescaped meta data while duplicating products. Reported by Slavco.
+</code></pre>
+
+
+
+<p>but is this enough, is everything told and do you get the idea about the vulnerability?!</p>
+
+
+
+<figure class="wp-block-video"><video controls src="https://wpdeeply.com/wp-content/uploads/2020/07/woosploit.mp4"></video></figure>
+
+
+
+<p> I know, no or maybe is the answer.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woosploit.md#what-is-fixed-in-410"></a>What is fixed in 4.1.0</h2>
+
+
+
+<p>According the logs there is issue with unescaped meta keys while duplicating products and fix is more than obvious e.g. there is&nbsp;<code>wp_slash</code>added to the&nbsp;<code>$meta-&gt;key</code>&nbsp;in&nbsp;<code>class-wc-data-store-wp.php</code>.</p>
+
+
+
+<pre class="wp-block-code"><code class="">return add_metadata( $this->meta_type, $object->get_id(), wp_slash( $meta->key ), is_string( $meta->value ) ? wp_slash( $meta->value ) : $meta->value, false );
+
+</code></pre>
+
+
+
+<p>So where is the RCE? If we see the code diff experienced eye should get the attention of changes in&nbsp;<code>class-wc-template-loader.php</code>&nbsp;file, method&nbsp;<code>get_template_loader_files</code>&nbsp;e.g.</p>
+
+
+
+<pre class="wp-block-code"><code class="">if ( is_page_template() ) {
+			$page_template = get_page_template_slug();
+
+			if ( $page_template ) {
+				$validated_file = validate_file( $page_template );
+				if ( 0 === $validated_file ) {
+					$templates[] = $page_template;
+				} else {
+					error_log( "WooCommerce: Unable to validate template path: \"$page_template\". Error Code: $validated_file." );
+				}
+			}
+		}
+</code></pre>
+
+
+
+<p>and this means that there is added validation to the value returned by&nbsp;<code>get_page_template_slug</code>&nbsp;which in fact is&nbsp;<code>_wp_page_template</code> protected meta value. This means that&nbsp;<code>_wp_page_template</code>&nbsp;could hold any value towards any location and that value to be&nbsp;<code>included</code>&nbsp;while rendering templates at WP.</p>
+
+
+
+<pre class="wp-block-code"><code class="">$template = apply_filters( 'template_include', $template );
+	if ( $template ) {
+		include $template;
+	} elseif
+</code></pre>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woosploit.md#who-is-affected"></a>Who is affected</h2>
+
+
+
+<p>Attack surface is bigger than advertised.</p>
+
+
+
+<ul><li>Duplicating products</li><li>Protected meta could be written while importing products trough new Woo importer, remember it is&nbsp;<code>class-wc-data-store-wp.php</code></li><li>Because&nbsp;<code>class-wc-template-loader.php</code>&nbsp;any&nbsp;<code>import</code>&nbsp;user role is RCE able on Woo setups, but there is <a href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank" rel="noreferrer noopener">contributor/visitor</a> attack in game</li><li>Unserialize trough <a href="https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/" target="_blank" rel="noreferrer noopener">PHAR</a> maybe?</li><li>All of those Woo marketplaces, multi language stores, managed setups&#8230;  </li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woosploit.md#remediation"></a>Remediation</h2>
+
+
+
+<p>Take measures about content in any uploaded files on your WP setup, but also for the content of the files that could be created while modifing them.</p>
+]]></content:encoded>
+					
+		
+		<enclosure url="https://wpdeeply.com/wp-content/uploads/2020/07/woosploit.mp4" length="0" type="video/mp4" />
+
+			</item>
+		<item>
 		<title>WordPress protected meta via wp job manager</title>
 		<link>https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/</link>
 		
