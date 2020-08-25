@@ -113,7 +113,7 @@ body.custom-background { background-color: #ffffff; }
 					<a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a>				</div>
 			</div>
 
-			<h2 class="entry-title heading-size-1"><a href="https://wpdeeply.com/woocommerce-4-1-0-remote-code-execution/">WooCommerce </a></h2>
+			<h2 class="entry-title heading-size-1"><a href="https://wpdeeply.com/woocommerce-4-1-0-remote-code-execution/">WooCommerce before 4.1.0 Remote Code Execution</a></h2>
 		<div class="post-meta-wrapper post-meta-single post-meta-single-top">
 
 			<ul class="post-meta"><li class="post-author meta-wrapper">
@@ -167,7 +167,7 @@ body.custom-background { background-color: #ffffff; }
 
 
 
-<pre class="wp-block-code"><code class="">return add_metadata( $this->meta_type, $object->get_id(), wp_slash( $meta->key ), is_string( $meta->value ) ? wp_slash( $meta->value ) : $meta->value, false );
+<pre class="wp-block-code"><code lang="php" class="language-php">return add_metadata( $this->meta_type, $object->get_id(), wp_slash( $meta->key ), is_string( $meta->value ) ? wp_slash( $meta->value ) : $meta->value, false );
 
 </code></pre>
 
@@ -177,7 +177,7 @@ body.custom-background { background-color: #ffffff; }
 
 
 
-<pre class="wp-block-code"><code class="">if ( is_page_template() ) {
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( is_page_template() ) {
 			$page_template = get_page_template_slug();
 
 			if ( $page_template ) {
@@ -197,7 +197,7 @@ body.custom-background { background-color: #ffffff; }
 
 
 
-<pre class="wp-block-code"><code class="">$template = apply_filters( 'template_include', $template );
+<pre class="wp-block-code"><code lang="php" class="language-php">$template = apply_filters( 'template_include', $template );
 	if ( $template ) {
 		include $template;
 	} elseif

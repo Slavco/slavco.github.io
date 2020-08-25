@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/tag/fixed/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Tue, 25 Aug 2020 12:21:48 +0000</lastBuildDate>
+	<lastBuildDate>Tue, 25 Aug 2020 12:27:01 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,7 +20,7 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
-		<title>WooCommerce &lt; 4.1.0 Remote Code Execution</title>
+		<title>WooCommerce before 4.1.0 Remote Code Execution</title>
 		<link>https://wpdeeply.com/woocommerce-4-1-0-remote-code-execution/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
@@ -60,7 +60,7 @@
 
 
 
-<pre class="wp-block-code"><code class="">return add_metadata( $this->meta_type, $object->get_id(), wp_slash( $meta->key ), is_string( $meta->value ) ? wp_slash( $meta->value ) : $meta->value, false );
+<pre class="wp-block-code"><code lang="php" class="language-php">return add_metadata( $this->meta_type, $object->get_id(), wp_slash( $meta->key ), is_string( $meta->value ) ? wp_slash( $meta->value ) : $meta->value, false );
 
 </code></pre>
 
@@ -70,7 +70,7 @@
 
 
 
-<pre class="wp-block-code"><code class="">if ( is_page_template() ) {
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( is_page_template() ) {
 			$page_template = get_page_template_slug();
 
 			if ( $page_template ) {
@@ -90,7 +90,7 @@
 
 
 
-<pre class="wp-block-code"><code class="">$template = apply_filters( 'template_include', $template );
+<pre class="wp-block-code"><code lang="php" class="language-php">$template = apply_filters( 'template_include', $template );
 	if ( $template ) {
 		include $template;
 	} elseif
