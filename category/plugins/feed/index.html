@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/plugins/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description></description>
-	<lastBuildDate>Tue, 25 Aug 2020 12:27:01 +0000</lastBuildDate>
+	<lastBuildDate>Tue, 22 Sep 2020 21:48:02 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,89 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.4.2</generator>
 	<item>
+		<title>Ninja Forms before 3.4.27.1 simple CSRF to RCE</title>
+		<link>https://wpdeeply.com/ninja-forms-before-3-4-27-1-simple-csrf-to-rce/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Tue, 22 Sep 2020 21:44:29 +0000</pubDate>
+				<category><![CDATA[plugins]]></category>
+		<category><![CDATA[fixed]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=223</guid>
+
+					<description><![CDATA[The bug is more than simple, GET request with Administrator cookies in it, will result with any plugin from WP dot org installation &#38; activation. If we talk about regular web application, then this won&#8217;t be even a issue and server miss configuration could be blamed (writable executable files), but we talk about WordPress where [&#8230;]]]></description>
+										<content:encoded><![CDATA[
+<p>The <a href="https://plugins.trac.wordpress.org/browser/ninja-forms/tags/3.4.27/services/bootstrap.php#L49" target="_blank" rel="noreferrer noopener">bug</a> is more than simple, GET request with Administrator cookies in it, will result with any plugin from WP dot org installation &amp; activation. If we talk about regular web application, then this won&#8217;t be even a issue and server miss configuration could be blamed (writable executable files), but we talk about WordPress where those conditions are advertised as good and are needed in the name of the security :/</p>
+
+
+
+<p>Today the CSRF issues aren&#8217;t the thing that much, because browsers protection, developers experience and web admins experience. Anyway, simple GET request cross domain or on same domain that will result with RCE is more than dangerous scenario, easy to be performed and hard to be noticed even by most experienced web masters.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/ninja-forms-csrf-rce.md#eli5-poc"></a>Eli5 PoC</h2>
+
+
+
+<p>In&nbsp;<code>services/bootstrap.php</code>&nbsp;there is ajax action called&nbsp;<code>nf_services_install</code>. If we look at its code we will notice that there isn&#8217;t CSRF protection in the form of nonce check / validation, but there is only logged in user permissions check (that is why CSRF attack will work against high privileged accounts)</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( ! current_user_can('install_plugins') )
+	die( json_encode( [ 'error' => esc_html__( 'Sorry, you are not allowed to install plugins on this site.' ) ] ) );
+	
+$plugin = \WPN_Helper::sanitize_text_field($_REQUEST['plugin']);
+$install_path = \WPN_Helper::sanitize_text_field($_REQUEST['install_path']);</code></pre>
+
+
+
+<p>the rest of the code is plugin download based on&nbsp;<code>$_REQUEST['plugin']</code>&nbsp;and plugin activation, based on&nbsp;<code>$_REQUEST['install_path']</code>. So the final link that need to be opened with&nbsp;<code>Administrator</code>&nbsp;cookies in it will be something like this:</p>
+
+
+
+<pre class="wp-block-code"><code class="">hxxts://local.target/wp-admin/admin-ajax.php?action=nf_services_install&amp;plugin=coditor&amp;install_path=coditor/coditor.php 
+</code></pre>
+
+
+
+<p>Could be shortened link, could be img tag in email or wp instance content, &#8230; There is huge room for successful attack <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+
+
+
+<h3><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/ninja-forms-csrf-rce.md#what-is-coditor-"></a>What is coditor ?</h3>
+
+
+
+<p><a href="https://wordpress.org/plugins/coditor/" target="_blank" rel="noreferrer noopener">Coditor</a> is WP plugin not updated several years, but still active ( was and after my report isn&#8217;t any more ) and was vulnerable towards RCE from lowest possible user role on any WP instance e.g. any logged in user. That was possible <a href="https://plugins.trac.wordpress.org/browser/coditor/trunk/coditor.php" target="_blank" rel="noreferrer noopener">because</a>:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">add_action('wp_ajax_coditor_process_ajax', array($this, 'coditor_process_ajax'));</code></pre>
+
+
+
+<p>and&nbsp;<code>coditor_process_ajax</code>&nbsp;method allows editing and deletion of any file under&nbsp;<code>$coditor = new Coditor(WP_CONTENT_DIR);</code>&nbsp;=&gt; any plugin / theme.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/ninja-forms-csrf-rce.md#few-facts"></a>Few facts</h2>
+
+
+
+<ul><li>In 30 minutes I found several forgotten plugins in the repository with RCE in them (pre auth or subscriber user role)</li><li>Attackers could deploy their own plugin towards wp dot org repository and to add backdoor in next iterations</li><li>If you search and you find for complete attack scenario with vulnerable plugin from the repository, then try to report that plugin towards authors.</li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/ninja-forms-csrf-rce.md#remediation"></a>Remediation</h2>
+
+
+
+<ul><li>Do not allow your plugins / themes directory to be writable by&nbsp;<code>www-data</code>&nbsp;user beside the fact it is advertised like that by WP folks</li><li>Update to the latest version of Ninja Forms plugin :/</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WooCommerce before 4.1.0 Remote Code Execution</title>
 		<link>https://wpdeeply.com/woocommerce-4-1-0-remote-code-execution/</link>
 		
