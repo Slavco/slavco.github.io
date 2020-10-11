@@ -11,39 +11,39 @@
 	<title>fixed &#8211; WP deeply</title>
 	<atom:link href="https://wpdeeply.com/tag/fixed/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
-	<description></description>
-	<lastBuildDate>Tue, 22 Sep 2020 21:48:02 +0000</lastBuildDate>
+	<description>// Silence is golden.  Not for you!</description>
+	<lastBuildDate>Sun, 11 Oct 2020 21:43:16 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
 	<sy:updateFrequency>
 	1	</sy:updateFrequency>
-	<generator>https://wordpress.org/?v=5.4.2</generator>
+	<generator>https://wordpress.org/?v=5.5.1</generator>
 	<item>
 		<title>Ninja Forms before 3.4.27.1 simple CSRF to RCE</title>
 		<link>https://wpdeeply.com/ninja-forms-before-3-4-27-1-simple-csrf-to-rce/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Tue, 22 Sep 2020 21:44:29 +0000</pubDate>
+		<pubDate>Tue, 22 Sep 2020 19:55:30 +0000</pubDate>
 				<category><![CDATA[plugins]]></category>
 		<category><![CDATA[fixed]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=223</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=20</guid>
 
-					<description><![CDATA[The bug is more than simple, GET request with Administrator cookies in it, will result with any plugin from WP dot org installation &#38; activation. If we talk about regular web application, then this won&#8217;t be even a issue and server miss configuration could be blamed (writable executable files), but we talk about WordPress where [&#8230;]]]></description>
+					<description><![CDATA[The bug is more than simple, GET request with Administrator cookies in it, will result with any plugin from WP dot org installation &#38; activation. If we talk about regular web application, then this won’t be even a issue and server miss configuration could be blamed (writable executable files), but we talk about WordPress where &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/ninja-forms-before-3-4-27-1-simple-csrf-to-rce/"> <span class="screen-reader-text">Ninja Forms before 3.4.27.1 simple CSRF to RCE</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
-<p>The <a href="https://plugins.trac.wordpress.org/browser/ninja-forms/tags/3.4.27/services/bootstrap.php#L49" target="_blank" rel="noreferrer noopener">bug</a> is more than simple, GET request with Administrator cookies in it, will result with any plugin from WP dot org installation &amp; activation. If we talk about regular web application, then this won&#8217;t be even a issue and server miss configuration could be blamed (writable executable files), but we talk about WordPress where those conditions are advertised as good and are needed in the name of the security :/</p>
+<p>The <a href="https://plugins.trac.wordpress.org/browser/ninja-forms/tags/3.4.27/services/bootstrap.php#L49" target="_blank" rel="noreferrer noopener">bug</a> is more than simple, GET request with Administrator cookies in it, will result with any plugin from WP dot org installation &amp; activation. If we talk about regular web application, then this won’t be even a issue and server miss configuration could be blamed (writable executable files), but we talk about WordPress where those conditions are advertised as good and are needed in the name of the security :/</p>
 
 
 
-<p>Today the CSRF issues aren&#8217;t the thing that much, because browsers protection, developers experience and web admins experience. Anyway, simple GET request cross domain or on same domain that will result with RCE is more than dangerous scenario, easy to be performed and hard to be noticed even by most experienced web masters.</p>
+<p>Today the CSRF issues aren’t the thing that much, because browsers protection, developers experience and web admins experience. Anyway, simple GET request cross domain or on same domain that will result with RCE is more than dangerous scenario, easy to be performed and hard to be noticed even by most experienced web masters.</p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/ninja-forms-csrf-rce.md#eli5-poc"></a>Eli5 PoC</h2>
+<h2>Eli5 PoC</h2>
 
 
 
-<p>In&nbsp;<code>services/bootstrap.php</code>&nbsp;there is ajax action called&nbsp;<code>nf_services_install</code>. If we look at its code we will notice that there isn&#8217;t CSRF protection in the form of nonce check / validation, but there is only logged in user permissions check (that is why CSRF attack will work against high privileged accounts)</p>
+<p>In&nbsp;<code>services/bootstrap.php</code>&nbsp;there is ajax action called&nbsp;<code>nf_services_install</code>. If we look at its code we will notice that there isn’t CSRF protection in the form of nonce check / validation, but there is only logged in user permissions check (that is why CSRF attack will work against high privileged accounts)</p>
 
 
 
@@ -64,15 +64,15 @@ $install_path = \WPN_Helper::sanitize_text_field($_REQUEST['install_path']);</co
 
 
 
-<p>Could be shortened link, could be img tag in email or wp instance content, &#8230; There is huge room for successful attack <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>Could be shortened link, could be img tag in email or wp instance content, … There is huge room for successful attack <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
 
 
 
-<h3><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/ninja-forms-csrf-rce.md#what-is-coditor-"></a>What is coditor ?</h3>
+<h3>What is coditor ?</h3>
 
 
 
-<p><a href="https://wordpress.org/plugins/coditor/" target="_blank" rel="noreferrer noopener">Coditor</a> is WP plugin not updated several years, but still active ( was and after my report isn&#8217;t any more ) and was vulnerable towards RCE from lowest possible user role on any WP instance e.g. any logged in user. That was possible <a href="https://plugins.trac.wordpress.org/browser/coditor/trunk/coditor.php" target="_blank" rel="noreferrer noopener">because</a>:</p>
+<p><a href="https://wordpress.org/plugins/coditor/" target="_blank" rel="noreferrer noopener">Coditor</a> is WP plugin not updated several years, but still active ( was and after my report isn’t any more ) and was vulnerable towards RCE from lowest possible user role on any WP instance e.g. any logged in user. That was possible <a href="https://plugins.trac.wordpress.org/browser/coditor/trunk/coditor.php" target="_blank" rel="noreferrer noopener">because</a>:</p>
 
 
 
@@ -84,7 +84,7 @@ $install_path = \WPN_Helper::sanitize_text_field($_REQUEST['install_path']);</co
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/ninja-forms-csrf-rce.md#few-facts"></a>Few facts</h2>
+<h2>Few facts</h2>
 
 
 
@@ -92,7 +92,7 @@ $install_path = \WPN_Helper::sanitize_text_field($_REQUEST['install_path']);</co
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/ninja-forms-csrf-rce.md#remediation"></a>Remediation</h2>
+<h2>Remediation</h2>
 
 
 
@@ -107,14 +107,14 @@ $install_path = \WPN_Helper::sanitize_text_field($_REQUEST['install_path']);</co
 		<link>https://wpdeeply.com/woocommerce-4-1-0-remote-code-execution/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Tue, 25 Aug 2020 12:15:55 +0000</pubDate>
+		<pubDate>Tue, 25 Aug 2020 19:58:44 +0000</pubDate>
 				<category><![CDATA[plugins]]></category>
 		<category><![CDATA[fixed]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=217</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=23</guid>
 
-					<description><![CDATA[WooCommerce plugin is raw model how good WordPress plugin should look like and very often we can see how many another plugins around eco system very often borrow knowledge/source from it and that is probably ok. What is important to be mentioned here is the fact that there isn&#8217;t any log that will show us [&#8230;]]]></description>
+					<description><![CDATA[WooCommerce plugin is raw model how good WordPress plugin should look like and very often we can see how many another plugins around eco system very often borrow knowledge/source from it and that is probably ok. What is important to be mentioned here is the fact that there isn’t any log that will show us &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/woocommerce-4-1-0-remote-code-execution/"> <span class="screen-reader-text">WooCommerce before 4.1.0 Remote Code Execution</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
-<p>WooCommerce plugin is raw model how good WordPress plugin should look like and very often we can see how many another plugins around eco system very often borrow knowledge/source from it and that is probably ok. What is important to be mentioned here is the fact that there isn&#8217;t any log that will show us all of those usages, but changelogs should be enough for developers to get the idea being Security fixes or not? From the 4.1.0 changelog we have the following:</p>
+<p>WooCommerce plugin is raw model how good WordPress plugin should look like and very often we can see how many another plugins around eco system very often borrow knowledge/source from it and that is probably ok. What is important to be mentioned here is the fact that there isn’t any log that will show us all of those usages, but changelogs should be enough for developers to get the idea being Security fixes or not? From the 4.1.0 changelog we have the following:</p>
 
 
 
@@ -123,19 +123,11 @@ $install_path = \WPN_Helper::sanitize_text_field($_REQUEST['install_path']);</co
 
 
 
-<p>but is this enough, is everything told and do you get the idea about the vulnerability?!</p>
+<p>but is this enough, is everything told and do you get the idea about the vulnerability?! <br>I know, no or maybe is the answer.</p>
 
 
 
-<figure class="wp-block-video"><video controls src="https://wpdeeply.com/wp-content/uploads/2020/07/woosploit.mp4"></video></figure>
-
-
-
-<p> I know, no or maybe is the answer.</p>
-
-
-
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woosploit.md#what-is-fixed-in-410"></a>What is fixed in 4.1.0</h2>
+<h2>What is fixed in 4.1.0</h2>
 
 
 
@@ -181,7 +173,7 @@ $install_path = \WPN_Helper::sanitize_text_field($_REQUEST['install_path']);</co
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woosploit.md#who-is-affected"></a>Who is affected</h2>
+<h2>Who is affected</h2>
 
 
 
@@ -189,11 +181,11 @@ $install_path = \WPN_Helper::sanitize_text_field($_REQUEST['install_path']);</co
 
 
 
-<ul><li>Duplicating products</li><li>Protected meta could be written while importing products trough new Woo importer, remember it is&nbsp;<code>class-wc-data-store-wp.php</code></li><li>Because&nbsp;<code>class-wc-template-loader.php</code>&nbsp;any&nbsp;<code>import</code>&nbsp;user role is RCE able on Woo setups, but there is <a href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank" rel="noreferrer noopener">contributor/visitor</a> attack in game</li><li>Unserialize trough <a href="https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/" target="_blank" rel="noreferrer noopener">PHAR</a> maybe?</li><li>All of those Woo marketplaces, multi language stores, managed setups&#8230;  </li></ul>
+<ul><li>Duplicating products</li><li>Protected meta could be written while importing products trough new Woo importer, remember it is&nbsp;<code>class-wc-data-store-wp.php</code></li><li>Because&nbsp;<code>class-wc-template-loader.php</code>&nbsp;any&nbsp;<code>import</code>&nbsp;user role is RCE able on Woo setups, but there is <a href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank" rel="noreferrer noopener">contributor/visitor</a> attack in game</li><li>Unserialize trough <a href="https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/" target="_blank" rel="noreferrer noopener">PHAR</a> maybe?</li><li>All of those Woo marketplaces, multi language stores, managed setups…</li></ul>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woosploit.md#remediation"></a>Remediation</h2>
+<h2>Remediation</h2>
 
 
 
@@ -201,8 +193,7 @@ $install_path = \WPN_Helper::sanitize_text_field($_REQUEST['install_path']);</co
 ]]></content:encoded>
 					
 		
-		<enclosure url="https://wpdeeply.com/wp-content/uploads/2020/07/woosploit.mp4" length="0" type="video/mp4" />
-
+		
 			</item>
 	</channel>
 </rss>

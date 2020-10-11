@@ -1,143 +1,134 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en-US"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>WordPress attachment api functions and any post type – WP deeply</title><link rel="dns-prefetch" href="//s.w.org"><link rel="stylesheet" id="wp-block-library-css" href="https://wpdeeply.com/wp-includes/css/dist/block-library/style.min.css" media="all"><link rel="stylesheet" id="coblocks-frontend-css" href="https://wpdeeply.com/wp-content/plugins/coblocks/dist/coblocks-style.css" media="all"><link rel="stylesheet" id="mkaz-code-syntax-css-css" href="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/blocks.style.css" media="all"><link rel="stylesheet" id="mkaz-code-syntax-prism-css-css" href="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/prism/prism.css" media="all"><link rel="stylesheet" id="twentytwenty-style-css" href="https://wpdeeply.com/wp-content/themes/twentytwenty/style.css" media="all"><style id="twentytwenty-style-inline-css">
-.color-accent,.color-accent-hover:hover,.color-accent-hover:focus,:root .has-accent-color,.has-drop-cap:not(:focus):first-letter,.wp-block-button.is-style-outline,a { color: #e22658; }blockquote,.border-color-accent,.border-color-accent-hover:hover,.border-color-accent-hover:focus { border-color: #e22658; }button:not(.toggle),.button,.faux-button,.wp-block-button__link,.wp-block-file .wp-block-file__button,input[type="button"],input[type="reset"],input[type="submit"],.bg-accent,.bg-accent-hover:hover,.bg-accent-hover:focus,:root .has-accent-background-color,.comment-reply-link { background-color: #e22658; }.fill-children-accent,.fill-children-accent * { fill: #e22658; }:root .has-background-color,button,.button,.faux-button,.wp-block-button__link,.wp-block-file__button,input[type="button"],input[type="reset"],input[type="submit"],.wp-block-button,.comment-reply-link,.has-background.has-primary-background-color:not(.has-text-color),.has-background.has-primary-background-color *:not(.has-text-color),.has-background.has-accent-background-color:not(.has-text-color),.has-background.has-accent-background-color *:not(.has-text-color) { color: #ffffff; }:root .has-background-background-color { background-color: #ffffff; }body,.entry-title a,:root .has-primary-color { color: #000000; }:root .has-primary-background-color { background-color: #000000; }cite,figcaption,.wp-caption-text,.post-meta,.entry-content .wp-block-archives li,.entry-content .wp-block-categories li,.entry-content .wp-block-latest-posts li,.wp-block-latest-comments__comment-date,.wp-block-latest-posts__post-date,.wp-block-embed figcaption,.wp-block-image figcaption,.wp-block-pullquote cite,.comment-metadata,.comment-respond .comment-notes,.comment-respond .logged-in-as,.pagination .dots,.entry-content hr:not(.has-background),hr.styled-separator,:root .has-secondary-color { color: #6d6d6d; }:root .has-secondary-background-color { background-color: #6d6d6d; }pre,fieldset,input,textarea,table,table *,hr { border-color: #dbdbdb; }caption,code,code,kbd,samp,.wp-block-table.is-style-stripes tbody tr:nth-child(odd),:root .has-subtle-background-background-color { background-color: #dbdbdb; }.wp-block-table.is-style-stripes { border-bottom-color: #dbdbdb; }.wp-block-latest-posts.is-grid li { border-top-color: #dbdbdb; }:root .has-subtle-background-color { color: #dbdbdb; }body:not(.overlay-header) .primary-menu > li > a,body:not(.overlay-header) .primary-menu > li > .icon,.modal-menu a,.footer-menu a, .footer-widgets a,#site-footer .wp-block-button.is-style-outline,.wp-block-pullquote:before,.singular:not(.overlay-header) .entry-header a,.archive-header a,.header-footer-group .color-accent,.header-footer-group .color-accent-hover:hover { color: #cd2653; }.social-icons a,#site-footer button:not(.toggle),#site-footer .button,#site-footer .faux-button,#site-footer .wp-block-button__link,#site-footer .wp-block-file__button,#site-footer input[type="button"],#site-footer input[type="reset"],#site-footer input[type="submit"] { background-color: #cd2653; }.header-footer-group,body:not(.overlay-header) #site-header .toggle,.menu-modal .toggle { color: #000000; }body:not(.overlay-header) .primary-menu ul { background-color: #000000; }body:not(.overlay-header) .primary-menu > li > ul:after { border-bottom-color: #000000; }body:not(.overlay-header) .primary-menu ul ul:after { border-left-color: #000000; }.site-description,body:not(.overlay-header) .toggle-inner .toggle-text,.widget .post-date,.widget .rss-date,.widget_archive li,.widget_categories li,.widget cite,.widget_pages li,.widget_meta li,.widget_nav_menu li,.powered-by-wordpress,.to-the-top,.singular .entry-header .post-meta,.singular:not(.overlay-header) .entry-header .post-meta a { color: #6d6d6d; }.header-footer-group pre,.header-footer-group fieldset,.header-footer-group input,.header-footer-group textarea,.header-footer-group table,.header-footer-group table *,.footer-nav-widgets-wrapper,#site-footer,.menu-modal nav *,.footer-widgets-outer-wrapper,.footer-top { border-color: #dcd7ca; }.header-footer-group table caption,body:not(.overlay-header) .header-inner .toggle-wrapper::before { background-color: #dcd7ca; }
-</style><link rel="stylesheet" id="twentytwenty-print-style-css" href="https://wpdeeply.com/wp-content/themes/twentytwenty/print.css" media="print"><script src="https://wpdeeply.com/wp-content/themes/twentytwenty/assets/js/index.js" async></script><script>document.documentElement.className = document.documentElement.className.replace( 'no-js', 'js' );</script><style id="custom-background-css">
-body.custom-background { background-color: #ffffff; }
-</style></head><body class="post-template-default single single-post postid-197 single-format-standard custom-background wp-embed-responsive is-twentytwenty singular missing-post-thumbnail has-single-pagination showing-comments show-avatars footer-top-hidden reduced-spacing">
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<a class="skip-link screen-reader-text" href="#site-content">Skip to the content</a>
-		<header id="site-header" class="header-footer-group" role="banner"><div class="header-inner section-inner">
 
-				<div class="header-titles-wrapper">
+<title>WordPress attachment api functions and any post type – WP deeply</title>
+<link rel="dns-prefetch" href="//s.w.org">
 
-					
-					<div class="header-titles">
 
-						<div class="site-title faux-heading"><a href="https://wpdeeply.com/">WP deeply</a></div>
-					</div>
+<link rel="stylesheet" id="astra-theme-css-css" href="https://wpdeeply.com/wp-content/themes/astra/assets/css/minified/style.min.css" media="all">
+<style id="astra-theme-css-inline-css">
+html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a3a;}body,button,input,select,textarea,.ast-button,.ast-custom-button{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif;font-weight:inherit;font-size:19px;font-size:1rem;}blockquote{color:#000000;}.site-title{font-size:35px;font-size:1.8421052631579rem;}.ast-archive-description .ast-archive-title{font-size:40px;font-size:2.1052631578947rem;}.site-header .site-description{font-size:15px;font-size:0.78947368421053rem;}.entry-title{font-size:40px;font-size:2.1052631578947rem;}.comment-reply-title{font-size:31px;font-size:1.6315789473684rem;}.ast-comment-list #cancel-comment-reply-link{font-size:19px;font-size:1rem;}h1,.entry-content h1{font-size:40px;font-size:2.1052631578947rem;}h2,.entry-content h2{font-size:30px;font-size:1.5789473684211rem;}h3,.entry-content h3{font-size:25px;font-size:1.3157894736842rem;}h4,.entry-content h4{font-size:20px;font-size:1.0526315789474rem;}h5,.entry-content h5{font-size:18px;font-size:0.94736842105263rem;}h6,.entry-content h6{font-size:15px;font-size:0.78947368421053rem;}.ast-single-post .entry-title,.page-title{font-size:30px;font-size:1.5789473684211rem;}#secondary,#secondary button,#secondary input,#secondary select,#secondary textarea{font-size:19px;font-size:1rem;}::selection{background-color:#0274be;color:#ffffff;}body,h1,.entry-title a,.entry-content h1,h2,.entry-content h2,h3,.entry-content h3,h4,.entry-content h4,h5,.entry-content h5,h6,.entry-content h6,.wc-block-grid__product-title{color:#3a3a3a;}.tagcloud a:hover,.tagcloud a:focus,.tagcloud a.current-item{color:#ffffff;border-color:#0274be;background-color:#0274be;}.main-header-menu .menu-link,.ast-header-custom-item a{color:#3a3a3a;}.main-header-menu .menu-item:hover > .menu-link,.main-header-menu .menu-item:hover > .ast-menu-toggle,.main-header-menu .ast-masthead-custom-menu-items a:hover,.main-header-menu .menu-item.focus > .menu-link,.main-header-menu .menu-item.focus > .ast-menu-toggle,.main-header-menu .current-menu-item > .menu-link,.main-header-menu .current-menu-ancestor > .menu-link,.main-header-menu .current-menu-item > .ast-menu-toggle,.main-header-menu .current-menu-ancestor > .ast-menu-toggle{color:#0274be;}input:focus,input[type="text"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="password"]:focus,input[type="reset"]:focus,input[type="search"]:focus,textarea:focus{border-color:#0274be;}input[type="radio"]:checked,input[type=reset],input[type="checkbox"]:checked,input[type="checkbox"]:hover:checked,input[type="checkbox"]:focus:checked,input[type=range]::-webkit-slider-thumb{border-color:#0274be;background-color:#0274be;box-shadow:none;}.site-footer a:hover + .post-count,.site-footer a:focus + .post-count{background:#0274be;border-color:#0274be;}.footer-adv .footer-adv-overlay{border-top-style:solid;border-top-color:#7a7a7a;}.ast-comment-meta{line-height:1.666666667;font-size:16px;font-size:0.84210526315789rem;}.single .nav-links .nav-previous,.single .nav-links .nav-next,.single .ast-author-details .author-title,.ast-comment-meta{color:#0274be;}.entry-meta,.entry-meta *{line-height:1.45;color:#0274be;}.entry-meta a:hover,.entry-meta a:hover *,.entry-meta a:focus,.entry-meta a:focus *{color:#3a3a3a;}.ast-404-layout-1 .ast-404-text{font-size:200px;font-size:10.526315789474rem;}.widget-title{font-size:27px;font-size:1.4210526315789rem;color:#3a3a3a;}#cat option,.secondary .calendar_wrap thead a,.secondary .calendar_wrap thead a:visited{color:#0274be;}.secondary .calendar_wrap #today,.ast-progress-val span{background:#0274be;}.secondary a:hover + .post-count,.secondary a:focus + .post-count{background:#0274be;border-color:#0274be;}.calendar_wrap #today > a{color:#ffffff;}.ast-pagination a,.page-links .page-link,.single .post-navigation a{color:#0274be;}.ast-pagination a:hover,.ast-pagination a:focus,.ast-pagination > span:hover:not(.dots),.ast-pagination > span.current,.page-links > .page-link,.page-links .page-link:hover,.post-navigation a:hover{color:#3a3a3a;}.ast-header-break-point .ast-mobile-menu-buttons-minimal.menu-toggle{background:transparent;color:#0274be;}.ast-header-break-point .ast-mobile-menu-buttons-outline.menu-toggle{background:transparent;border:1px solid #0274be;color:#0274be;}.ast-header-break-point .ast-mobile-menu-buttons-fill.menu-toggle{background:#0274be;}@media (min-width:1200px){.ast-separate-container.ast-right-sidebar .entry-content .wp-block-image.alignfull,.ast-separate-container.ast-left-sidebar .entry-content .wp-block-image.alignfull,.ast-separate-container.ast-right-sidebar .entry-content .wp-block-cover.alignfull,.ast-separate-container.ast-left-sidebar .entry-content .wp-block-cover.alignfull{margin-left:-6.67em;margin-right:-6.67em;max-width:unset;width:unset;}.ast-separate-container.ast-right-sidebar .entry-content .wp-block-image.alignwide,.ast-separate-container.ast-left-sidebar .entry-content .wp-block-image.alignwide,.ast-separate-container.ast-right-sidebar .entry-content .wp-block-cover.alignwide,.ast-separate-container.ast-left-sidebar .entry-content .wp-block-cover.alignwide{margin-left:-20px;margin-right:-20px;max-width:unset;width:unset;}.wp-block-group .has-background{padding:20px;}}@media (min-width:1200px){.ast-separate-container.ast-right-sidebar .entry-content .wp-block-group.alignwide,.ast-separate-container.ast-left-sidebar .entry-content .wp-block-group.alignwide,.ast-separate-container.ast-right-sidebar .entry-content .wp-block-cover.alignwide,.ast-separate-container.ast-left-sidebar .entry-content .wp-block-cover.alignwide,.ast-no-sidebar.ast-separate-container .entry-content .wp-block-group.alignwide,.ast-no-sidebar.ast-separate-container .entry-content .wp-block-cover.alignwide{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px;}.ast-separate-container.ast-right-sidebar .entry-content .wp-block-group.alignfull,.ast-separate-container.ast-left-sidebar .entry-content .wp-block-group.alignfull,.ast-no-sidebar.ast-separate-container .entry-content .wp-block-group.alignfull,.ast-separate-container.ast-right-sidebar .entry-content .wp-block-cover.alignfull,.ast-separate-container.ast-left-sidebar .entry-content .wp-block-cover.alignfull,.ast-no-sidebar.ast-separate-container .entry-content .wp-block-cover.alignfull{margin-left:-6.67em;margin-right:-6.67em;padding-left:6.67em;padding-right:6.67em;}.ast-plain-container.ast-right-sidebar .entry-content .wp-block-group.alignwide,.ast-plain-container.ast-left-sidebar .entry-content .wp-block-group.alignwide,.ast-plain-container.ast-right-sidebar .entry-content .wp-block-group.alignfull,.ast-plain-container.ast-left-sidebar .entry-content .wp-block-group.alignfull{padding-left:20px;padding-right:20px;}.ast-plain-container.ast-no-sidebar .entry-content .alignwide .wp-block-group__inner-container,.ast-plain-container.ast-no-sidebar .entry-content .alignfull .wp-block-group__inner-container,.ast-plain-container.ast-no-sidebar .entry-content .alignwide .wp-block-cover__inner-container,.ast-plain-container.ast-no-sidebar .entry-content .alignfull .wp-block-cover__inner-container{max-width:1240px;margin-left:auto;margin-right:auto;padding-left:20px;padding-right:20px;}.ast-page-builder-template.ast-no-sidebar .entry-content .wp-block-group.alignwide,.ast-page-builder-template.ast-no-sidebar .entry-content .wp-block-group.alignfull{margin-left:0;margin-right:0;}.wp-block-cover-image.alignwide .wp-block-cover__inner-container,.wp-block-cover.alignwide .wp-block-cover__inner-container,.wp-block-cover-image.alignfull .wp-block-cover__inner-container,.wp-block-cover.alignfull .wp-block-cover__inner-container{width:100%;}.ast-page-builder-template.ast-no-sidebar .entry-content .wp-block-cover.alignwide,.ast-page-builder-template.ast-left-sidebar .entry-content .wp-block-cover.alignwide,.ast-page-builder-template.ast-right-sidebar .entry-content .wp-block-cover.alignwide,.ast-page-builder-template.ast-no-sidebar .entry-content .wp-block-cover.alignfull,.ast-page-builder-template.ast-left-sidebar .entry-content .wp-block-cover.alignfull,.ast-page-builder-template.ast-right-sidebar .entry-content .wp-block-cover.alignful{padding-right:0;padding-left:0;}}@media (max-width:921px){#secondary.secondary{padding-top:0;}.ast-separate-container .ast-article-post,.ast-separate-container .ast-article-single{padding:1.5em 2.14em;}.ast-separate-container #primary,.ast-separate-container #secondary{padding:1.5em 0;}.ast-separate-container.ast-right-sidebar #secondary{padding-left:1em;padding-right:1em;}.ast-separate-container.ast-two-container #secondary{padding-left:0;padding-right:0;}.ast-page-builder-template .entry-header #secondary{margin-top:1.5em;}.ast-page-builder-template #secondary{margin-top:1.5em;}#primary,#secondary{padding:1.5em 0;margin:0;}.ast-left-sidebar #content > .ast-container{display:flex;flex-direction:column-reverse;width:100%;}.ast-author-box img.avatar{margin:20px 0 0 0;}.ast-pagination{padding-top:1.5em;text-align:center;}.ast-pagination .next.page-numbers{display:inherit;float:none;}}@media (max-width:921px){.ast-page-builder-template.ast-left-sidebar #secondary{padding-right:20px;}.ast-page-builder-template.ast-right-sidebar #secondary{padding-left:20px;}.ast-right-sidebar #primary{padding-right:0;}.ast-right-sidebar #secondary{padding-left:0;}.ast-left-sidebar #primary{padding-left:0;}.ast-left-sidebar #secondary{padding-right:0;}.ast-pagination .prev.page-numbers{padding-left:.5em;}.ast-pagination .next.page-numbers{padding-right:.5em;}}@media (min-width:922px){.ast-separate-container.ast-right-sidebar #primary,.ast-separate-container.ast-left-sidebar #primary{border:0;}.ast-separate-container.ast-right-sidebar #secondary,.ast-separate-container.ast-left-sidebar #secondary{border:0;margin-left:auto;margin-right:auto;}.ast-separate-container.ast-two-container #secondary .widget:last-child{margin-bottom:0;}.ast-separate-container .ast-comment-list li .comment-respond{padding-left:2.66666em;padding-right:2.66666em;}.ast-author-box{-js-display:flex;display:flex;}.ast-author-bio{flex:1;}.error404.ast-separate-container #primary,.search-no-results.ast-separate-container #primary{margin-bottom:4em;}}@media (min-width:922px){.ast-right-sidebar #primary{border-right:1px solid #eee;}.ast-right-sidebar #secondary{border-left:1px solid #eee;margin-left:-1px;}.ast-left-sidebar #primary{border-left:1px solid #eee;}.ast-left-sidebar #secondary{border-right:1px solid #eee;margin-right:-1px;}.ast-separate-container.ast-two-container.ast-right-sidebar #secondary{padding-left:30px;padding-right:0;}.ast-separate-container.ast-two-container.ast-left-sidebar #secondary{padding-right:30px;padding-left:0;}}.wp-block-button .wp-block-button__link,{color:#ffffff;}.wp-block-button .wp-block-button__link{border-style:solid;border-top-width:0;border-right-width:0;border-left-width:0;border-bottom-width:0;border-color:#0274be;background-color:#0274be;color:#ffffff;font-family:inherit;font-weight:inherit;line-height:1;border-radius:2px;padding-top:10px;padding-right:40px;padding-bottom:10px;padding-left:40px;}.wp-block-button .wp-block-button__link:hover,.wp-block-button .wp-block-button__link:focus{color:#ffffff;background-color:#3a3a3a;border-color:#3a3a3a;}.menu-toggle,button,.ast-button,.ast-custom-button,.button,input#submit,input[type="button"],input[type="submit"],input[type="reset"]{border-style:solid;border-top-width:0;border-right-width:0;border-left-width:0;border-bottom-width:0;color:#ffffff;border-color:#0274be;background-color:#0274be;border-radius:2px;padding-top:10px;padding-right:40px;padding-bottom:10px;padding-left:40px;font-family:inherit;font-weight:inherit;line-height:1;}button:focus,.menu-toggle:hover,button:hover,.ast-button:hover,.button:hover,input[type=reset]:hover,input[type=reset]:focus,input#submit:hover,input#submit:focus,input[type="button"]:hover,input[type="button"]:focus,input[type="submit"]:hover,input[type="submit"]:focus{color:#ffffff;background-color:#3a3a3a;border-color:#3a3a3a;}@media (min-width:921px){.ast-container{max-width:100%;}}@media (min-width:544px){.ast-container{max-width:100%;}}@media (max-width:544px){.ast-separate-container .ast-article-post,.ast-separate-container .ast-article-single{padding:1.5em 1em;}.ast-separate-container #content .ast-container{padding-left:0.54em;padding-right:0.54em;}.ast-separate-container #secondary{padding-top:0;}.ast-separate-container.ast-two-container #secondary .widget{margin-bottom:1.5em;padding-left:1em;padding-right:1em;}.ast-separate-container .comments-count-wrapper{padding:1.5em 1em;}.ast-separate-container .ast-comment-list li.depth-1{padding:1.5em 1em;margin-bottom:1.5em;}.ast-separate-container .ast-comment-list .bypostauthor{padding:.5em;}.ast-separate-container .ast-archive-description{padding:1.5em 1em;}.ast-search-menu-icon.ast-dropdown-active .search-field{width:170px;}.ast-separate-container .comment-respond{padding:1.5em 1em;}}@media (max-width:544px){.ast-comment-list .children{margin-left:0.66666em;}.ast-separate-container .ast-comment-list .bypostauthor li{padding:0 0 0 .5em;}}@media (max-width:921px){.ast-mobile-header-stack .main-header-bar .ast-search-menu-icon{display:inline-block;}.ast-header-break-point.ast-header-custom-item-outside .ast-mobile-header-stack .main-header-bar .ast-search-icon{margin:0;}.ast-comment-avatar-wrap img{max-width:2.5em;}.comments-area{margin-top:1.5em;}.ast-separate-container .comments-count-wrapper{padding:2em 2.14em;}.ast-separate-container .ast-comment-list li.depth-1{padding:1.5em 2.14em;}.ast-separate-container .comment-respond{padding:2em 2.14em;}}@media (max-width:921px){.ast-header-break-point .main-header-bar .ast-search-menu-icon.slide-search .search-form{right:0;}.ast-header-break-point .ast-mobile-header-stack .main-header-bar .ast-search-menu-icon.slide-search .search-form{right:-1em;}.ast-comment-avatar-wrap{margin-right:0.5em;}}@media (min-width:545px){.ast-page-builder-template .comments-area,.single.ast-page-builder-template .entry-header,.single.ast-page-builder-template .post-navigation{max-width:1240px;margin-left:auto;margin-right:auto;}}@media (max-width:921px){.ast-archive-description .ast-archive-title{font-size:40px;}.entry-title{font-size:30px;}h1,.entry-content h1{font-size:30px;}h2,.entry-content h2{font-size:25px;}h3,.entry-content h3{font-size:20px;}.ast-single-post .entry-title,.page-title{font-size:30px;}}@media (max-width:544px){.ast-archive-description .ast-archive-title{font-size:40px;}.entry-title{font-size:30px;}h1,.entry-content h1{font-size:30px;}h2,.entry-content h2{font-size:25px;}h3,.entry-content h3{font-size:20px;}.ast-single-post .entry-title,.page-title{font-size:30px;}}@media (max-width:921px){html{font-size:108.3%;}}@media (max-width:544px){html{font-size:108.3%;}}@media (min-width:922px){.ast-container{max-width:1240px;}}@font-face {font-family: "Astra";src: url(https://wpdeeply.com/wp-content/themes/astra/assets/fonts/astra.woff) format("woff"),url(https://wpdeeply.com/wp-content/themes/astra/assets/fonts/astra.ttf) format("truetype"),url(https://wpdeeply.com/wp-content/themes/astra/assets/fonts/astra.svg#astra) format("svg");font-weight: normal;font-style: normal;font-display: fallback;}@media (max-width:921px) {.main-header-bar .main-header-bar-navigation{display:none;}}.ast-desktop .main-header-menu.submenu-with-border .sub-menu,.ast-desktop .main-header-menu.submenu-with-border .astra-full-megamenu-wrapper{border-color:#0274be;}.ast-desktop .main-header-menu.submenu-with-border .sub-menu{border-top-width:2px;border-right-width:0px;border-left-width:0px;border-bottom-width:0px;border-style:solid;}.ast-desktop .main-header-menu.submenu-with-border .sub-menu .sub-menu{top:-2px;}.ast-desktop .main-header-menu.submenu-with-border .sub-menu .menu-link,.ast-desktop .main-header-menu.submenu-with-border .children .menu-link{border-bottom-width:0px;border-style:solid;border-color:#eaeaea;}@media (min-width:922px){.main-header-menu .sub-menu .menu-item.ast-left-align-sub-menu:hover > .sub-menu,.main-header-menu .sub-menu .menu-item.ast-left-align-sub-menu.focus > .sub-menu{margin-left:-0px;}}.ast-small-footer{border-top-style:solid;border-top-width:1px;border-top-color:#7a7a7a;}.ast-small-footer-wrap{text-align:center;}@media (max-width:920px){.ast-404-layout-1 .ast-404-text{font-size:100px;font-size:5.2631578947368rem;}}.ast-breadcrumbs .trail-browse,.ast-breadcrumbs .trail-items,.ast-breadcrumbs .trail-items li{display:inline-block;margin:0;padding:0;border:none;background:inherit;text-indent:0;}.ast-breadcrumbs .trail-browse{font-size:inherit;font-style:inherit;font-weight:inherit;color:inherit;}.ast-breadcrumbs .trail-items{list-style:none;}.trail-items li::after{padding:0 0.3em;content:"\00bb";}.trail-items li:last-of-type::after{display:none;}.ast-header-break-point .main-header-bar{border-bottom-width:1px;}@media (min-width:922px){.main-header-bar{border-bottom-width:1px;}}.ast-safari-browser-less-than-11 .main-header-menu .menu-item, .ast-safari-browser-less-than-11 .main-header-bar .ast-masthead-custom-menu-items{display:block;}.main-header-menu .menu-item, .main-header-bar .ast-masthead-custom-menu-items{-js-display:flex;display:flex;-webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;-moz-box-orient:vertical;-moz-box-direction:normal;-ms-flex-direction:column;flex-direction:column;}.main-header-menu > .menu-item > .menu-link{height:100%;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;-js-display:flex;display:flex;}.ast-primary-menu-disabled .main-header-bar .ast-masthead-custom-menu-items{flex:unset;}
+</style>
+<link rel="stylesheet" id="astra-menu-animation-css" href="https://wpdeeply.com/wp-content/themes/astra/assets/css/minified/menu-animation.min.css" media="all">
+<link rel="stylesheet" id="wp-block-library-css" href="https://wpdeeply.com/wp-includes/css/dist/block-library/style.min.css" media="all">
+<link rel="stylesheet" id="mkaz-code-syntax-css-css" href="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/blocks.style.css" media="all">
+<link rel="stylesheet" id="mkaz-code-syntax-prism-css-css" href="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/prism/prism.css" media="all">
 
-					<button class="toggle nav-toggle mobile-nav-toggle" data-toggle-target=".menu-modal" data-toggle-body-class="showing-menu-modal" aria-expanded="false" data-set-focus=".close-nav-toggle">
-						<span class="toggle-inner">
-							<span class="toggle-icon">
-								<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" width="26" height="7" viewbox="0 0 26 7"><path fill-rule="evenodd" d="M332.5,45 C330.567003,45 329,43.4329966 329,41.5 C329,39.5670034 330.567003,38 332.5,38 C334.432997,38 336,39.5670034 336,41.5 C336,43.4329966 334.432997,45 332.5,45 Z M342,45 C340.067003,45 338.5,43.4329966 338.5,41.5 C338.5,39.5670034 340.067003,38 342,38 C343.932997,38 345.5,39.5670034 345.5,41.5 C345.5,43.4329966 343.932997,45 342,45 Z M351.5,45 C349.567003,45 348,43.4329966 348,41.5 C348,39.5670034 349.567003,38 351.5,38 C353.432997,38 355,39.5670034 355,41.5 C355,43.4329966 353.432997,45 351.5,45 Z" transform="translate(-329 -38)"></path></svg></span>
-							<span class="toggle-text">Menu</span>
-						</span>
-					</button>
 
-				</div>
 
-				<div class="header-navigation-wrapper">
 
-					
-							<nav class="primary-menu-wrapper" aria-label="Horizontal" role="navigation"><ul class="primary-menu reset-list-style"><li id="menu-item-29" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-29"><a href="https://wpdeeply.com/">home</a></li>
-<li id="menu-item-122" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-122"><a href="https://wpdeeply.com/core/">core</a></li>
-<li id="menu-item-154" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-154"><a href="https://wpdeeply.com/plugins/">plugins</a></li>
-<li id="menu-item-207" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-207"><a href="https://wpdeeply.com/red-team/">red team</a></li>
-<li id="menu-item-165" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-165"><a href="https://wpdeeply.com/contact/">contact</a></li>
 
-								</ul></nav><div class="header-toggles hide-no-js">
 
-						
-							<div class="toggle-wrapper nav-toggle-wrapper has-expanded-menu">
 
-								<button class="toggle nav-toggle desktop-nav-toggle" data-toggle-target=".menu-modal" data-toggle-body-class="showing-menu-modal" aria-expanded="false" data-set-focus=".close-nav-toggle">
-									<span class="toggle-inner">
-										<span class="toggle-text">Menu</span>
-										<span class="toggle-icon">
-											<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" width="26" height="7" viewbox="0 0 26 7"><path fill-rule="evenodd" d="M332.5,45 C330.567003,45 329,43.4329966 329,41.5 C329,39.5670034 330.567003,38 332.5,38 C334.432997,38 336,39.5670034 336,41.5 C336,43.4329966 334.432997,45 332.5,45 Z M342,45 C340.067003,45 338.5,43.4329966 338.5,41.5 C338.5,39.5670034 340.067003,38 342,38 C343.932997,38 345.5,39.5670034 345.5,41.5 C345.5,43.4329966 343.932997,45 342,45 Z M351.5,45 C349.567003,45 348,43.4329966 348,41.5 C348,39.5670034 349.567003,38 351.5,38 C353.432997,38 355,39.5670034 355,41.5 C355,43.4329966 353.432997,45 351.5,45 Z" transform="translate(-329 -38)"></path></svg></span>
-									</span>
-								</button>
 
-							</div>
 
-							
-						</div>
-						
-				</div>
+<style>.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style></head>
 
-			</div>
+<body itemtype="https://schema.org/Blog" itemscope="itemscope" class="post-template-default single single-post postid-27 single-format-standard ast-desktop ast-separate-container ast-no-sidebar astra-2.5.5 ast-header-custom-item-inside ast-blog-single-style-1 ast-single-post ast-inherit-site-logo-transparent ast-normal-title-enabled">
+
+<div class="hfeed site" id="page">
+	<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+	
+	
+		<header class="site-header ast-primary-submenu-animation-fade header-main-layout-2 ast-primary-menu-enabled ast-logo-title-inline ast-hide-custom-menu-mobile ast-menu-toggle-icon ast-mobile-header-stack" id="masthead" itemtype="https://schema.org/WPHeader" itemscope="itemscope" itemid="#masthead">
 
 			
-		</header><div class="menu-modal cover-modal header-footer-group" data-modal-target-string=".menu-modal">
+			
+<div class="main-header-bar-wrap">
+	<div class="main-header-bar">
+				<div class="ast-container">
 
-	<div class="menu-modal-inner modal-inner">
-
-		<div class="menu-wrapper section-inner">
-
-			<div class="menu-top">
-
-				<button class="toggle close-nav-toggle fill-children-current-color" data-toggle-target=".menu-modal" data-toggle-body-class="showing-menu-modal" aria-expanded="false" data-set-focus=".menu-modal">
-					<span class="toggle-text">Close Menu</span>
-					<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 16 16"><polygon fill="" fill-rule="evenodd" points="6.852 7.649 .399 1.195 1.445 .149 7.899 6.602 14.352 .149 15.399 1.195 8.945 7.649 15.399 14.102 14.352 15.149 7.899 8.695 1.445 15.149 .399 14.102"></polygon></svg></button>
-
+			<div class="ast-flex main-header-container">
 				
-					<nav class="expanded-menu" aria-label="Expanded" role="navigation"><ul class="modal-menu reset-list-style"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-29"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/">home</a></div></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-122"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/core/">core</a></div></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-154"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/plugins/">plugins</a></div></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-207"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/red-team/">red team</a></div></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-165"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/contact/">contact</a></div></li>
-						</ul></nav><nav class="mobile-menu" aria-label="Mobile" role="navigation"><ul class="modal-menu reset-list-style"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-29"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/">home</a></div></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-122"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/core/">core</a></div></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-154"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/plugins/">plugins</a></div></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-207"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/red-team/">red team</a></div></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-165"><div class="ancestor-wrapper"><a href="https://wpdeeply.com/contact/">contact</a></div></li>
-
-						</ul></nav></div>
-
-			<div class="menu-bottom">
-
-				
-			</div>
-
+		<div class="site-branding">
+			<div class="ast-site-identity" itemtype="https://schema.org/Organization" itemscope="itemscope">
+				<div class="ast-site-title-wrap">
+						<span class="site-title" itemprop="name">
+				<a href="https://wpdeeply.com/" rel="home" itemprop="url">
+					WP deeply
+				</a>
+			</span>
+						<p class="site-description" itemprop="description">
+				// Silence is golden.  Not for you!
+			</p>
+					</div>			</div>
 		</div>
 
-	</div>
-
-</div>
-
-<main id="site-content" role="main"><article class="post-197 post type-post status-publish format-standard hentry category-core category-plugins tag-0day" id="post-197"><header class="entry-header has-text-align-center header-footer-group"><div class="entry-header-inner section-inner medium">
-
 		
-			<div class="entry-categories">
-				<span class="screen-reader-text">Categories</span>
-				<div class="entry-categories-inner">
-					<a href="https://wpdeeply.com/category/core/" rel="category tag">core</a> <a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a>				</div>
-			</div>
-
-			<h1 class="entry-title">WordPress attachment api functions and any post type</h1>
-		<div class="post-meta-wrapper post-meta-single post-meta-single-top">
-
-			<ul class="post-meta"><li class="post-author meta-wrapper">
-						<span class="meta-icon">
-							<span class="screen-reader-text">Post author</span>
-							<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewbox="0 0 18 20"><path fill="" d="M18,19 C18,19.5522847 17.5522847,20 17,20 C16.4477153,20 16,19.5522847 16,19 L16,17 C16,15.3431458 14.6568542,14 13,14 L5,14 C3.34314575,14 2,15.3431458 2,17 L2,19 C2,19.5522847 1.55228475,20 1,20 C0.44771525,20 0,19.5522847 0,19 L0,17 C0,14.2385763 2.23857625,12 5,12 L13,12 C15.7614237,12 18,14.2385763 18,17 L18,19 Z M9,10 C6.23857625,10 4,7.76142375 4,5 C4,2.23857625 6.23857625,0 9,0 C11.7614237,0 14,2.23857625 14,5 C14,7.76142375 11.7614237,10 9,10 Z M9,8 C10.6568542,8 12,6.65685425 12,5 C12,3.34314575 10.6568542,2 9,2 C7.34314575,2 6,3.34314575 6,5 C6,6.65685425 7.34314575,8 9,8 Z"></path></svg></span>
-						<span class="meta-text">
-							By <a href="https://wpdeeply.com/author/root/">root</a>						</span>
-					</li>
-										<li class="post-date meta-wrapper">
-						<span class="meta-icon">
-							<span class="screen-reader-text">Post date</span>
-							<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewbox="0 0 18 19"><path fill="" d="M4.60069444,4.09375 L3.25,4.09375 C2.47334957,4.09375 1.84375,4.72334957 1.84375,5.5 L1.84375,7.26736111 L16.15625,7.26736111 L16.15625,5.5 C16.15625,4.72334957 15.5266504,4.09375 14.75,4.09375 L13.3993056,4.09375 L13.3993056,4.55555556 C13.3993056,5.02154581 13.0215458,5.39930556 12.5555556,5.39930556 C12.0895653,5.39930556 11.7118056,5.02154581 11.7118056,4.55555556 L11.7118056,4.09375 L6.28819444,4.09375 L6.28819444,4.55555556 C6.28819444,5.02154581 5.9104347,5.39930556 5.44444444,5.39930556 C4.97845419,5.39930556 4.60069444,5.02154581 4.60069444,4.55555556 L4.60069444,4.09375 Z M6.28819444,2.40625 L11.7118056,2.40625 L11.7118056,1 C11.7118056,0.534009742 12.0895653,0.15625 12.5555556,0.15625 C13.0215458,0.15625 13.3993056,0.534009742 13.3993056,1 L13.3993056,2.40625 L14.75,2.40625 C16.4586309,2.40625 17.84375,3.79136906 17.84375,5.5 L17.84375,15.875 C17.84375,17.5836309 16.4586309,18.96875 14.75,18.96875 L3.25,18.96875 C1.54136906,18.96875 0.15625,17.5836309 0.15625,15.875 L0.15625,5.5 C0.15625,3.79136906 1.54136906,2.40625 3.25,2.40625 L4.60069444,2.40625 L4.60069444,1 C4.60069444,0.534009742 4.97845419,0.15625 5.44444444,0.15625 C5.9104347,0.15625 6.28819444,0.534009742 6.28819444,1 L6.28819444,2.40625 Z M1.84375,8.95486111 L1.84375,15.875 C1.84375,16.6516504 2.47334957,17.28125 3.25,17.28125 L14.75,17.28125 C15.5266504,17.28125 16.15625,16.6516504 16.15625,15.875 L16.15625,8.95486111 L1.84375,8.95486111 Z"></path></svg></span>
-						<span class="meta-text">
-							<a href="https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/">August 9, 2020</a>
-						</span>
-					</li>
-					
-			</ul></div>
-
-		
-	</div>
-
-</header><div class="post-inner thin ">
-
-		<div class="entry-content">
+				<div class="ast-mobile-menu-buttons">
 
 			
+					<div class="ast-button-wrap">
+			<button type="button" class="menu-toggle main-header-menu-toggle  ast-mobile-menu-buttons-minimal " aria-controls="primary-menu" aria-expanded="false">
+				<span class="screen-reader-text">Main Menu</span>
+				<span class="menu-toggle-icon"></span>
+							</button>
+		</div>
+			
+			
+		</div>
+			<div class="ast-main-header-bar-alignment"><div class="main-header-bar-navigation"><nav class="ast-flex-grow-1 navigation-accessibility" id="site-navigation" aria-label="Site Navigation" itemtype="https://schema.org/SiteNavigationElement" itemscope="itemscope"><div class="main-navigation"><ul id="primary-menu" class="main-header-menu ast-nav-menu ast-flex ast-justify-content-flex-end  submenu-with-border astra-menu-animation-fade "><li id="menu-item-13" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-13"><a href="https://wpdeeply.com" class="menu-link">home</a></li>
+<li id="menu-item-60" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-60"><a href="https://wpdeeply.com/category/core/" class="menu-link">core</a></li>
+<li id="menu-item-61" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-61"><a href="https://wpdeeply.com/category/plugins/" class="menu-link">plugins</a></li>
+<li id="menu-item-62" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-62"><a href="https://wpdeeply.com/category/red-team/" class="menu-link">red team</a></li>
+<li id="menu-item-14" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-14"><a href="https://wpdeeply.com/contact/" class="menu-link">contact</a></li>
+</ul></div></nav></div></div>			</div>
+		</div>
+			</div> 
+</div> 
+
+			
+		</header>
+
+		
+	
+	
+	<div id="content" class="site-content">
+
+		<div class="ast-container">
+
+		
+
+	<div id="primary" class="content-area primary">
+
+		
+					<main id="main" class="site-main">
+
+				
+					
+					
+
+<article class="post-27 post type-post status-publish format-standard hentry category-core category-plugins tag-0day ast-article-single" id="post-27" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
+
+	
+	
+<div class="ast-post-format- ast-no-thumb single-layout-1">
+
+	
+	<header class="entry-header ast-no-thumbnail">
+
+		
+				<div class="ast-single-post-order">
+			<h1 class="entry-title" itemprop="headline">WordPress attachment api functions and any post type</h1><div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/core/" rel="category tag">core</a>, <a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a></span> / <span class="posted-on"><span class="published" itemprop="datePublished"> August 9, 2020</span><span class="updated" itemprop="dateModified"> October 11, 2020</span></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</div>
+		
+		
+	</header>
+
+	
+	<div class="entry-content clear" itemprop="text">
+
+		
+		
 <p>Core had put some efforts in order to prevent accessing <code>attachment</code> post type functions from another post types. Usually checks are done by calling <code>get_post</code> and comparing the post type with <code>attachment</code>, but that is selective and only in hand picked places. It is that way because performances mainly, so many functions are lacking this checks.</p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attachment-api-any.md#eli5-poc"></a>Eli5 PoC</h2>
+<h2>Eli5 PoC</h2>
 
 
 
@@ -145,7 +136,11 @@ body.custom-background { background-color: #ffffff; }
 
 
 
-<ul><li><code>wp_update_image_subsizes</code><ul><li><code>wp_get_attachment_metadata</code></li><li><code>wp_get_original_image_path</code><ul><li><code>wp_attachment_is_image</code></li><li><code>wp_get_attachment_metadata</code></li><li><code>get_attached_file</code></li><li><code>path_join</code></li></ul></li></ul></li></ul><p>this function is called in <code>wp_ajax_media_create_image_subsizes</code></p>
+<ul><li><code>wp_update_image_subsizes</code><ul><li><code>wp_get_attachment_metadata</code></li><li><code>wp_get_original_image_path</code><ul><li><code>wp_attachment_is_image</code></li><li><code>wp_get_attachment_metadata</code></li><li><code>get_attached_file</code></li><li><code>path_join</code></li></ul></li></ul></li></ul>
+
+
+
+<p>this function is called in <code>wp_ajax_media_create_image_subsizes</code></p>
 
 
 
@@ -202,75 +197,85 @@ body.custom-background { background-color: #ffffff; }
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attachment-api-any.md#few-facts"></a>Few facts</h2>
+<h2>Few facts</h2>
 
 
 
-<ul><li>Yoast Duplicate posts is <a href="https://plugins.trac.wordpress.org/browser/duplicate-post/trunk/duplicate-post-admin.php#L637" target="_blank" rel="noreferrer noopener">adding protected</a> meta when cloning if meta / custom field key starts with <code>\_</code></li><li>We had already seen the <a href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank" rel="noreferrer noopener">wordpress-importer in action</a></li><li>WooCommerce had fixed something similar <a rel="noreferrer noopener" href="https://raw.githubusercontent.com/woocommerce/woocommerce/master/CHANGELOG.txt" target="_blank">few months</a> ago in 4.1.0 version</li></ul><h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attachment-api-any.md#remediation"></a>Remediation</h2>
+<ul><li>Yoast Duplicate posts is <a href="https://plugins.trac.wordpress.org/browser/duplicate-post/trunk/duplicate-post-admin.php#L637" target="_blank" rel="noreferrer noopener">adding protected</a> meta when cloning if meta / custom field key starts with <code>\_</code></li><li>We had already seen the <a href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank" rel="noreferrer noopener">wordpress-importer in action</a></li><li>WooCommerce had fixed something similar <a rel="noreferrer noopener" href="https://raw.githubusercontent.com/woocommerce/woocommerce/master/CHANGELOG.txt" target="_blank">few months</a> ago in 4.1.0 version</li></ul>
 
 
 
-<ul><li>make sure that <code>attachment</code> routines are performed only over attachments</li><li>do not allow users to create protected meta</li></ul></div>
+<h2>Remediation</h2>
 
+
+
+<ul><li>make sure that <code>attachment</code> routines are performed only over attachments</li><li>do not allow users to create protected meta</li></ul>
+
+		
+		
+			</div>
+</div>
+
+	
+</article>
+
+
+	<nav class="navigation post-navigation" role="navigation" aria-label="Posts">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links"><div class="nav-previous"><a href="https://wpdeeply.com/wordpress-and-phar-unserialize/" rel="prev"><span class="ast-left-arrow">←</span> Previous Post</a></div><div class="nav-next"><a href="https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/" rel="next">Next Post <span class="ast-right-arrow">→</span></a></div></div>
+	</nav>
+					
+					
+				
+			</main>
+			
+		
 	</div>
 
-	<div class="section-inner">
+
+			
+			</div> 
+
+		</div>
+
 		
-		<div class="post-meta-wrapper post-meta-single post-meta-single-bottom">
+		
+		
+		<footer class="site-footer" id="colophon" itemtype="https://schema.org/WPFooter" itemscope="itemscope" itemid="#colophon">
 
-			<ul class="post-meta"><li class="post-tags meta-wrapper">
-						<span class="meta-icon">
-							<span class="screen-reader-text">Tags</span>
-							<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 18 18"><path fill="" d="M15.4496399,8.42490555 L8.66109799,1.63636364 L1.63636364,1.63636364 L1.63636364,8.66081885 L8.42522727,15.44178 C8.57869221,15.5954158 8.78693789,15.6817418 9.00409091,15.6817418 C9.22124393,15.6817418 9.42948961,15.5954158 9.58327627,15.4414581 L15.4486339,9.57610048 C15.7651495,9.25692435 15.7649133,8.74206554 15.4496399,8.42490555 Z M16.6084423,10.7304545 L10.7406818,16.59822 C10.280287,17.0591273 9.65554997,17.3181054 9.00409091,17.3181054 C8.35263185,17.3181054 7.72789481,17.0591273 7.26815877,16.5988788 L0.239976954,9.57887876 C0.0863319284,9.4254126 0,9.21716044 0,9 L0,0.818181818 C0,0.366312477 0.366312477,0 0.818181818,0 L9,0 C9.21699531,0 9.42510306,0.0862010512 9.57854191,0.239639906 L16.6084423,7.26954545 C17.5601275,8.22691012 17.5601275,9.77308988 16.6084423,10.7304545 Z M5,6 C4.44771525,6 4,5.55228475 4,5 C4,4.44771525 4.44771525,4 5,4 C5.55228475,4 6,4.44771525 6,5 C6,5.55228475 5.55228475,6 5,6 Z"></path></svg></span>
-						<span class="meta-text">
-							<a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a>						</span>
-					</li>
-					
-			</ul></div>
+			
+			
+<div class="ast-small-footer footer-sml-layout-1">
+	<div class="ast-footer-overlay">
+		<div class="ast-container">
+			<div class="ast-small-footer-wrap">
+									<div class="ast-small-footer-section ast-small-footer-section-1">
+						Copyright © 2020 WP deeply					</div>
+				
+				
+			</div>
+		</div>
+	</div>
+</div>
 
+			
+		</footer>
+		
 		
 	</div>
 
 	
-	<nav class="pagination-single section-inner" aria-label="Post" role="navigation"><hr class="styled-separator is-style-wide" aria-hidden="true"><div class="pagination-single-inner">
-
-			
-				<a class="previous-post" href="https://wpdeeply.com/wordpress-and-phar-unserialize/">
-					<span class="arrow" aria-hidden="true">←</span>
-					<span class="title"><span class="title-inner">WordPress and phar unserialize</span></span>
-				</a>
-
-				
-				<a class="next-post" href="https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/">
-					<span class="arrow" aria-hidden="true">→</span>
-						<span class="title"><span class="title-inner">WordPress protected meta via wp job manager</span></span>
-				</a>
-				
-		</div>
-
-		<hr class="styled-separator is-style-wide" aria-hidden="true"></nav></article></main><footer id="site-footer" role="contentinfo" class="header-footer-group"><div class="section-inner">
-
-					<div class="footer-credits">
-
-						<p class="footer-copyright">©
-							2020							<a href="https://wpdeeply.com/">WP deeply</a>
-						</p>
-
-						
-
-					</div>
-
-					<a class="to-the-top" href="#site-header">
-						<span class="to-the-top-long">
-							To the top <span class="arrow" aria-hidden="true">↑</span>						</span>
-						<span class="to-the-top-short">
-							Up <span class="arrow" aria-hidden="true">↑</span>						</span>
-					</a>
-
-				</div>
-
-			</footer><script>
+	<script id="astra-theme-js-js-extra">
+var astra = {"break_point":"921","isRtl":""};
+</script>
+<script src="https://wpdeeply.com/wp-content/themes/astra/assets/js/minified/style.min.js" id="astra-theme-js-js"></script>
+<script id="mkaz-code-syntax-prism-js-js-extra">
 var prism_settings = {"pluginUrl":"https:\/\/wpdeeply.com\/wp-content\/plugins\/code-syntax-block\/"};
-</script><script src="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/prism/prism.js"></script><script>
-	/(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())},!1);
-	</script></body></html>
+</script>
+<script src="https://wpdeeply.com/wp-content/plugins/code-syntax-block/assets/prism/prism.js" id="mkaz-code-syntax-prism-js-js"></script>
+			<script>
+			/(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())},!1);
+			</script>
+			
+	</body>
+</html>

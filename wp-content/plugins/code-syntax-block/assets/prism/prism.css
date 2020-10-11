@@ -22,4 +22,4 @@ pre.line-numbers > code {position: relative;}
 .line-numbers .line-numbers-rows {position: absolute;pointer-events: none;top: 0;font-size: 100%;left: -3.8em;width: 3em;letter-spacing: -1px;border-right: 0;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
 .line-numbers-rows > span {pointer-events: none;display: block;counter-increment: linenumber;}
 .line-numbers-rows > span:before {content: counter(linenumber);color: #5c6370;display: block;padding-right: .8em;text-align: right;}
-.prism-titlename {margin-top: -8px !important;margin-bottom: 16px;font-weight: bold;color: orange;}
+.prism-titlename {margin-top: -8px !important;margin-bottom: 16px;font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;font-weight: bold;color: orange;}
