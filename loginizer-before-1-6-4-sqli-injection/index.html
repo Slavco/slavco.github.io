@@ -203,23 +203,24 @@ $insert = $wpdb->query("INSERT INTO `".$wpdb->prefix."loginizer_logs` SET `usern
 
 
 <pre class="wp-block-code"><code lang="php" class="language-php">// Get the logs
-	$result = lz_selectquery("SELECT * FROM `".$wpdb->prefix."loginizer_logs` 
-							ORDER BY `time` DESC 
-							LIMIT ".$lz_env['cur_page'].", ".$lz_env['res_len']."", 1);
+&#x9;$result = lz_selectquery(&#x22;SELECT * FROM &#x60;&#x22;.$wpdb-&#x3E;prefix.&#x22;loginizer_logs&#x60; 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ORDER BY &#x60;time&#x60; DESC 
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;LIMIT &#x22;.$lz_env[&#x27;cur_page&#x27;].&#x22;, &#x22;.$lz_env[&#x27;res_len&#x27;].&#x22;&#x22;, 1);
 ...
-foreach($result as $ik => $iv){
-					$status_button = (!empty($iv['status']) ? 'disable' : 'enable');
-					echo '
-					<tr>
-						<td>
-							<input type="checkbox" value="'.$iv['ip'].'" name="lz_reset_ips[]" />
-						</td>
-						<td>
-							'.$iv['ip'].'
-						</td>
-						<td>
-							'.$iv['username'].'
-						</td>
+foreach($result as $ik =&#x3E; $iv){
+&#x9;&#x9;&#x9;&#x9;&#x9;$status_button = (!empty($iv[&#x27;status&#x27;]) ? &#x27;disable&#x27; : &#x27;enable&#x27;);
+&#x9;&#x9;&#x9;&#x9;&#x9;echo &#x27;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x3C;tr&#x3E;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x3C;td&#x3E;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x3C;input type=&#x22;checkbox&#x22; value=&#x22;&#x27;.$iv[&#x27;ip&#x27;].&#x27;&#x22; name=&#x22;lz_reset_ips[]&#x22; /&#x3E;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x3C;/td&#x3E;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x3C;td&#x3E;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x27;.$iv[&#x27;ip&#x27;].&#x27;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x3C;/td&#x3E;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x3C;td&#x3E;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x27;.$iv[&#x27;username&#x27;].&#x27;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x3C;/td&#x3E;
+
 </code></pre>
 
 
