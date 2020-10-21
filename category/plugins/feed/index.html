@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/plugins/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description>// Silence is golden.  Not for you!</description>
-	<lastBuildDate>Wed, 21 Oct 2020 11:07:23 +0000</lastBuildDate>
+	<lastBuildDate>Wed, 21 Oct 2020 11:21:23 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -111,23 +111,6 @@ $insert = $wpdb->query("INSERT INTO `".$wpdb->prefix."loginizer_logs` SET `usern
 
 
 <pre class="wp-block-code"><code lang="php" class="language-php">// Get the logs
-	$result = lz_selectquery("SELECT * FROM `".$wpdb->prefix."loginizer_logs` 
-							ORDER BY `time` DESC 
-							LIMIT ".$lz_env['cur_page'].", ".$lz_env['res_len']."", 1);
-...
-foreach($result as $ik => $iv){
-					$status_button = (!empty($iv['status']) ? 'disable' : 'enable');
-					echo '
-					&lt;tr>
-						&lt;td>
-							&lt;input type="checkbox" value="'.$iv['ip'].'" name="lz_reset_ips[]" />
-						&lt;/td>
-						&lt;td>
-							'.$iv['ip'].'
-						&lt;/td>
-						&lt;td>
-							'.$iv['username'].'
-						&lt;/td>
 </code></pre>
 
 
@@ -179,7 +162,7 @@ foreach($result as $ik => $iv){
 
 
 
-<pre class="wp-block-code"><code lang="php" class="language-php">if ( ip2long("127.0.0.1\x00'&lt;script>") ) echo 'Valid IPv4';
+<pre class="wp-block-code"><code lang="php" class="language-php">//second
 </code></pre>
 
 
