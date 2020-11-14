@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/tag/fixed/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description>// Silence is golden.  Not for you!</description>
-	<lastBuildDate>Thu, 05 Nov 2020 12:18:56 +0000</lastBuildDate>
+	<lastBuildDate>Sat, 14 Nov 2020 11:37:52 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,111 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.5.3</generator>
 	<item>
+		<title>WP Activity Log before 4.1.5 unauthenticated SQLi</title>
+		<link>https://wpdeeply.com/wp-activity-log-before-4-1-5-unauthenticated-sqli/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Sat, 14 Nov 2020 11:37:49 +0000</pubDate>
+				<category><![CDATA[plugins]]></category>
+		<category><![CDATA[fixed]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=85</guid>
+
+					<description><![CDATA[This is a plugin that allows logging of activities around your wp setup, so admins have some insight about what is happening under the hood and what are the activities of different system functionalities and users from different user groups. In some of the classes around code base, specially those related to MySQL could be &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wp-activity-log-before-4-1-5-unauthenticated-sqli/"> <span class="screen-reader-text">WP Activity Log before 4.1.5 unauthenticated SQLi</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>This is a <a rel="noreferrer noopener" href="https://wordpress.org/plugins/wp-security-audit-log/#developers" target="_blank">plugin</a> that allows logging of activities around your wp setup, so admins have some insight about what is happening under the hood and what are the activities of different system functionalities and users from different user groups. In some of the classes around code base, specially those related to MySQL could be noticed that there isn&#8217;t any usage of prepared queries, so we can salute our bugs / SQLi. As an extra there is hooking at <code>query</code> DB filter, yeah an extra glitch there.</p>
+
+
+
+<h2>Eli5 PoC</h2>
+
+
+
+<p>Plugin allows (I think in premium version) mirroring, archiving and using external MySQL DB as a storage. So bug is simple and straight forward, into classes/Connector/MySQLDB.php every INSERT statement is prone to SQLi, but we are going to explain in short <code>MirroringAlertsToDB</code> method. There we have functionality to mirror the event meta ( yup User Agent as an input is there ) and in the code:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">// Load data Meta from WP.
+$meta = new WSAL_Adapters_MySQL_Meta( $_wpdb );
+...
+$sql      = 'SELECT * FROM ' . $meta->GetTable() . ' WHERE occurrence_id >= ' . $first_occurrence_id;
+			$metadata = $_wpdb->get_results( $sql, ARRAY_A );
+
+			if ( ! empty( $metadata ) ) {
+				$meta_new = new WSAL_Adapters_MySQL_Meta( $mirroring_db );
+				$sql      = 'INSERT INTO ' . $meta_new->GetTable() . ' (occurrence_id, name, value) VALUES ';
+
+				foreach ( $metadata as $entry ) {
+					$sql .= '(' . $entry['occurrence_id'] . ', \'' . $entry['name'] . '\', \'' . str_replace( array( "'", "\'" ), "\'", $entry['value'] ) . '\'), ';
+				}
+
+				$sql = rtrim( $sql, ', ' );
+				$mirroring_db->query( $sql );
+			}
+</code></pre>
+
+
+
+<p>here we see that data is taken from MySQL DB table and like that is placed in the another <code>INSERT</code> query and there we have the following &#8220;escaping&#8221;</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">str_replace( array( "'", "\'" ), "\'", $entry['value'] )
+</code></pre>
+
+
+
+<p>e.g. any <code>\'</code> or <code>\\\'</code> is classic SQLi entry point towards DB.</p>
+
+
+
+<h2>Troll notifications</h2>
+
+
+
+<p>As I said there is another bug in the plugin e.g. there is hook at <code>query</code> filter from the WP DB functionality. In the <code>classes/Sensors/Database.php</code> there is:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">add_action( 'dbdelta_queries', array( $this, 'EventDBDeltaQuery' ) );
+add_filter( 'query', array( $this, 'EventDropQuery' ) );
+</code></pre>
+
+
+
+<p>and in <code>EventDropQuery</code> we have:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">preg_match( '|DROP TABLE ([^ ]*)|', $query )
+...
+preg_match( '|CREATE TABLE IF NOT EXISTS ([^ ]*)|', $query )
+</code></pre>
+
+
+
+<p>and this means if somewhere in the <code>$query</code> there is <code>DROP</code> or <code>CREATE</code> statement admin will get new shiny notification about table being created. More than good functionality for phishing towards admin.</p>
+
+
+
+<h2>Few facts</h2>
+
+
+
+<ul><li>Bugs were discovered with mass scanning for vulnerability patterns around wp plugins</li><li>SQLi above could be checked if it is possible to be escalated for stored XSS</li><li>No matter what is the purpose of the plugin never reinvent mission critical functionalities and follow security practices for WP development</li></ul>
+
+
+
+<h2>Remediation</h2>
+
+
+
+<ul><li>Before you allow some plugin to land and beign activated on your important WP setup, make sure they use prepared DB statements</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WooCommerce abandoned cart before 5.8.2 SQL injection</title>
 		<link>https://wpdeeply.com/woocommerce-abandoned-cart-before-5-8-2-sql-injection/</link>
 		

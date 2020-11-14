@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description>// Silence is golden.  Not for you!</description>
-	<lastBuildDate>Thu, 05 Nov 2020 12:18:56 +0000</lastBuildDate>
+	<lastBuildDate>Sat, 14 Nov 2020 11:37:52 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,111 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.5.3</generator>
 	<item>
+		<title>WP Activity Log before 4.1.5 unauthenticated SQLi</title>
+		<link>https://wpdeeply.com/wp-activity-log-before-4-1-5-unauthenticated-sqli/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Sat, 14 Nov 2020 11:37:49 +0000</pubDate>
+				<category><![CDATA[plugins]]></category>
+		<category><![CDATA[fixed]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=85</guid>
+
+					<description><![CDATA[This is a plugin that allows logging of activities around your wp setup, so admins have some insight about what is happening under the hood and what are the activities of different system functionalities and users from different user groups. In some of the classes around code base, specially those related to MySQL could be &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wp-activity-log-before-4-1-5-unauthenticated-sqli/"> <span class="screen-reader-text">WP Activity Log before 4.1.5 unauthenticated SQLi</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>This is a <a rel="noreferrer noopener" href="https://wordpress.org/plugins/wp-security-audit-log/#developers" target="_blank">plugin</a> that allows logging of activities around your wp setup, so admins have some insight about what is happening under the hood and what are the activities of different system functionalities and users from different user groups. In some of the classes around code base, specially those related to MySQL could be noticed that there isn&#8217;t any usage of prepared queries, so we can salute our bugs / SQLi. As an extra there is hooking at <code>query</code> DB filter, yeah an extra glitch there.</p>
+
+
+
+<h2>Eli5 PoC</h2>
+
+
+
+<p>Plugin allows (I think in premium version) mirroring, archiving and using external MySQL DB as a storage. So bug is simple and straight forward, into classes/Connector/MySQLDB.php every INSERT statement is prone to SQLi, but we are going to explain in short <code>MirroringAlertsToDB</code> method. There we have functionality to mirror the event meta ( yup User Agent as an input is there ) and in the code:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">// Load data Meta from WP.
+$meta = new WSAL_Adapters_MySQL_Meta( $_wpdb );
+...
+$sql      = 'SELECT * FROM ' . $meta->GetTable() . ' WHERE occurrence_id >= ' . $first_occurrence_id;
+			$metadata = $_wpdb->get_results( $sql, ARRAY_A );
+
+			if ( ! empty( $metadata ) ) {
+				$meta_new = new WSAL_Adapters_MySQL_Meta( $mirroring_db );
+				$sql      = 'INSERT INTO ' . $meta_new->GetTable() . ' (occurrence_id, name, value) VALUES ';
+
+				foreach ( $metadata as $entry ) {
+					$sql .= '(' . $entry['occurrence_id'] . ', \'' . $entry['name'] . '\', \'' . str_replace( array( "'", "\'" ), "\'", $entry['value'] ) . '\'), ';
+				}
+
+				$sql = rtrim( $sql, ', ' );
+				$mirroring_db->query( $sql );
+			}
+</code></pre>
+
+
+
+<p>here we see that data is taken from MySQL DB table and like that is placed in the another <code>INSERT</code> query and there we have the following &#8220;escaping&#8221;</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">str_replace( array( "'", "\'" ), "\'", $entry['value'] )
+</code></pre>
+
+
+
+<p>e.g. any <code>\'</code> or <code>\\\'</code> is classic SQLi entry point towards DB.</p>
+
+
+
+<h2>Troll notifications</h2>
+
+
+
+<p>As I said there is another bug in the plugin e.g. there is hook at <code>query</code> filter from the WP DB functionality. In the <code>classes/Sensors/Database.php</code> there is:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">add_action( 'dbdelta_queries', array( $this, 'EventDBDeltaQuery' ) );
+add_filter( 'query', array( $this, 'EventDropQuery' ) );
+</code></pre>
+
+
+
+<p>and in <code>EventDropQuery</code> we have:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">preg_match( '|DROP TABLE ([^ ]*)|', $query )
+...
+preg_match( '|CREATE TABLE IF NOT EXISTS ([^ ]*)|', $query )
+</code></pre>
+
+
+
+<p>and this means if somewhere in the <code>$query</code> there is <code>DROP</code> or <code>CREATE</code> statement admin will get new shiny notification about table being created. More than good functionality for phishing towards admin.</p>
+
+
+
+<h2>Few facts</h2>
+
+
+
+<ul><li>Bugs were discovered with mass scanning for vulnerability patterns around wp plugins</li><li>SQLi above could be checked if it is possible to be escalated for stored XSS</li><li>No matter what is the purpose of the plugin never reinvent mission critical functionalities and follow security practices for WP development</li></ul>
+
+
+
+<h2>Remediation</h2>
+
+
+
+<ul><li>Before you allow some plugin to land and beign activated on your important WP setup, make sure they use prepared DB statements</li></ul>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WooCommerce abandoned cart before 5.8.2 SQL injection</title>
 		<link>https://wpdeeply.com/woocommerce-abandoned-cart-before-5-8-2-sql-injection/</link>
 		
@@ -1045,96 +1150,6 @@ $values = array_map(
 
 
 <ul><li>add constraints into your php.ini regarding serialization</li><li>mod the maybe_ functions so they sign the final payload</li></ul>
-]]></content:encoded>
-					
-		
-		
-			</item>
-		<item>
-		<title>WordPress core and MySQL string comparison</title>
-		<link>https://wpdeeply.com/wordpress-core-and-mysql-string-comparison/</link>
-		
-		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Sat, 25 Jul 2020 20:16:00 +0000</pubDate>
-				<category><![CDATA[core]]></category>
-		<category><![CDATA[plugins]]></category>
-		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=31</guid>
-
-					<description><![CDATA[If we execute the following MySQL query against WP database we will get results in case we had already uploaded media in the past This is sort of “feature” of MySQL RDBMS, but what this means from WP aspect. It means a lot, because in the past there were account take over / backdoor vulnerabilities &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-core-and-mysql-string-comparison/"> <span class="screen-reader-text">WordPress core and MySQL string comparison</span> Read More &#187;</a></p>]]></description>
-										<content:encoded><![CDATA[
-<p>If we execute the following MySQL query against WP database</p>
-
-
-
-<pre class="wp-block-code"><code lang="php" class="language-php">select * from wp_postmeta where meta_key = concat(char(1),"_wp_attached_file");
-</code></pre>
-
-
-
-<p>we will get results in case we had already uploaded media in the past</p>
-
-
-
-<pre class="wp-block-code"><code lang="bash" class="language-bash">+---------+---------+-------------------+--------------------------------+
-| meta_id | post_id | meta_key          | meta_value                     |
-+---------+---------+-------------------+--------------------------------+
-|      46 |      92 | _wp_attached_file | 2020/07/wpdeeply.png#/boom.png |
-|      71 |      99 | _wp_attached_file | wpdeeply                       |
-+---------+---------+-------------------+--------------------------------+
-2 rows in set (0.00 sec)
-
-</code></pre>
-
-
-
-<p>This is sort of “feature” of MySQL RDBMS, but what this means from WP aspect. It means a lot, because in the past there were account take over / backdoor vulnerabilities fixed silently and today we are going to focus on&nbsp;<code>update_metadata</code>&nbsp;function. WordPress prevents medling with protected meta via&nbsp;<code>is_protected_meta</code>&nbsp;function which basically checks if&nbsp;<code>meta_key</code>&nbsp;starts with&nbsp;<code>_</code>, but that isn’t enough because it is on PHP side.</p>
-
-
-
-<p>Eli5 PoC</p>
-
-
-
-<p>Upload media file on your test WP instance and grab the&nbsp;<code>post_id</code>. Then run the following code snippet with your own data / post_id:</p>
-
-
-
-<pre class="wp-block-code"><code lang="php" class="language-php">function bypass_protected_meta(){
-    //your demo media(post) id
-    $post_id = 99;
-    
-    $meta_key = "\x11_wp_attached_file";
-    $meta_value = "wpdeeply";
-    
-    //into edit post meta capability there is check for protected meta, but this is for auditorium to be much more clearer 
-    if ( current_user_can( 'edit_post_meta', $post_id, $meta_key ) &amp;&amp; ! is_protected_meta($meta_key) ){
-        update_post_meta($post_id, $meta_key, $meta_value);
-    }
-}
-
-add_action(init, "bypass_protected_meta");
-</code></pre>
-
-
-
-<p>Refresh the media (will not be displayed) and if you check in DB&nbsp;<code>_wp_attached_file</code>&nbsp;will have the&nbsp;<code>wpdeeply</code>&nbsp;value. Is this bug with impact? Well Jetpack folks will need to answer that&nbsp;<a href="https://github.com/Automattic/jetpack/blob/master/json-endpoints/class.wpcom-json-api-update-post-v1-2-endpoint.php#L824">https://github.com/Automattic/jetpack/blob/master/json-endpoints/class.wpcom-json-api-update-post-v1-2-endpoint.php#L824</a>, but you can find a lot of use cases on wpdirectory <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
-
-
-
-<h2>Few facts</h2>
-
-
-
-<ul><li>This MySQL behaviour is for huge set of utf-8 characters not only ascii control ones</li><li>Why this <a rel="noreferrer noopener" href="https://stackoverflow.com/questions/543580/equals-vs-like/2336940#2336940" target="_blank">happens</a>&nbsp;</li><li>There are more places around WP code where unexpected behaviour is in game, because at the end of the day WP is just PHP &amp; MySQL web app</li><li>Meddling with protected meta on WP is RCE. Few examples: <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" target="_blank">here</a>, <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank">here</a> and <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank">here</a>. There are few not disclosed too <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li></ul>
-
-
-
-<h2>Remediation</h2>
-
-
-
-<ul><li>be careful with data used in MySQL WHERE</li><li><code>is_protected_meta</code>&nbsp;should be DB/MySQL check against current setup instead PHP one</li></ul>
 ]]></content:encoded>
 					
 		
