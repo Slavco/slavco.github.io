@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<title>WP deeply – Page 2 – // Silence is golden.  Not for you!</title>
+<title>WP Job Manager permission escalation RCE – WP deeply</title>
 <link rel="dns-prefetch" href="//s.w.org">
 
 
@@ -20,9 +20,14 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 
 
 
+
+
+
+
+
 <style>.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style></head>
 
-<body itemtype="https://schema.org/Blog" itemscope="itemscope" class="home blog paged paged-2 ast-desktop ast-separate-container ast-no-sidebar astra-2.5.5 ast-header-custom-item-inside ast-inherit-site-logo-transparent">
+<body itemtype="https://schema.org/Blog" itemscope="itemscope" class="post-template-default single single-post postid-89 single-format-standard ast-desktop ast-separate-container ast-no-sidebar astra-2.5.5 ast-header-custom-item-inside ast-blog-single-style-1 ast-single-post ast-inherit-site-logo-transparent ast-normal-title-enabled">
 
 <div class="hfeed site" id="page">
 	<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
@@ -42,11 +47,11 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 		<div class="site-branding">
 			<div class="ast-site-identity" itemtype="https://schema.org/Organization" itemscope="itemscope">
 				<div class="ast-site-title-wrap">
-						<h1 class="site-title" itemprop="name">
+						<span class="site-title" itemprop="name">
 				<a href="https://wpdeeply.com/" rel="home" itemprop="url">
 					WP deeply
 				</a>
-			</h1>
+			</span>
 						<p class="site-description" itemprop="description">
 				// Silence is golden.  Not for you!
 			</p>
@@ -66,9 +71,9 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 			
 			
 		</div>
-			<div class="ast-main-header-bar-alignment"><div class="main-header-bar-navigation"><nav class="ast-flex-grow-1 navigation-accessibility" id="site-navigation" aria-label="Site Navigation" itemtype="https://schema.org/SiteNavigationElement" itemscope="itemscope"><div class="main-navigation"><ul id="primary-menu" class="main-header-menu ast-nav-menu ast-flex ast-justify-content-flex-end  submenu-with-border astra-menu-animation-fade "><li id="menu-item-13" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item menu-item-home menu-item-13"><a href="https://wpdeeply.com" class="menu-link">home</a></li>
+			<div class="ast-main-header-bar-alignment"><div class="main-header-bar-navigation"><nav class="ast-flex-grow-1 navigation-accessibility" id="site-navigation" aria-label="Site Navigation" itemtype="https://schema.org/SiteNavigationElement" itemscope="itemscope"><div class="main-navigation"><ul id="primary-menu" class="main-header-menu ast-nav-menu ast-flex ast-justify-content-flex-end  submenu-with-border astra-menu-animation-fade "><li id="menu-item-13" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-13"><a href="https://wpdeeply.com" class="menu-link">home</a></li>
 <li id="menu-item-60" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-60"><a href="https://wpdeeply.com/category/core/" class="menu-link">core</a></li>
-<li id="menu-item-61" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-61"><a href="https://wpdeeply.com/category/plugins/" class="menu-link">plugins</a></li>
+<li id="menu-item-61" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-61"><a href="https://wpdeeply.com/category/plugins/" class="menu-link">plugins</a></li>
 <li id="menu-item-62" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-62"><a href="https://wpdeeply.com/category/red-team/" class="menu-link">red team</a></li>
 <li id="menu-item-14" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-14"><a href="https://wpdeeply.com/contact/" class="menu-link">Work with us</a></li>
 </ul></div></nav></div></div>			</div>
@@ -94,301 +99,216 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 					<main id="main" class="site-main">
 
 				
-					<div class="ast-row">
+					
 					
 
-<article class="post-29 post type-post status-publish format-standard hentry category-plugins tag-0day ast-col-sm-12 ast-article-post" id="post-29" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
+<article class="post-89 post type-post status-publish format-standard hentry category-plugins tag-0day ast-article-single" id="post-89" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
 
 	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
+	
+<div class="ast-post-format- ast-no-thumb single-layout-1">
 
-	<div class="post-content ast-col-md-12">
+	
+	<header class="entry-header ast-no-thumbnail">
 
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/wordpress-and-multiple-maybe_unserialize/" rel="bookmark">WordPress and multiple maybe_unserialize</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
 		
-		<div class="entry-content clear" itemprop="text">
+				<div class="ast-single-post-order">
+			<h1 class="entry-title" itemprop="headline">WP Job Manager permission escalation RCE</h1><div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a></span> / <span class="posted-on"><span class="published" itemprop="datePublished"> November 25, 2020</span><span class="updated" itemprop="dateModified"> November 25, 2020</span></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</div>
+		
+		
+	</header>
 
-			
-			<p>WordPress introduced maybe_unserialize and maybe_serialize as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple maybe_unserialize towards values that could be planted into DB with lower number of maybe_serializecalls. Eli5 PoC and if you think that this code isn’t existing then …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-and-multiple-maybe_unserialize/"> <span class="screen-reader-text">WordPress and multiple maybe_unserialize</span> Read More »</a></p>
+	
+	<div class="entry-content clear" itemprop="text">
 
-			
-					</div>
-	</div>
+		
+		
+<p>WP Job Manager plugin was sitting <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/" target="_blank">vulnerable</a> for some time and attack vectors were available with lowest possible user role. Now in current version <a rel="noreferrer noopener" href="https://wordpress.org/plugins/wp-job-manager/#developers" target="_blank">1.34.4</a> some hardening was placed in the form of post_type checks & nonce’s, but meddling with protected meta failed again. Almost the same way as WordPress <a href="https://gist.github.com/Slavco/d28074ef7f9ce7c08fd47e77af38e1cc" target="_blank" rel="noreferrer noopener">core did</a>.</p>
 
-</div> 
+
+
+<h2>Eli5 PoC</h2>
+
+
+
+<p>In <code>job_manager_duplicate_listing</code> before patch we had the following code:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$post_meta = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id=%d", $post_id ) );
+...
+foreach ( $post_meta as $meta_key => $meta_value ) {
+			if ( in_array( $meta_key, $duplicate_ignore_keys, true ) ) {
+				continue;
+			}
+			update_post_meta( $new_post_id, $meta_key, maybe_unserialize( $meta_value ) );
+		}
+</code></pre>
+
+
+
+<p>And we all know that prefixing meta_key with simple \ will result with insert or update of protected meta_key. Beside this approach and nature of <code>update_post_meta</code> there is always option to update value of protected meta_key while updating value of ascii-control-char_meta_key. In order to be prevented situations like that the following is done:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">foreach ( $post_meta as $meta_key => $meta_value ) {
+			$sanitized_key = preg_replace( "/[^\x20-\x7E]/", '', $meta_key );
+
+			if ( in_array( $sanitized_key, $duplicate_ignore_keys, true ) ) {
+				continue;
+			}
+
+			if ( 1 === preg_match( '/^(_wp_|_oembed_)/', $sanitized_key ) ) {
+				continue;
+			}
+
+			update_post_meta( $new_post_id, wp_slash( $meta_key ), wp_slash( maybe_unserialize( $meta_value ) ) );
+		}
+</code></pre>
+
+
+
+<h3>Bypassing duplicate ignore keys check</h3>
+
+
+
+<p>What we have:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = preg_replace( "/[^\x20-\x7E]/", '', $meta_key );
+
+			if ( in_array( $sanitized_key, $duplicate_ignore_keys, true ) ) {
+				continue;
+			}
+</code></pre>
+
+
+
+<p>let we try for</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$meta_key = "\x08_ignore_key \x00\x01\x03";
+</code></pre>
+
+
+
+<p>result will be</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = "_ignore_key ";
+</code></pre>
+
+
+
+<p>and that will fail because strict check into in_array. Luckily this payload could be prevented if this ignore meta key is WP protected meta, having the form: wp|oembed … because following check, an otherwise will result with update or insert+update in <code>update_post_meta</code>.</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( 1 === preg_match( '/^(_wp_|_oembed_)/', $sanitized_key ) ) {
+				continue;
+			}
+</code></pre>
+
+
+
+<p>Check the following DB query:</p>
+
+
+
+<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value`="booFFZ" WHERE `meta_key` = concat('_wp_protected-meta ',char(8),char(1)) 
+</code></pre>
+
+
+
+<p>and will be successful because space before control characters.</p>
+
+
+
+<h3><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-job-manager-2.md#bypassing-wp--oembed-check"></a></h3>
+
+
+
+<h3>Bypassing <em>wp</em> | <em>oembed</em> check</h3>
+
+
+
+<p>It is simple, because MySQL will treat Fullwidth Low Line “＿” (U+FF3F) as “_” Low Line (U+005F). This means that</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = preg_replace( "/[^\x20-\x7E]/", '', $meta_key );
+</code></pre>
+
+
+
+<p>will receive value of</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = "wp_test";
+</code></pre>
+
+
+
+<p>which will fail on</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( 1 === preg_match( '/^(_wp_|_oembed_)/', $sanitized_key ) ) {
+				continue;
+			}
+</code></pre>
+
+
+
+<p>but will succeed into database (see the Fullwidth Low Line):</p>
+
+
+
+<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value`="booFFS" WHERE `meta_key` = '＿wp_protected-meta' 
+</code></pre>
+
+
+
+<h2>Few facts</h2>
+
+
+
+<ul><li>MySQL is interesting</li><li>You can’t “fix” MySQL behavior with PHP regex</li></ul>
+
+
+
+<h2>Remediation</h2>
+
+
+
+<ul><li>Avoid update_post_meta and all another update_metadata variations. Use update_metadata_by_mid and add_metadata instead.</li><li>Changing update_post_meta with add_metadata in duplicate function should do the job- test for sure and don’t forget wp_slash on meta key and value.</li></ul>
+
+
+
+<p></p>
+
+		
+		
+			</div>
+</div>
 
 	
 </article>
 
 
+	<nav class="navigation post-navigation" role="navigation" aria-label="Posts">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links"><div class="nav-previous"><a href="https://wpdeeply.com/wp-activity-log-before-4-1-5-unauthenticated-sqli/" rel="prev"><span class="ast-left-arrow">←</span> Previous Post</a></div></div>
+	</nav>
 					
-
-<article class="post-31 post type-post status-publish format-standard hentry category-core category-plugins tag-0day ast-col-sm-12 ast-article-post" id="post-31" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-
-	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
-
-	<div class="post-content ast-col-md-12">
-
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/wordpress-core-and-mysql-string-comparison/" rel="bookmark">WordPress core and MySQL string comparison</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/core/" rel="category tag">core</a>, <a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
-		
-		<div class="entry-content clear" itemprop="text">
-
-			
-			<p>If we execute the following MySQL query against WP database we will get results in case we had already uploaded media in the past This is sort of “feature” of MySQL RDBMS, but what this means from WP aspect. It means a lot, because in the past there were account take over / backdoor vulnerabilities …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-core-and-mysql-string-comparison/"> <span class="screen-reader-text">WordPress core and MySQL string comparison</span> Read More »</a></p>
-
-			
-					</div>
-	</div>
-
-</div> 
-
-	
-</article>
-
-
 					
-
-<article class="post-33 post type-post status-publish format-standard hentry category-core category-plugins tag-0day ast-col-sm-12 ast-article-post" id="post-33" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-
-	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
-
-	<div class="post-content ast-col-md-12">
-
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/" rel="bookmark">WordPress importer arbitrary post create</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/core/" rel="category tag">core</a>, <a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
-		
-		<div class="entry-content clear" itemprop="text">
-
-			
-			<p>Native WordPress importer have 3 different parser classes: WXR_Parser_SimpleXML, WXR_Parser_XML and WXR_Parser_Regex. If first two required PHP extensions (simplexml and xml) aren’t installed or somehow they fail during export file parsing, then everything should be done by WXR_Parser_Regex class. Failing could occure because: malformed XML file Huge XML file with lot of data (libxml doesn’t obay memory constraints from php.ini) most important one: …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-importer-arbitrary-post-create/"> <span class="screen-reader-text">WordPress importer arbitrary post create</span> Read More »</a></p>
-
-			
-					</div>
-	</div>
-
-</div> 
-
-	
-</article>
-
-
-					
-
-<article class="post-37 post type-post status-publish format-standard hentry category-plugins tag-0day ast-col-sm-12 ast-article-post" id="post-37" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-
-	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
-
-	<div class="post-content ast-col-md-12">
-
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/learnpress-sqli-to-rce/" rel="bookmark">LearnPress SQLi to RCE</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
-		
-		<div class="entry-content clear" itemprop="text">
-
-			
-			<p>Few months back security research regarding WP learning platforms got my attention. From writing there and change logs it was obvios that some of the SQLi vulnerabilities remained in the code and what is more interesting it is easy to be escalated to RCE. Eli5 PoC Into function learn_press_duplicate_post_meta which is called from learn_press_duplicate_post we have the following: From …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/learnpress-sqli-to-rce/"> <span class="screen-reader-text">LearnPress SQLi to RCE</span> Read More »</a></p>
-
-			
-					</div>
-	</div>
-
-</div> 
-
-	
-</article>
-
-
-					
-
-<article class="post-39 post type-post status-publish format-standard hentry category-plugins tag-0day ast-col-sm-12 ast-article-post" id="post-39" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-
-	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
-
-	<div class="post-content ast-col-md-12">
-
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" rel="bookmark">WooCommerce MySQL replace to RCE</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
-		
-		<div class="entry-content clear" itemprop="text">
-
-			
-			<p>This bug is 0day, but same as this bug was reported in the past. Try to fix here and fix here. Anyway, in the Woo code there is another DB query that modifies serialized PHP content outside from serialize / unserialize PHP functions and that results into user object injection. Beside numerous tries to harden WP, …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/"> <span class="screen-reader-text">WooCommerce MySQL replace to RCE</span> Read More »</a></p>
-
-			
-					</div>
-	</div>
-
-</div> 
-
-	
-</article>
-
-
-					
-
-<article class="post-45 post type-post status-publish format-standard hentry category-core category-red-team tag-0day ast-col-sm-12 ast-article-post" id="post-45" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-
-	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
-
-	<div class="post-content ast-col-md-12">
-
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/wordpress-updates-from-core-and-security/" rel="bookmark">WordPress updates from core and security</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/core/" rel="category tag">core</a>, <a href="https://wpdeeply.com/category/red-team/" rel="category tag">red team</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
-		
-		<div class="entry-content clear" itemprop="text">
-
-			
-			<p>WordPress is on the auto-updates train for everything lately and they do it for “security”. Auto-updates from core is approach and it is same for everything, so let we see what is doing under the hood. There is function update_core and that is the place where magic is happening. WP core is deciding via get_core_checksums what files need to …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-updates-from-core-and-security/"> <span class="screen-reader-text">WordPress updates from core and security</span> Read More »</a></p>
-
-			
-					</div>
-	</div>
-
-</div> 
-
-	
-</article>
-
-
-					
-
-<article class="post-41 post type-post status-publish format-standard hentry category-core category-plugins tag-0day ast-col-sm-12 ast-article-post" id="post-41" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-
-	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
-
-	<div class="post-content ast-col-md-12">
-
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/wordpress-importer-and-attached-file/" rel="bookmark">WordPress importer and attached file</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/core/" rel="category tag">core</a>, <a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
-		
-		<div class="entry-content clear" itemprop="text">
-
-			
-			<p>WordPress project have put a lot of effort to prevent meddling with _wp_attached_file meta value. Part of this effort was put into wordpress-importer plugin as part of the core, but… Few versions back there was possibility to bypass those restrictions with \ WP “magic”, but there are few more techniques. Eli5 PoC class-wp-import.php method is_valid_meta_key we have the following: and Do you …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-importer-and-attached-file/"> <span class="screen-reader-text">WordPress importer and attached file</span> Read More »</a></p>
-
-			
-					</div>
-	</div>
-
-</div> 
-
-	
-</article>
-
-
-					
-
-<article class="post-47 post type-post status-publish format-standard hentry category-core tag-0day ast-col-sm-12 ast-article-post" id="post-47" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-
-	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
-
-	<div class="post-content ast-col-md-12">
-
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/wordpress-upload-any-file-with-image-extension/" rel="bookmark">WordPress upload any file with image extension</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/core/" rel="category tag">core</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
-		
-		<div class="entry-content clear" itemprop="text">
-
-			
-			<p>Big efforts were put into validation and verification of image uploads in WP as a project. Yet, that isn’t completed task. In the WP core there is function wp_upload_bits which allows to be “uploaded” file with any content with any of the allowed extensions. Beside its widespread usage around eco system  there are two places in the core …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-upload-any-file-with-image-extension/"> <span class="screen-reader-text">WordPress upload any file with image extension</span> Read More »</a></p>
-
-			
-					</div>
-	</div>
-
-</div> 
-
-	
-</article>
-
-
-					
-
-<article class="post-53 post type-post status-publish format-standard hentry category-core tag-0day ast-col-sm-12 ast-article-post" id="post-53" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-
-	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
-
-	<div class="post-content ast-col-md-12">
-
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/" rel="bookmark">WordPress null byte to RCE – 0 day bug</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/core/" rel="category tag">core</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
-		
-		<div class="entry-content clear" itemprop="text">
-
-			
-			<p>It is common knowledge that non binary safe functions in PHP should be avoided e.g. to be replaced from legacy code with binary safe alternatives. What we have in the WP core class-wp-image-editor-imagick and we all know that PHP imagick prefers writeImageFile before writeImage because it is binary safe. What does this mean? This means if WP uses class-wp-image-editor-imagick as default image …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-null-byte-to-rce-0-day-bug/"> <span class="screen-reader-text">WordPress null byte to RCE – 0 day bug</span> Read More »</a></p>
-
-			
-					</div>
-	</div>
-
-</div> 
-
-	
-</article>
-
-
-					
-
-<article class="post-51 post type-post status-publish format-standard hentry category-core tag-0day ast-col-sm-12 ast-article-post" id="post-51" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-
-	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
-
-	<div class="post-content ast-col-md-12">
-
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/" rel="bookmark">WordPress write image to any directory RCE</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/core/" rel="category tag">core</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
-		
-		<div class="entry-content clear" itemprop="text">
-
-			
-			<p>Image cropping in WordPress is sort of unlucky, specially derivation of final image path ( file system or http/s location ), where image will be loaded from the path, but decisions for additional directories creation and final path (no traversal prevention here) are taken from _wp_attached_file. Those issues are subject for deeper observation and debugging which …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-write-image-to-any-directory-rce/"> <span class="screen-reader-text">WordPress write image to any directory RCE</span> Read More »</a></p>
-
-			
-					</div>
-	</div>
-
-</div> 
-
-	
-</article>
-
-
-					
-					</div>
 				
 			</main>
 			
-		<div class="ast-pagination">
-	<nav class="navigation pagination" role="navigation" aria-label="Posts">
-		<h2 class="screen-reader-text">Posts navigation</h2>
-		<div class="nav-links"><a class="prev page-numbers" href="https://wpdeeply.com/"><span class="ast-left-arrow">←</span> Previous Page</a>
-<a class="page-numbers" href="https://wpdeeply.com/">1</a>
-<span aria-current="page" class="page-numbers current">2</span>
-<a class="page-numbers" href="https://wpdeeply.com/page/3/">3</a>
-<a class="next page-numbers" href="https://wpdeeply.com/page/3/">Next Page <span class="ast-right-arrow">→</span></a></div>
-	</nav></div>
 		
 	</div>
 

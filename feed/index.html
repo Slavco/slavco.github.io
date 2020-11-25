@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description>// Silence is golden.  Not for you!</description>
-	<lastBuildDate>Sat, 14 Nov 2020 11:37:52 +0000</lastBuildDate>
+	<lastBuildDate>Wed, 25 Nov 2020 23:28:07 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,190 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.5.3</generator>
 	<item>
+		<title>WP Job Manager permission escalation RCE</title>
+		<link>https://wpdeeply.com/wp-job-manager-permission-escalation-rce/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Wed, 25 Nov 2020 23:25:34 +0000</pubDate>
+				<category><![CDATA[plugins]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=89</guid>
+
+					<description><![CDATA[WP Job Manager plugin was sitting vulnerable for some time and attack vectors were available with lowest possible user role. Now in current version 1.34.4 some hardening was placed in the form of post_type checks &#38; nonce&#8217;s, but meddling with protected meta failed again. Almost the same way as WordPress core did. Eli5 PoC In &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wp-job-manager-permission-escalation-rce/"> <span class="screen-reader-text">WP Job Manager permission escalation RCE</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>WP Job Manager plugin was sitting <a rel="noreferrer noopener" href="https://wpdeeply.com/wordpress-protected-meta-via-wp-job-manager/" target="_blank">vulnerable</a> for some time and attack vectors were available with lowest possible user role. Now in current version <a rel="noreferrer noopener" href="https://wordpress.org/plugins/wp-job-manager/#developers" target="_blank">1.34.4</a> some hardening was placed in the form of post_type checks &amp; nonce&#8217;s, but meddling with protected meta failed again. Almost the same way as WordPress <a href="https://gist.github.com/Slavco/d28074ef7f9ce7c08fd47e77af38e1cc" target="_blank" rel="noreferrer noopener">core did</a>.</p>
+
+
+
+<h2>Eli5 PoC</h2>
+
+
+
+<p>In <code>job_manager_duplicate_listing</code> before patch we had the following code:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$post_meta = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id=%d", $post_id ) );
+...
+foreach ( $post_meta as $meta_key => $meta_value ) {
+			if ( in_array( $meta_key, $duplicate_ignore_keys, true ) ) {
+				continue;
+			}
+			update_post_meta( $new_post_id, $meta_key, maybe_unserialize( $meta_value ) );
+		}
+</code></pre>
+
+
+
+<p>And we all know that prefixing meta_key with simple \ will result with insert or update of protected meta_key. Beside this approach and nature of <code>update_post_meta</code> there is always option to update value of protected meta_key while updating value of ascii-control-char_meta_key. In order to be prevented situations like that the following is done:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">foreach ( $post_meta as $meta_key => $meta_value ) {
+			$sanitized_key = preg_replace( "/[^\x20-\x7E]/", '', $meta_key );
+
+			if ( in_array( $sanitized_key, $duplicate_ignore_keys, true ) ) {
+				continue;
+			}
+
+			if ( 1 === preg_match( '/^(_wp_|_oembed_)/', $sanitized_key ) ) {
+				continue;
+			}
+
+			update_post_meta( $new_post_id, wp_slash( $meta_key ), wp_slash( maybe_unserialize( $meta_value ) ) );
+		}
+</code></pre>
+
+
+
+<h3>Bypassing duplicate ignore keys check</h3>
+
+
+
+<p>What we have:</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = preg_replace( "/[^\x20-\x7E]/", '', $meta_key );
+
+			if ( in_array( $sanitized_key, $duplicate_ignore_keys, true ) ) {
+				continue;
+			}
+</code></pre>
+
+
+
+<p>let we try for</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$meta_key = "\x08_ignore_key \x00\x01\x03";
+</code></pre>
+
+
+
+<p>result will be</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = "_ignore_key ";
+</code></pre>
+
+
+
+<p>and that will fail because strict check into in_array. Luckily this payload could be prevented if this ignore meta key is WP protected meta, having the form: wp|oembed &#8230; because following check, an otherwise will result with update or insert+update in <code>update_post_meta</code>.</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( 1 === preg_match( '/^(_wp_|_oembed_)/', $sanitized_key ) ) {
+				continue;
+			}
+</code></pre>
+
+
+
+<p>Check the following DB query:</p>
+
+
+
+<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value`="booFFZ" WHERE `meta_key` = concat('_wp_protected-meta ',char(8),char(1)) 
+</code></pre>
+
+
+
+<p>and will be successful because space before control characters.</p>
+
+
+
+<h3><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-job-manager-2.md#bypassing-wp--oembed-check"></a></h3>
+
+
+
+<h3>Bypassing <em>wp</em> | <em>oembed</em> check</h3>
+
+
+
+<p>It is simple, because MySQL will treat Fullwidth Low Line &#8220;＿&#8221; (U+FF3F) as &#8220;_&#8221; Low Line (U+005F). This means that</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = preg_replace( "/[^\x20-\x7E]/", '', $meta_key );
+</code></pre>
+
+
+
+<p>will receive value of</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$sanitized_key = "wp_test";
+</code></pre>
+
+
+
+<p>which will fail on</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">if ( 1 === preg_match( '/^(_wp_|_oembed_)/', $sanitized_key ) ) {
+				continue;
+			}
+</code></pre>
+
+
+
+<p>but will succeed into database (see the Fullwidth Low Line):</p>
+
+
+
+<pre class="wp-block-code"><code lang="sql" class="language-sql">UPDATE `wp_postmeta` SET `meta_value`="booFFS" WHERE `meta_key` = '＿wp_protected-meta' 
+</code></pre>
+
+
+
+<h2>Few facts</h2>
+
+
+
+<ul><li>MySQL is interesting</li><li>You can&#8217;t &#8220;fix&#8221; MySQL behavior with PHP regex</li></ul>
+
+
+
+<h2>Remediation</h2>
+
+
+
+<ul><li>Avoid update_post_meta and all another update_metadata variations. Use update_metadata_by_mid and add_metadata instead.</li><li>Changing update_post_meta with add_metadata in duplicate function should do the job- test for sure and don&#8217;t forget wp_slash on meta key and value.</li></ul>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WP Activity Log before 4.1.5 unauthenticated SQLi</title>
 		<link>https://wpdeeply.com/wp-activity-log-before-4-1-5-unauthenticated-sqli/</link>
 		
@@ -1096,60 +1280,6 @@ if ( isset( $backup_sizes['full-orig'] ) &amp;&amp; is_array( $backup_sizes['ful
 
 
 <ul><li>phar vulnerabilities should be handled on <a href="https://github.com/TYPO3/phar-stream-wrapper" target="_blank" rel="noreferrer noopener">stream wrapper level</a>, not with “guarding”</li></ul>
-]]></content:encoded>
-					
-		
-		
-			</item>
-		<item>
-		<title>WordPress and multiple maybe_unserialize</title>
-		<link>https://wpdeeply.com/wordpress-and-multiple-maybe_unserialize/</link>
-		
-		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Mon, 27 Jul 2020 20:12:00 +0000</pubDate>
-				<category><![CDATA[plugins]]></category>
-		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=29</guid>
-
-					<description><![CDATA[WordPress introduced&#160;maybe_unserialize&#160;and&#160;maybe_serialize&#160;as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple&#160;maybe_unserialize towards values that could be planted into DB with lower number of&#160;maybe_serializecalls. Eli5 PoC and if you think that this code isn’t existing then &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-and-multiple-maybe_unserialize/"> <span class="screen-reader-text">WordPress and multiple maybe_unserialize</span> Read More &#187;</a></p>]]></description>
-										<content:encoded><![CDATA[
-<p>WordPress introduced&nbsp;<code>maybe_unserialize</code>&nbsp;and&nbsp;<code>maybe_serialize</code>&nbsp;as security functions in the past and they are deeply integrated in the core. Usually for backward compatibility or improper usage in the past, many software vendors are using multiple&nbsp;<code>maybe_unserialize</code> towards values that could be planted into DB with lower number of&nbsp;<code>maybe_serialize</code>calls.</p>
-
-
-
-<h2>Eli5 PoC</h2>
-
-
-
-<pre class="wp-block-code"><code lang="php" class="language-php">$maybe_double_unserialize = function ( $value ) {
-	return maybe_unserialize( $value );
-};
-
-$values = array_map(
-	$maybe_double_unserialize,
-	array_filter( get_post_meta( $product_id, $field_key ) )
-);
-</code></pre>
-
-
-
-<p>and if you think that this code isn’t existing then <a rel="noreferrer noopener" href="https://plugins.trac.wordpress.org/browser/woocommerce-multilingual/trunk/inc/translation-editor/class-wcml-editor-ui-product-job.php#L984" target="_blank">check this</a> out. Yes it is 100k active installs Woo plugin and when Woo unserialze attack is in question, <a rel="noreferrer noopener" href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" target="_blank">then</a>! :/</p>
-
-
-
-<h2>Few facts</h2>
-
-
-
-<ul><li>double&nbsp;<code>maybe_unserialize</code>&nbsp;is quite widespread around WP eco system, specially in Woo related plugins</li></ul>
-
-
-
-<h2>Remediation</h2>
-
-
-
-<ul><li>add constraints into your php.ini regarding serialization</li><li>mod the maybe_ functions so they sign the final payload</li></ul>
 ]]></content:encoded>
 					
 		
