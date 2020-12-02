@@ -105,6 +105,34 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 					<div class="ast-row">
 					
 
+<article class="post-94 post type-post status-publish format-standard hentry category-core category-red-team tag-0day ast-col-sm-12 ast-article-post" id="post-94" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
+
+	
+	<div class="ast-post-format- ast-no-thumb blog-layout-1">
+
+	<div class="post-content ast-col-md-12">
+
+				<header class="entry-header">
+			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/wordpress-db-prepare-method-dos-memory-limit/" rel="bookmark">WordPress DB prepare method DOS / memory limit</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/core/" rel="category tag">core</a>, <a href="https://wpdeeply.com/category/red-team/" rel="category tag">red team</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
+		
+		<div class="entry-content clear" itemprop="text">
+
+			
+			<p>Few years back WP “fixed” prepare method of its DB class and even today it remains one of the failure points for ~40% of the web. What is the bug? Simple, because sprintf usage every % sign is replaced with placeholder which in most of the setups swaps 1 character % with 66 in memory. …</p>
+<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-db-prepare-method-dos-memory-limit/"> <span class="screen-reader-text">WordPress DB prepare method DOS / memory limit</span> Read More »</a></p>
+
+			
+					</div>
+	</div>
+
+</div> 
+
+	
+</article>
+
+
+					
+
 <article class="post-89 post type-post status-publish format-standard hentry category-plugins tag-0day ast-col-sm-12 ast-article-post" id="post-89" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
 
 	
@@ -344,34 +372,6 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 			
 			<p>Few months back security research regarding WP learning platforms got my attention. From writing there and change logs it was obvios that some of the SQLi vulnerabilities remained in the code and what is more interesting it is easy to be escalated to RCE. Eli5 PoC Into function learn_press_duplicate_post_meta which is called from learn_press_duplicate_post we have the following: From …</p>
 <p class="read-more"> <a class="" href="https://wpdeeply.com/learnpress-sqli-to-rce/"> <span class="screen-reader-text">LearnPress SQLi to RCE</span> Read More »</a></p>
-
-			
-					</div>
-	</div>
-
-</div> 
-
-	
-</article>
-
-
-					
-
-<article class="post-39 post type-post status-publish format-standard hentry category-plugins tag-0day ast-col-sm-12 ast-article-post" id="post-39" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-
-	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
-
-	<div class="post-content ast-col-md-12">
-
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/" rel="bookmark">WooCommerce MySQL replace to RCE</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/plugins/" rel="category tag">plugins</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
-		
-		<div class="entry-content clear" itemprop="text">
-
-			
-			<p>This bug is 0day, but same as this bug was reported in the past. Try to fix here and fix here. Anyway, in the Woo code there is another DB query that modifies serialized PHP content outside from serialize / unserialize PHP functions and that results into user object injection. Beside numerous tries to harden WP, …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/woocommerce-mysql-replace-to-rce/"> <span class="screen-reader-text">WooCommerce MySQL replace to RCE</span> Read More »</a></p>
 
 			
 					</div>

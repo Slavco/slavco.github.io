@@ -97,6 +97,34 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 					<div class="ast-row">
 					
 
+<article class="post-94 post type-post status-publish format-standard hentry category-core category-red-team tag-0day ast-col-sm-12 ast-article-post" id="post-94" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
+
+	
+	<div class="ast-post-format- ast-no-thumb blog-layout-1">
+
+	<div class="post-content ast-col-md-12">
+
+				<header class="entry-header">
+			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/wordpress-db-prepare-method-dos-memory-limit/" rel="bookmark">WordPress DB prepare method DOS / memory limit</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/core/" rel="category tag">core</a>, <a href="https://wpdeeply.com/category/red-team/" rel="category tag">red team</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
+		
+		<div class="entry-content clear" itemprop="text">
+
+			
+			<p>Few years back WP “fixed” prepare method of its DB class and even today it remains one of the failure points for ~40% of the web. What is the bug? Simple, because sprintf usage every % sign is replaced with placeholder which in most of the setups swaps 1 character % with 66 in memory. …</p>
+<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-db-prepare-method-dos-memory-limit/"> <span class="screen-reader-text">WordPress DB prepare method DOS / memory limit</span> Read More »</a></p>
+
+			
+					</div>
+	</div>
+
+</div> 
+
+	
+</article>
+
+
+					
+
 <article class="post-89 post type-post status-publish format-standard hentry category-plugins tag-0day ast-col-sm-12 ast-article-post" id="post-89" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
 
 	
@@ -336,34 +364,6 @@ html{font-size:118.75%;}a,.page-title{color:#0274be;}a:hover,a:focus{color:#3a3a
 			
 			<p>Core had put some efforts in order to prevent accessing attachment post type functions from another post types. Usually checks are done by calling get_post and comparing the post type with attachment, but that is selective and only in hand picked places. It is that way because performances mainly, so many functions are lacking this checks. Eli5 PoC One of …</p>
 <p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-attachment-api-functions-and-any-post-type/"> <span class="screen-reader-text">WordPress attachment api functions and any post type</span> Read More »</a></p>
-
-			
-					</div>
-	</div>
-
-</div> 
-
-	
-</article>
-
-
-					
-
-<article class="post-43 post type-post status-publish format-standard hentry category-core tag-0day ast-col-sm-12 ast-article-post" id="post-43" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
-
-	
-	<div class="ast-post-format- ast-no-thumb blog-layout-1">
-
-	<div class="post-content ast-col-md-12">
-
-				<header class="entry-header">
-			<h2 class="entry-title" itemprop="headline"><a href="https://wpdeeply.com/wordpress-and-phar-unserialize/" rel="bookmark">WordPress and phar unserialize</a></h2>			<div class="entry-meta"><span class="cat-links"><a href="https://wpdeeply.com/category/core/" rel="category tag">core</a></span> / <span class="tags-links"><a href="https://wpdeeply.com/tag/0day/" rel="tag">0day</a></span></div>		</header>
-		
-		<div class="entry-content clear" itemprop="text">
-
-			
-			<p>Core team had put some effort into project in order to preven unserialize of user input via phar stream wrapper. In general, efforts are good, but to excelent there are two more grades and this is the max with this approach. In the core there is function path_join that accepts two parameters $base and $path. $path is then sent towards function path_is_absolute and from the code …</p>
-<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-and-phar-unserialize/"> <span class="screen-reader-text">WordPress and phar unserialize</span> Read More »</a></p>
 
 			
 					</div>

